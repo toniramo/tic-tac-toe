@@ -1,5 +1,6 @@
 # Project specification
 
+
 _What data structures and algorithms will you be using_
 
 - Data structures: Arrays to create game board and store moves in x,y coordinates. 
@@ -24,8 +25,10 @@ During the game, user, just like AI, inputs the chosen move on the game board. P
 
 _Expected time and space complexities of the program (big-O notations)_
 
-When using simple minimax search, the maximum number of leaf node positions evaluated is O(b^d) where b is average branching factor and d search depth. This is the same with worst-case alpha-beta pruning (when none of the nodes are skipped). In the optimal case, when best moves are always searched first, the number of leaf node positions evualuated is about O(b^(d/2) = O(sqrt(b^d)).
+According to [Wikipedia article about alpha-beta pruning](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning) (accessed 10.9.2021), when using simple minimax search, the maximum number of leaf node positions evaluated is ![O(b^d)](https://latex.codecogs.com/svg.latex?O%28b%5Ed%29) where _b_ is average branching factor and _d_ search depth. This is the same with alpha-beta pruning in the worst case when none of the nodes are skipped. In the optimal case, when best moves are always searched first, the number of leaf node positions evualuated is about ![O(b^(d/2)) = O(sqrt(b^d))](https://latex.codecogs.com/svg.latex?%5Cinline%20O%28b%5E%7B%5Cfrac%7Bd%7D%7B2%7D%7D%29%20%3D%20O%28%5Csqrt%7Bb%5Ed%7D%29). 
 
+In this case, branching factor _b_ depends on the game board size that should be, according to specification, large (i.e. much larger than usual 3x3). If we have game board of nxn cells (where n \in N), maximum number of possible moves in the beginning is n^2. During the next ply the equivalent number is n^2-1 then n^2-2, then n^2-3, and so on. If we assume that the game board can be filled entirely with Xs and Os before either of the players win, there is only one option for the last possible move. Thereby number of branches per ply ranges from 1 to n^2. We can now derive rough estimate for average branching factor b as follows: b=(\Sum_{i=1}^{n^2} i / 2)=n^2(1+n^2)/2 (![closed-form expression](https://en.wikipedia.org/wiki/Summation) of aritmetic series). Then for instance, with game board size of 10x10, b=55.
+ 
 _Sources_
 - https://en.wikipedia.org/wiki/Minimax
 - https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
