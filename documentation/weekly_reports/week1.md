@@ -1,31 +1,19 @@
-# Week 1 (draft)
+# Week 1
 
-Done:
-- Set up project
-  - Basic files and configuration
-  - Additional: checkstyle, Github actions
-  - Took surprisingly long time (couple of hours)
-- Study minimax and trying to figure out how to apply it to large scale tic-tac-toe. 
+Starting of the project surprised me as the number of stuff to be done was actually more than initally expected:
 
-Raising questions:
-- About implementing the AI: In a large game (5 in row, large board) it is not reasonable to go through each possible move with minimax so some heuristic is needed to limit the needed search depth.
-  - What kind of heuristic could be applied? How to determine the likelyhood of winning if it cannot be achieved within N moves.
+First of all and most importantly choose the topic. Well, I am interrested about game programming and tic-tac-toe variant (5 in row) with simple AI seemed easy enough to start building the experience on. Though, after diving into the topic, I am not sure any more if the topic was that easy as I thought it would be. For instance, I needed to study the background enough to understand the complexity of the game and the algorithm to be used to create an "AI" while still being uncertain if I understood all the basic consepts well enough. These include game tree, branching factor and search depth (read more from project specication document). I tried to derive some estimation for branching factor in case of e.g. 10x10 game board but since the game tree in such large board is so big, it was hard to test the ideas in practice and verify the estimate. Then again, for the project itself it may not be even relevant to know the exact value for such constants. It is enough to understand that the game tree is vast and cannot be fully seached every time it is computer's turn. 
 
-Comments:
-- It was not mandatory to use e.g. checkstyle (I suppose) but I wanted to practice setting up a project like teached in "ohjelmistotekniikka" course. Though, I tried to figure out first just with Google needed configuration but soon noticed that my old projects and course materials gave much help as well.
+Consequently, some heuristic is needed. I have tried to play against myself this kind of 5 in row variant and find out what kind of strategies am I using to win. Namely, I can think only couple of turns ahead without it being too exhausting and taking all the fun away from the game so I must have some ideas how to maximize the likelyhood of winning of player in turn. Rationality of those actions is another thing, though. In any case, I noticed that I tend to start (if playing as X), around the center of the board - at least not close to corners - to maximize the possible ways to form 5 in row. As the second player in turn, I place O close to X so that I potentially block one or more possible rows of X and maximize possibilities to make row of O at the same time. And then with X vice-versa, and repeat until X or O player wins (or I get bored). Using this logic, computer could be encouraged to choose adjacent cells to either block other players row and/or continue own row by calculating numerical value for Xs or Os that are adjacent to each other. More there is / closer the row is to reach 5 members, more points is the move worth. But how to actually implement in an simple enough way is still under planning...
 
-## Temporary notes
+I am also not sure if there exists some streamlined algortihm to check if player has win after the move or if it could be done efficiently by e.g. keeping some kind of counter for rows (vertical, horizontal, diagonal). At least I can start by simply going through one by one in all four different directions certain number of cells adjacent to the placed mark.
 
-Example questions for report: 
+Of course, in addition to studying theoretical background and planning the implementation, I started to setup actual project in order to be able to start coding. With help of Google and older university projects I managed to do it eventually but needed to refresh memory quite a bit. Of course, not every step was necessary like using Github actions and checkstyle but it should make the development work more pleasant once these supporting mechanisms are in place.
 
->    What have you done this week?
->    
->    How has the project progressed?
->    
->    What did you learn this week / today?
->    
->    What has been unclear or problematic? Please answer this question truthfully, as this is something the course assistant may be able to help with.
->    
->    What next?
+Actual programming concerns me at this point somewhat. For instance, what kind of class structure would be reasonable? Will writing the graphical user interface and integrating it to the program logic complex/time consuming? How about testing it? And of course, how to implement the algorithm? (There are for sure some examples around the internet but I would like to learn to code it by myself).
+
+Next goal could be to create some simple class/package structure for the program and write program that shows grid (will represent game board) which accept some input. Perhaps just clicking the chosen cell will perform some action.
+
+Estimated time spent this week: roughly 14 h.
 
 
