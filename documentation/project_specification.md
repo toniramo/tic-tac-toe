@@ -25,13 +25,64 @@ During the game, user, just like AI, inputs the chosen move on the game board. P
 
 _Expected time and space complexities of the program (big-O notations)_
 
-According to [Wikipedia article about alpha-beta pruning](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning) (accessed 10.9.2021), when using simple minimax search, the maximum number of leaf node positions evaluated is ![O(b^d)](https://latex.codecogs.com/svg.latex?O%28b%5Ed%29) where _b_ is average branching factor and _d_ search depth. This is the same with alpha-beta pruning in the worst case when none of the nodes are skipped. In the optimal case, when best moves are always searched first, the number of leaf node positions evualuated is about ![O(b^(d/2)) = O(sqrt(b^d))](https://latex.codecogs.com/svg.latex?%5Cinline%20O%28b%5E%7B%5Cfrac%7Bd%7D%7B2%7D%7D%29%20%3D%20O%28%5Csqrt%7Bb%5Ed%7D%29). 
+[Game trees](https://en.wikipedia.org/wiki/Game_tree) (or search trees) can be used to represent possible states within game in question and to study game complexity. Below simplefied example game tree of basic 3x3 tic-tac-toe. It does not show all possible stages but hopefully gives the reader basic idea of the consept. This example was inspired by picture at https://en.wikipedia.org/wiki/Game_tree#/media/File:Tic-tac-toe-game-tree.svg.
 
-In this case, branching factor _b_ depends on the game board size that should be, according to specification, large (i.e. much larger than usual 3x3). If we have game board of nxn cells (where n \in N), maximum number of possible moves in the beginning is n^2. During the next ply the equivalent number is n^2-1 then n^2-2, then n^2-3, and so on. If we assume that the game board can be filled entirely with Xs and Os before either of the players win, there is only one option for the last possible move. Thereby number of branches per ply ranges from 1 to n^2. We can now derive rough estimate for average branching factor b as follows: b=(\Sum_{i=1}^{n^2} i / 2)=n^2(1+n^2)/2 (![closed-form expression](https://en.wikipedia.org/wiki/Summation) of aritmetic series). Then for instance, with game board size of 10x10, b=55.
- 
+```
+                                |   |
+Root node                    ---+---+---
+(empty board)                   |   |
+                             ---+---+---
+                                |   |
+
+                           /      |       \
+Branches                 1        2   ...  9                     <--- Initially 9 possible (legal) moves                   
+(possible moves)       /          |          \
+
+
+Nodes          X |   |            | X |             |   |       
+Ply 1:        ---+---+---      ---+---+---       ---+---+---
+Player 1 (X)     |   |            |   |     ...     |   |
+              ---+---+---      ---+---+---       ---+---+---
+                 |   |            |   |             |   | X
+
+               /   |...\        /   |   \          /   |...\    
+              #    #    #      1    2 ...8        #    #    #    <--- Next player now has 8 possible moves
+                             /      |      \                          
+
+                     | O |         |   | O     X |   |       
+Ply 2:            ---+---+---   ---+---+---   ---+---+---
+Player 2 (O)  ...    | X |         | X |   ...   | X |    ...
+                  ---+---+---   ---+---+---   ---+---+---
+                     |   |         |   |         |   | O
+
+                   /   |...\     /   |...\     /   |...\     
+                  #    #    #   #    #    #   #    #    #       <--- 7 possible moves
+(Plies 3..4)                     /   |...\
+                                #    #    #                     <--- 6 possible moves
+                                     |
+                                X  | O | O       
+Ply 5:                          ---+---+---  
+Player 1 (X)        ...            | X |          ...           <--- No more moves in this outcome
+                                ---+---+---   
+                                   |   | X       
+                                  
+                Player 1 (X) wins. Game ends. This is leaf node.
+
+```
+
+According to [Wikipedia article about alpha-beta pruning](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning) (accessed 10.9.2021), when using simple minimax search, the maximum number of leaf node positions evaluated (or time complexity) is ![O(b^d)](https://latex.codecogs.com/svg.latex?O%28b%5Ed%29) where _b_ is average ![branching factor](https://en.wikipedia.org/wiki/Branching_factor) and _d_ search depth. This is the same with alpha-beta pruning in the worst case when none of the nodes are skipped. In the optimal case, when best moves are always searched first, the number of leaf node positions evualuated is about ![O(b^(d/2)) = O(sqrt(b^d))](https://latex.codecogs.com/svg.latex?%5Cinline%20O%28b%5E%7B%5Cfrac%7Bd%7D%7B2%7D%7D%29%20%3D%20O%28%5Csqrt%7Bb%5Ed%7D%29). 
+
+Space complexity for minimax and alpha-beta pruning is O(_b_ \* _d_).
+
+In this case, branching factor _b_ depends on the game board size that should be, according to specification, large (i.e. much larger than usual 3x3). If we have game board of _n_x_n_ cells (where n \in N), maximum number of possible moves in the beginning is _n_<sup>2</sup>. During the next ply the equivalent number is _n_<sup>2</sup>-1 then _n_<sup>2</sup>-2, then _n_<sup>2</sup>-3, and so on. If we assume that the game board can be filled entirely with Xs and Os before either of the players win (theories about [m,n,k-games](https://en.wikipedia.org/wiki/M,n,k-game) could provide more information about this), there is only one option for the last possible move. Thereby number of branches per ply ranges from 1 to _n_<sup>2</sup>. If we exclude nodes thet lead to win before game board is full, average number of branches per node is ![\frac{\sum_{i=1}^{n^2} i}{n^2} = \frac{n^2(1+n^2)}{2}/n^2 = \frac{1+n^2}{2}](https://latex.codecogs.com/svg.latex?%5Cinline%20%5Cfrac%7B%5Csum_%7Bi%3D1%7D%5E%7Bn%5E2%7D%20i%7D%7Bn%5E2%7D%20%3D%20%5Cfrac%7Bn%5E2%281&plus;n%5E2%29%7D%7B2%7D/n%5E2%20%3D%20%5Cfrac%7B1&plus;n%5E2%7D%7B2%7D). As a result, we can estime that in full game tree, containing all possible legal outcomes, average number of branches per node must be something between (1+n²)/2 and n², so (1+n²)/2<b<n². As an example, game with 10x10 sized board has then 50.5<b<100. 
+
 _Sources_
 - https://en.wikipedia.org/wiki/Minimax
 - https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
+- https://en.wikipedia.org/wiki/Game_complexity
+- https://en.wikipedia.org/wiki/Branching_factor
+- https://en.wikipedia.org/wiki/M,n,k-game
+- http://www.cs.umd.edu/~hajiagha/474GT15/Lecture12122013.pdf
 - https://cis.temple.edu/~vasilis/Courses/CIS603/Lectures/l7.html
 - https://www.youtube.com/watch?v=l-hh51ncgDI
 - https://www.youtube.com/watch?v=STjW3eH0Cik
