@@ -1,13 +1,29 @@
-apply plugin: 'java'
-apply plugin: 'jacoco'
-apply plugin: 'application'
-apply plugin: 'checkstyle'
+//apply plugin: 'java'
+//apply plugin: 'jacoco'
+//apply plugin: 'application'
+//apply plugin: 'checkstyle'
+
+plugins {
+  id 'java'
+  id 'jacoco'
+  id 'checkstyle'
+  id 'application'
+  id 'org.openjfx.javafxplugin' version '0.0.10'
+}
+
+javafx {
+    version = "11.0.2"
+    modules = [ 'javafx.controls' ]
+}
 
 mainClassName = 'tictactoe.Main'
 
 repositories {
     jcenter()
+    mavenCentral()
 }
+
+
 
 dependencies {
     testCompile 'junit:junit:4.12'

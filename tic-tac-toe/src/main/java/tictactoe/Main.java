@@ -5,6 +5,9 @@
  */
 package tictactoe;
 
+import javafx.application.Application;
+import tictactoe.ui.GUI;
+
 /**
  *
  * @author toniramo
@@ -16,6 +19,8 @@ public class Main {
      */
     public static void main(String[] args) {
         System.out.println("Hello world!");
+        
+        Application.launch(GUI.class, args);
     }
     
 }
