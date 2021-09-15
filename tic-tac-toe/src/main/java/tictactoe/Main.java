@@ -6,6 +6,8 @@
 package tictactoe;
 
 import javafx.application.Application;
+import tictactoe.dao.InMemoryDao;
+import tictactoe.domain.GameService;
 import tictactoe.ui.GUI;
 
 /**
@@ -18,8 +20,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("Hello world!");
-        
+       
         Application.launch(GUI.class, args);
     }
     
