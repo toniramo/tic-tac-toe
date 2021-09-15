@@ -15,7 +15,7 @@ public class Move {
     private final int x;
     private final int y;
     
-    public Move(Player player, int x, int y){
+    public Move(Player player, int x, int y) {
         this.player = player;
         this.x = x;
         this.y = y;

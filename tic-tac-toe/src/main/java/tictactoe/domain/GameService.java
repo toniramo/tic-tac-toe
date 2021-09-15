@@ -23,7 +23,7 @@ public class GameService {
 
     public void startNewGame(int gameBoardSize) {
         this.gameData.initializeGameBoard(gameBoardSize);
-        Player[] players = new Player[2+1];
+        Player[] players = new Player[2 + 1];
         players[0] = new Player("X", Color.STEELBLUE);
         players[1] = new Player("O", Color.TOMATO);
         
@@ -40,7 +40,7 @@ public class GameService {
     }
     
     private void changeTurn() {
-        int indexOfNextPlayer = (gameData.getTurn() + 1) %2;
+        int indexOfNextPlayer = (gameData.getTurn() + 1) % 2;
         this.setTurn(indexOfNextPlayer);
     }
     
@@ -48,10 +48,9 @@ public class GameService {
         return gameData.getPlayers()[gameData.getTurn()];
     }   
     
-
     public boolean makeMove(int x, int y) {
         if (gameData.getMove(x, y) == null) {
-            gameData.setMove(new Move(this.getCurrentPlayer(),x,y));
+            gameData.setMove(new Move(this.getCurrentPlayer(), x, y));
             if (!this.gameOver()) {
                 this.changeTurn();
                 return true;
@@ -66,7 +65,7 @@ public class GameService {
     }
     
     private boolean gameBoardFull() {
-        return gameData.getNumberOfMoves() == Math.pow(gameData.getGameBoardSize(),2);
+        return gameData.getNumberOfMoves() == Math.pow(gameData.getGameBoardSize(), 2);
     }
     
     public boolean gameOver() {
