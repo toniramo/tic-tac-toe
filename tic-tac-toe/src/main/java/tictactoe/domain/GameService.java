@@ -50,7 +50,7 @@ public class GameService {
     public boolean validMove(int x, int y) {
         return gameData.getMove(x, y) == null;
     }
-    
+
     //Notice that also UI needs to call same methods as makeMove
     //in order to know if move was valid or not and if game continues
     //after this. This could be improved by communicating the game state
@@ -65,52 +65,37 @@ public class GameService {
             }
         }
     }
-    
-    //This is currently implemented in brute-force way. To be improved.
+
     public Player getWinner() {
         int gameBoardSize = gameData.getGameBoardSize();
-
-        //Check rows
-        for (int y = 1; y <= gameBoardSize; y++) {
-            int markCount = 0;
-            for (int x = 1; x <= gameBoardSize; x++) {
-                if (gameData.getMove(x, y) != null) {
-                    if (gameData.getMove(x, y).getPlayer().equals(gameData.getCurrentPlayer())) {
-                        markCount++;
-                    } else {
-                        markCount = 0;
-                    }
-                    if (markCount == 5) {
-                        return gameData.getCurrentPlayer();
-                    }
-                }
-
-            }
-        }
-
-        //Check columns
+        
+        //Check rows and columns
+        Player currentPlayer = gameData.getCurrentPlayer();
         for (int x = 1; x <= gameBoardSize; x++) {
-            int markCount = 0;
+            int markCountRow = 0;
+            int markCountCol = 0;
             for (int y = 1; y <= gameBoardSize; y++) {
-                if (gameData.getMove(x, y) != null) {
-                    if (gameData.getMove(x, y).getPlayer().equals(gameData.getCurrentPlayer())) {
-                        markCount++;
-                    } else {
-                        markCount = 0;
-                    }
-                    if (markCount == 5) {
-                        return gameData.getCurrentPlayer();
-                    }
+                Move moveRow = gameData.getMove(x, y);
+                Move moveCol = gameData.getMove(y, x);
+                
+                markCountRow = updateMarkCounter(markCountRow, moveRow, currentPlayer);
+                markCountCol = updateMarkCounter(markCountCol, moveCol, currentPlayer);
+
+                if (markCountRow == 5 || markCountCol == 5) {
+                    return currentPlayer;
                 }
             }
         }
-        //Check diagonals
-
+        //TODO check diagonals.
+        
         return null;
     }
-
-    private void readLines() {
-
+    
+    private int updateMarkCounter(int currentValue, Move move, Player player) {
+        if (move != null && move.getPlayer().equals(player)) {
+            return currentValue+1;
+        }
+        return 0;
     }
 
     private boolean gameBoardFull() {
