@@ -76,7 +76,6 @@ public class GUI extends Application {
                     mark.setFont(Font.font(STYLESHEET_MODENA, FontWeight.BOLD, 25));
                     if (gameService.validMove(x, y)) {
                         gameService.makeMove(x, y);
-                        //if (stack.getChildren().contains(y))
                         mark.setText(player.getMark());
                         mark.setTextFill(player.getMarkColor());
                         turnLabel.setText("Turn: " + gameService.getCurrentPlayer().getMark());
@@ -86,8 +85,8 @@ public class GUI extends Application {
                     if (gameService.gameOver()) {
                         String winner;
 
-                        if (gameService.getWinner() != null) {
-                            winner = "Winner: " + gameService.getWinner().getMark();
+                        if (gameService.currentPlayerWin()) {
+                            winner = "Winner: " + gameService.getCurrentPlayer().getMark();
                         } else {
                             winner = "Draw";
                         }

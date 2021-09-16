@@ -22,5 +22,4 @@ public interface Dao {
     public int getTurn();
     public void setPlayers(Player[] players);
     public Player[] getPlayers();
-    public Player getCurrentPlayer();
 }

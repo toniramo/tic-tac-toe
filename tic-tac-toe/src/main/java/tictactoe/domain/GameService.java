@@ -66,33 +66,43 @@ public class GameService {
         }
     }
 
-    public Player getWinner() {
+    public boolean currentPlayerWin() {
         int gameBoardSize = gameData.getGameBoardSize();
-
-        //Check rows and columns
-        Player currentPlayer = gameData.getCurrentPlayer();
-        for (int x = 1; x <= gameBoardSize; x++) {
+        
+        for (int i = 1; i <= gameBoardSize; i++) {
             int markCountRow = 0;
             int markCountCol = 0;
-            for (int y = 1; y <= gameBoardSize; y++) {
-                Move moveRow = gameData.getMove(x, y);
-                Move moveCol = gameData.getMove(y, x);
+            int markCountDiag1 = 0;
+            int markCountDiag2 = 0;
+            int diagOffset = 0;
 
-                markCountRow = updateMarkCounter(markCountRow, moveRow, currentPlayer);
-                markCountCol = updateMarkCounter(markCountCol, moveCol, currentPlayer);
+            for (int j = 1; j <= gameBoardSize; j++) {
+                Move moveRow = gameData.getMove(i, j);
+                Move moveCol = gameData.getMove(j, i);
+                markCountRow = updateMarkCounter(markCountRow, moveRow);
+                markCountCol = updateMarkCounter(markCountCol, moveCol);
 
-                if (markCountRow == 5 || markCountCol == 5) {
-                    return currentPlayer;
+                if (i + diagOffset <= gameBoardSize) {
+                    Move moveDiag1 = gameData.getMove(i + diagOffset, j);
+                    markCountDiag1 = updateMarkCounter(markCountDiag1, moveDiag1);
+                }
+                if (i - diagOffset > 0) {
+                    Move moveDiag2 = gameData.getMove(j, i - diagOffset);
+                    markCountDiag2 = updateMarkCounter(markCountDiag2, moveDiag2);
+                }
+                diagOffset++;
+
+                if (markCountRow >= 5 || markCountCol >= 5
+                        || markCountDiag1 >= 5 || markCountDiag2 >= 5) {
+                    return true;
                 }
             }
         }
-        //TODO check diagonals.
-
-        return null;
+        return false;
     }
 
-    private int updateMarkCounter(int currentValue, Move move, Player player) {
-        if (move != null && move.getPlayer().equals(player)) {
+    private int updateMarkCounter(int currentValue, Move move) {
+        if (move != null && move.getPlayer().equals(this.getCurrentPlayer())) {
             return currentValue + 1;
         }
         return 0;
@@ -103,7 +113,7 @@ public class GameService {
     }
 
     public boolean gameOver() {
-        if (this.getWinner() != null) {
+        if (this.currentPlayerWin()) {
             return true;
         }
         return this.gameBoardFull();

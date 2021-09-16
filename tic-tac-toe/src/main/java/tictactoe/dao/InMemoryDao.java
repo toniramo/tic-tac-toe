@@ -79,10 +79,4 @@ public class InMemoryDao implements Dao {
     public Player[] getPlayers() {
         return this.players;
     }
-    
-    @Override
-    public Player getCurrentPlayer() {
-        return this.players[this.turn];
-    }
-
 }
