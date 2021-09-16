@@ -12,8 +12,9 @@ import tictactoe.domain.*;
  * @author toniramo
  */
 public interface Dao {
-    public void initializeGameBoard(int n);
+    public void initializeGameBoard(int n, int k);
     public int getGameBoardSize();
+    public int getNumberOfMarksToWin();
     public void setMove(Move move);
     public Move getMove(int x, int y);
     public int getNumberOfMoves();
@@ -21,4 +22,5 @@ public interface Dao {
     public int getTurn();
     public void setPlayers(Player[] players);
     public Player[] getPlayers();
+    public Player getCurrentPlayer();
 }

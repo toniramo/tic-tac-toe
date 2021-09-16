@@ -8,6 +8,7 @@ package tictactoe.ui;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -35,7 +36,7 @@ public class GUI extends Application {
     @Override
     public void init() {
         this.gameService = new GameService(new InMemoryDao());
-        this.gameService.startNewGame(20);
+        this.gameService.startNewGame(20, 5);
     }
 
     @Override
@@ -66,32 +67,50 @@ public class GUI extends Application {
                 stack.getChildren().add(tile);
                 gameBoard.add(stack, i, j);
 
-                tile.setOnMouseClicked(event -> {
+                stack.setOnMouseClicked(event -> {
                     int x = GridPane.getColumnIndex(stack);
                     int y = GridPane.getRowIndex(stack);
 
                     Player player = gameService.getCurrentPlayer();
                     Label mark = new Label();
                     mark.setFont(Font.font(STYLESHEET_MODENA, FontWeight.BOLD, 25));
-                    if (gameService.makeMove(x, y)) {
+                    if (gameService.validMove(x, y)) {
+                        gameService.makeMove(x, y);
+                        //if (stack.getChildren().contains(y))
                         mark.setText(player.getMark());
                         mark.setTextFill(player.getMarkColor());
                         turnLabel.setText("Turn: " + gameService.getCurrentPlayer().getMark());
+                        stack.getChildren().add(mark);
                     }
-                    stack.getChildren().add(mark);
+
+                    if (gameService.gameOver()) {
+                        String winner;
+
+                        if (gameService.getWinner() != null) {
+                            winner = "Winner: " + gameService.getWinner().getMark();
+                        } else {
+                            winner = "Draw";
+                        }
+
+                        turnLabel.setText("Game over. " + winner);
+                        //Turn of actions on game board.
+                        gameBoard.getChildren().forEach((node) -> {
+                            node.setOnMouseClicked(null);
+                        });
+                    }
                 });
             }
         }
 
         newGameButton.setOnAction((ActionEvent event) -> {
-            this.gameService.startNewGame(20);
+            this.init();
             this.start(stage);
         });
 
         exitButton.setOnAction((ActionEvent event) -> {
             stage.close();
         });
-        
+
         layout.getChildren().addAll(topMenuLayout, gameBoard);
         Scene scene = new Scene(layout);
 

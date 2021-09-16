@@ -14,7 +14,8 @@ import tictactoe.domain.Player;
  */
 public class InMemoryDao implements Dao {
 
-    private int n;
+    private int n; //Game board size
+    private int k; //Number of marks to win
     private Move[][] moves;
     private int numberOfMoves;
     private Move lastMove;
@@ -22,8 +23,9 @@ public class InMemoryDao implements Dao {
     private Player[] players;
 
     @Override
-    public void initializeGameBoard(int n) {
+    public void initializeGameBoard(int n, int k) {
         this.n = n;
+        this.k = k;
         this.moves = new Move[n + 1][n + 1];
         this.numberOfMoves = 0;
     }
@@ -33,6 +35,11 @@ public class InMemoryDao implements Dao {
         return this.n;
     }
 
+    @Override
+    public int getNumberOfMarksToWin() {
+        return this.k;
+    }
+    
     @Override
     public void setMove(Move move) {
         this.moves[move.getX()][move.getY()] = move;
@@ -71,6 +78,11 @@ public class InMemoryDao implements Dao {
     @Override
     public Player[] getPlayers() {
         return this.players;
+    }
+    
+    @Override
+    public Player getCurrentPlayer() {
+        return this.players[this.turn];
     }
 
 }
