@@ -68,7 +68,7 @@ public class GameService {
 
     public Player getWinner() {
         int gameBoardSize = gameData.getGameBoardSize();
-        
+
         //Check rows and columns
         Player currentPlayer = gameData.getCurrentPlayer();
         for (int x = 1; x <= gameBoardSize; x++) {
@@ -77,7 +77,7 @@ public class GameService {
             for (int y = 1; y <= gameBoardSize; y++) {
                 Move moveRow = gameData.getMove(x, y);
                 Move moveCol = gameData.getMove(y, x);
-                
+
                 markCountRow = updateMarkCounter(markCountRow, moveRow, currentPlayer);
                 markCountCol = updateMarkCounter(markCountCol, moveCol, currentPlayer);
 
@@ -87,13 +87,13 @@ public class GameService {
             }
         }
         //TODO check diagonals.
-        
+
         return null;
     }
-    
+
     private int updateMarkCounter(int currentValue, Move move, Player player) {
         if (move != null && move.getPlayer().equals(player)) {
-            return currentValue+1;
+            return currentValue + 1;
         }
         return 0;
     }
