@@ -40,6 +40,10 @@ public class GameService {
     }
 
     public boolean validMove(int x, int y) {
+        int n = gameData.getGameBoardSize();
+        if (x < 1 || y < 1 || x > n || y > n) {
+            return false;
+        }
         return gameData.getMove(x, y) == null;
     }
 

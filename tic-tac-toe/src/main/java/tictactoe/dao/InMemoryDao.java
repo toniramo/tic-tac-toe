@@ -30,6 +30,7 @@ public class InMemoryDao implements Dao {
         this.k = k;
         this.moves = new Move[n + 1][n + 1];
         this.numberOfMoves = 0;
+        this.turn = 0;
         this.players = new ArrayList<>();
     }
 
