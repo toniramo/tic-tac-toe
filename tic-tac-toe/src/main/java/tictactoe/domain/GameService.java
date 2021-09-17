@@ -66,11 +66,8 @@ public class GameService {
         int gameBoardSize = gameData.getGameBoardSize();
 
         for (int i = 1; i <= gameBoardSize; i++) {
-            int markCountRow = 0;
-            int markCountCol = 0;
-            int markCountDiag1 = 0;
-            int markCountDiag2 = 0;
-            int diagOffset = 0;
+            int markCountRow = 0, markCountCol = 0, markCountDiag1 = 0, 
+                    markCountDiag2 = 0, diagOffset = 0;
 
             for (int j = 1; j <= gameBoardSize; j++) {
                 Move moveRow = gameData.getMove(i, j);
