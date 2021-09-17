@@ -22,29 +22,21 @@ public class GameService {
 
     public void startNewGame(int gameBoardSize, int marksToWin) {
         this.gameData.initializeGameBoard(gameBoardSize, marksToWin);
-        Player[] players = new Player[2];
-        players[0] = new Player("X", Color.STEELBLUE);
-        players[1] = new Player("O", Color.TOMATO);
-
-        this.gameData.setPlayers(players);
-        this.gameData.setTurn(0);
+        this.gameData.addPlayer(new Player("X", Color.STEELBLUE));
+        this.gameData.addPlayer(new Player("O", Color.TOMATO));
+        //Notice that one could add even more players if wish.
     }
 
     public int getGameBoardSize() {
         return gameData.getGameBoardSize();
     }
 
-    private void setTurn(int playerIndex) {
-        gameData.setTurn(playerIndex);
-    }
-
     private void changeTurn() {
-        int indexOfNextPlayer = (gameData.getTurn() + 1) % 2;
-        this.setTurn(indexOfNextPlayer);
+        gameData.changeTurn();
     }
 
     public Player getCurrentPlayer() {
-        return gameData.getPlayers()[gameData.getTurn()];
+        return gameData.getCurrentPlayer();
     }
 
     public boolean validMove(int x, int y) {
@@ -66,9 +58,13 @@ public class GameService {
         }
     }
 
+    //This method violates checkstyle rule of max 20 lines (->split?).
+    //Additionally, efficiency of the method could be improved
+    //by limiting the checks focus only area with k-radius from the latest move.
+    //Works good enough for now.
     public boolean currentPlayerWin() {
         int gameBoardSize = gameData.getGameBoardSize();
-        
+
         for (int i = 1; i <= gameBoardSize; i++) {
             int markCountRow = 0;
             int markCountCol = 0;

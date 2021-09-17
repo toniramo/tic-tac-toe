@@ -18,8 +18,7 @@ public interface Dao {
     public void setMove(Move move);
     public Move getMove(int x, int y);
     public int getNumberOfMoves();
-    public void setTurn(int playerIndex);
-    public int getTurn();
-    public void setPlayers(Player[] players);
-    public Player[] getPlayers();
+    public void changeTurn();
+    public void addPlayer(Player player);
+    public Player getCurrentPlayer();
 }

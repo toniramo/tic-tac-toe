@@ -5,6 +5,8 @@
  */
 package tictactoe.dao;
 
+import java.util.ArrayList;
+import java.util.List;
 import tictactoe.domain.Move;
 import tictactoe.domain.Player;
 
@@ -20,7 +22,7 @@ public class InMemoryDao implements Dao {
     private int numberOfMoves;
     private Move lastMove;
     private int turn;
-    private Player[] players;
+    private List<Player> players;
 
     @Override
     public void initializeGameBoard(int n, int k) {
@@ -28,6 +30,7 @@ public class InMemoryDao implements Dao {
         this.k = k;
         this.moves = new Move[n + 1][n + 1];
         this.numberOfMoves = 0;
+        this.players = new ArrayList<>();
     }
 
     @Override
@@ -59,24 +62,22 @@ public class InMemoryDao implements Dao {
     public int getNumberOfMoves() {
         return this.numberOfMoves;
     }
-
+    
     @Override
-    public void setTurn(int playerIndex) {
-        this.turn = playerIndex;
+    public void addPlayer(Player player) {
+        this.players.add(player);
     }
     
     @Override
-    public int getTurn() {
-        return this.turn;
+    public Player getCurrentPlayer() {
+        return players.get(turn);
     }
-
-    @Override
-    public void setPlayers(Player[] players) {
-        this.players = players;
-    }
-
-    @Override
-    public Player[] getPlayers() {
-        return this.players;
+    
+    public void changeTurn() {
+        if (turn == players.size() - 1) {
+            turn = 0;
+        } else {
+            turn++;
+        }
     }
 }
