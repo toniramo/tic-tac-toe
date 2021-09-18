@@ -4,7 +4,7 @@ plugins {
     id 'checkstyle'
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.10'
-}
+} 
 
 javafx {
     version = "11.0.2"
@@ -24,12 +24,16 @@ dependencies {
     testImplementation "org.mockito:mockito-core:3.+"
 }
 
+task myJavadocs(type: Javadoc) {
+    source = sourceSets.main.allJava
+}
+
 jacocoTestReport {
     reports {
         xml.enabled = true
         html.enabled = true
     }
-        afterEvaluate {
+    afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
                     fileTree(dir: it, exclude: ['**/Main.class','**/ui/**'])
                 }))

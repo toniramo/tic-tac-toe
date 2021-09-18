@@ -1,18 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tictactoe;
 
 import javafx.application.Application;
-import tictactoe.dao.InMemoryDao;
-import tictactoe.domain.GameService;
 import tictactoe.ui.GUI;
 
 /**
- *
- * @author toniramo
+ * Main class to start the actual application.
  */
 public class Main {
 

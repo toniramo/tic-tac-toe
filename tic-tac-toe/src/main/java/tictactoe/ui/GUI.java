@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tictactoe.ui;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -25,9 +19,8 @@ import tictactoe.dao.InMemoryDao;
 import tictactoe.domain.GameService;
 import tictactoe.domain.Player;
 
-/**
- *
- * @author toniramo
+/** 
+ * Graphical user interface for tic-tac-toe.
  */
 public class GUI extends Application {
 

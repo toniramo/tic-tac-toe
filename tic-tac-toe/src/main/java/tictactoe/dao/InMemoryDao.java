@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tictactoe.dao;
 
 import java.util.ArrayList;
@@ -11,8 +6,7 @@ import tictactoe.domain.Move;
 import tictactoe.domain.Player;
 
 /**
- *
- * @author toniramo
+ * Class to define data access object for storing game data in memory.
  */
 public class InMemoryDao implements Dao {
 
@@ -20,10 +14,10 @@ public class InMemoryDao implements Dao {
     private int k; //Number of marks to win
     private Move[][] moves;
     private int numberOfMoves;
-    private Move lastMove;
     private int turn;
     private List<Player> players;
 
+    /** {@inheritDoc} */
     @Override
     public void initializeGameBoard(int n, int k) {
         this.n = n;
@@ -34,46 +28,50 @@ public class InMemoryDao implements Dao {
         this.players = new ArrayList<>();
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getGameBoardSize() {
         return this.n;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getNumberOfMarksToWin() {
         return this.k;
     }
     
+    /** {@inheritDoc} */
     @Override
     public void setMove(Move move) {
         this.moves[move.getX()][move.getY()] = move;
-        this.lastMove = move;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Move getMove(int x, int y) {
         return this.moves[x][y];
     }
 
-    public Move getLastMove() {
-        return this.lastMove;
-    }
-
+    /** {@inheritDoc} */
     @Override
-    public int getNumberOfMoves() {
+    public int getNumberOfPlayedMoves() {
         return this.numberOfMoves;
     }
     
+    /** {@inheritDoc} */
     @Override
     public void addPlayer(Player player) {
         this.players.add(player);
     }
     
+    /** {@inheritDoc} */
     @Override
     public Player getCurrentPlayer() {
         return players.get(turn);
     }
     
+    /** {@inheritDoc} */
+    @Override
     public void changeTurn() {
         if (turn == players.size() - 1) {
             turn = 0;
