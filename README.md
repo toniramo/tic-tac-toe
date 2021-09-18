@@ -12,3 +12,4 @@ Purpose of this project is to create variant of tic-tac-toe game with an AI to p
 
 ### Weekly reports
 - [Week 1](./documentation/weekly_reports/week1.md)
+- [Week 2](./documentation/weekly_reports/week2.md)
