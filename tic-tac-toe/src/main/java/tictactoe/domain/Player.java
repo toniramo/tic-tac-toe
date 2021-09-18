@@ -11,7 +11,7 @@ public class Player {
     private final String mark;
     private final Color markColor;
 
-    public Player(int playerNumber, String mark) {
+    public Player(String mark) {
         this(mark, Color.BLACK);
     }
 
