@@ -10,22 +10,32 @@ public class Player {
 
     private final String mark;
     private final Color markColor;
+    private final PlayerType type;
 
     public Player(String mark) {
-        this(mark, Color.BLACK);
+        this(mark, Color.BLACK, PlayerType.HUMAN);
     }
 
     public Player(String mark, Color color) {
+        this(mark, color, PlayerType.HUMAN);
+    }
+
+    public Player(String mark, Color color, PlayerType type) {
         this.mark = mark;
         this.markColor = color;
+        this.type = type;
     }
 
     public String getMark() {
         return this.mark;
     }
-    
+
     public Color getMarkColor() {
         return this.markColor;
+    }
+    
+    public PlayerType getPlayerType() {
+        return this.type;
     }
 
     @Override
