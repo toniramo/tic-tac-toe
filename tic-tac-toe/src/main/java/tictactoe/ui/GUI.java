@@ -29,7 +29,7 @@ public class GUI extends Application {
     @Override
     public void init() {
         this.gameService = new GameService(new InMemoryDao());
-        this.gameService.startNewGame(20, 5);
+        this.gameService.startNewGame();
     }
 
     @Override
@@ -40,14 +40,14 @@ public class GUI extends Application {
         Button newGameButton = new Button("New game");
         Button exitButton = new Button("Exit");
 
-        Label turnLabel = new Label("Turn: X");
+        Label turnLabel = new Label("Turn: " + gameService.getCurrentPlayer().getMark());
         turnLabel.setPadding(new Insets(10, 10, 10, 10));
 
         GridPane gameBoard = new GridPane();
 
         topMenuLayout.getChildren().addAll(newGameButton, exitButton, turnLabel);
 
-        int n = gameService.getGameBoardSize();
+        int n = gameService.getRules().getBoardsize();
 
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
@@ -76,15 +76,15 @@ public class GUI extends Application {
                     }
 
                     if (gameService.gameOver()) {
-                        String winner;
-
-                        if (gameService.currentPlayerWin()) {
-                            winner = "Winner: " + gameService.getCurrentPlayer().getMark();
+                        String gameOverText;
+                        Player winner = gameService.getWinningPlayer();
+                        if (gameService.getWinningPlayer() != null) {
+                            gameOverText = " Winner: " + winner.getMark();
                         } else {
-                            winner = "Draw";
+                            gameOverText = " Draw";
                         }
 
-                        turnLabel.setText("Game over. " + winner);
+                        turnLabel.setText("Game over - " + gameOverText);
                         //Turn of actions on game board.
                         gameBoard.getChildren().forEach((node) -> {
                             node.setOnMouseClicked(null);

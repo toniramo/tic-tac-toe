@@ -33,7 +33,7 @@ public class Player {
     public Color getMarkColor() {
         return this.markColor;
     }
-    
+
     public PlayerType getPlayerType() {
         return this.type;
     }
@@ -58,5 +58,10 @@ public class Player {
         }
         final Player other = (Player) obj;
         return other.getMark().equals(this.mark);
+    }
+
+    public enum PlayerType {
+        HUMAN,
+        AI
     }
 }

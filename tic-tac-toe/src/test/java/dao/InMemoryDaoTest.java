@@ -16,6 +16,7 @@ import tictactoe.dao.Dao;
 import tictactoe.dao.InMemoryDao;
 import tictactoe.domain.Move;
 import tictactoe.domain.Player;
+import tictactoe.domain.RuleBook;
 
 /**
  *
@@ -33,6 +34,9 @@ public class InMemoryDaoTest {
 
     private Player player1 = new Player("X", Color.ALICEBLUE);
     private Player player2 = new Player("O");
+    private RuleBook rules1 = new RuleBook(n1, k, new Player[]{player1, player2});
+    private RuleBook rules2 = new RuleBook(n2, k, new Player[]{player1, player2});
+    private RuleBook rules3 = new RuleBook(n3, k, new Player[]{player1, player2});
     private Move move1 = new Move(player1, x1, y1);
 
     private Dao dao = new InMemoryDao();
@@ -50,9 +54,7 @@ public class InMemoryDaoTest {
 
     @Before
     public void setUp() {
-        dao.initializeGameBoard(n1, k);
-        dao.addPlayer(player1);
-        dao.addPlayer(player2);
+        dao.initializeGameBoard(rules1);
     }
 
     @After
@@ -60,32 +62,23 @@ public class InMemoryDaoTest {
     }
 
     @Test
-    public void getGameBoardSizeReturnsCorrectValue() {
-        assertEquals(dao.getGameBoardSize(), n1);
-        dao.initializeGameBoard(n2, k);
-        assertEquals(dao.getGameBoardSize(), n2);
-        dao.initializeGameBoard(n3, k);
-        assertEquals(dao.getGameBoardSize(), n3);
-    }
-
-    @Test
-    public void getMarksToWinReturnsCorrectValue() {
-        assertEquals(dao.getNumberOfMarksToWin(), k);
-        dao.initializeGameBoard(n2, ++k);
-        assertEquals(dao.getNumberOfMarksToWin(), k);
-        dao.initializeGameBoard(n3, 2 * k);
-        assertEquals(dao.getNumberOfMarksToWin(), 2 * k);
+    public void getRulesReturnsCorrectRuleBook() {
+        assertEquals(dao.getRules(), rules1);
+        dao.initializeGameBoard(rules2);
+        assertEquals(dao.getRules(), rules2);
+        dao.initializeGameBoard(rules3);
+        assertEquals(dao.getRules(), rules3);
     }
 
     @Test
     public void getMoveReturnsSetMove() {
         dao.setMove(move1);
-        assertEquals(dao.getMove(x1, y1), move1);
+        assertEquals(dao.getMoveAt(x1, y1), move1);
     }
 
     @Test
     public void getMoveDoesNotReturnMoveThatIsNotSet() {
-        assertEquals(dao.getMove(x1, y1), null);
+        assertEquals(dao.getMoveAt(x1, y1), null);
     }
 
     @Test
