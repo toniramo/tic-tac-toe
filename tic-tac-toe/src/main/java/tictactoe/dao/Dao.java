@@ -16,38 +16,16 @@ public interface Dao {
 
     public void initializeGameBoard(RuleBook rules);
 
-    /*
-     * Initialize game board of n*n in size and set k-in-row rule.
-     *
-     * @param n Number of tiles on edge of a square game board.
-     * @param k Number of marks in a row to win (k-in-row).
-     */
-    //public void initializeGameBoard(int n, int k);
-
     public RuleBook getRules();
 
     public void setGameBoard(GameBoard board);
 
     public GameBoard getGameBoard();
 
-    /**
-     * Get number of tiles on an edge on n*n game board.
-     *
-     * @return Returns number of tiles on an edge of game board
-     */
-    //public int getGameBoardSize();
-    
-    public int getGameBoardSize();
-    /**
-     *
-     * @return Returns number of marks in a row needed to win
-     */
-    //public int getNumberOfMarksToWin();
     /*
      * Stores Move object representing move made on board.
      * @param move 
      */
-    //public void setMove(Move move);
     public void setMove(Move move);
 
     /**
@@ -81,5 +59,7 @@ public interface Dao {
      * @return Current player in turn.
      */
     public Player getCurrentPlayer();
+
+    public Player[] getPlayers();
 
 }

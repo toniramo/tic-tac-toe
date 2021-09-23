@@ -59,7 +59,6 @@ public class GameServiceTest {
         gameService = new GameService(mockedDao);
         gameService.startNewGame(rules);
 
-        when(mockedDao.getGameBoardSize()).thenReturn(n);
         when(mockedDao.getRules()).thenReturn(rules);
 
         when(mockedDao.getGameBoard()).thenReturn(board);
