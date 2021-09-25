@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tictactoe.domain;
 
 import java.util.Arrays;
 
 /**
- *
- * @author toniramo
+ * RuleBook containing essential parameters to form rules for n,m,k-tic-tac-toe
+ * game.
  */
 public class RuleBook {
 
@@ -17,28 +12,59 @@ public class RuleBook {
     private final int boardSize;
     private final Player[] players;
 
+    /**
+     * Create new rule book.
+     *
+     * @param boardSize width of the game board, that is number of tiles in an
+     * edge
+     * @param marksToWin number of marks in a row needed for player to win the
+     * game
+     * @param players players of the game, by default two is given with first
+     * having "X"-mark and the second "O".
+     */
     public RuleBook(int boardSize, int marksToWin, Player[] players) {
         this.boardSize = boardSize;
         this.marksToWin = marksToWin;
         this.players = players;
     }
 
+    /**
+     * Gets number of marks in a row needed to win the game.
+     * @return number of needed marks in a row for win.
+     */
     public int getMarksToWin() {
         return this.marksToWin;
     }
 
+    /**
+     * Gets expected board size in terms of width of board edge
+     * @return game board edge width
+     */
     public int getBoardsize() {
         return this.boardSize;
     }
 
+    /**
+     * Gets all players of the game, by default two
+     * @return players of the game.
+     */
     public Player[] getPlayers() {
         return this.players;
     }
-    
+
+    /**
+     * Gets player based on turn, that is first player on turn 0, second on 1 by default.
+     * @param i turn, by default if first player's turn, i=0, and if second player's i=1.
+     * @return player on turn index i
+     */
     public Player getPlayerBasedOnTurn(int i) {
         return this.players[i];
     }
 
+    /**
+     * Gets hash value for this rule book.
+     * @return hash value of this rule book
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -48,6 +74,11 @@ public class RuleBook {
         return hash;
     }
 
+    /**
+     * Check if compared object is equal to this rule book.
+     * @param obj
+     * @return true if object is equal to this, false otherwise
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
