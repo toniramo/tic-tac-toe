@@ -136,6 +136,20 @@ public class GameService {
         return null;
     }
 
+   /* private static int[] analyze(GameBoard board, RuleBook rules, int turn, int x, int y, int offset, int[] counter, int c) {
+        int n = board.getSize();
+        Player[] players = rules.getPlayers();
+        Move move = board.getMove(x, y);
+        for (int p = 0; p <players.length; p++) {
+        if (move != null && move.getPlayer().equals(rules.getPlayerBasedOnTurn(turn))) {
+                return analyze(board, rules, turn, )
+            }
+        
+        //Move[] moves = new Move[]{board.getMove(i, j), board.getMove(j, i),
+            //board.getMove(i + offset, j), board.getMove(j, i - offset)};
+
+    }*/
+
     public static boolean gameOver(GameBoard board, RuleBook rules) {
         return getWinningPlayer(board, rules) != null
                 || board.getNumberOfPlayedMoves() == Math.pow(board.getSize(), 2);

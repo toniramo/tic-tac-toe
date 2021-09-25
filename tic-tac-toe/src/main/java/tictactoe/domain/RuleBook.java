@@ -34,6 +34,10 @@ public class RuleBook {
     public Player[] getPlayers() {
         return this.players;
     }
+    
+    public Player getPlayerBasedOnTurn(int i) {
+        return this.players[i];
+    }
 
     @Override
     public int hashCode() {
