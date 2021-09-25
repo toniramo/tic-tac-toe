@@ -105,19 +105,24 @@ public class GameService {
         return (x > 0 && y > 0 && x <= n && y <= n && board.getMove(x, y) == null);
     }
 
+    /*
+     * Method uses two-dimensional
+     * "counters" array: first index is for player, second for direction: 
+     * 0 vertical |, 1 horizontal -- , 
+     * 2 diagonal1 / up-right (1/2), 3 diagonal1 / upright (2/2), 
+     * 4 diagonal2 \ down-right (1/2),  5 diagonal2 / down-right (2/2).
+     * This is same as in TicTacToeNode (consider ways to eliminate duplicate code)
+     */
     public static Player getWinningPlayer(GameBoard board, RuleBook rules) {
         int n = board.getSize();
         Player[] players = rules.getPlayers();
         for (int i = 1; i <= n; i++) {
-            /*
-             * Counters: first index is for player second for direction: 
-             * 0 horizontal, 1 vertical, 2 diagonal1, 3 diagonal2
-             */
-            int[][] counters = new int[players.length][4]; //[][]
+            int[][] counters = new int[players.length][6];
             int offset = 0;
             for (int j = 1; j <= n; j++) {
-                Move[] moves = new Move[]{board.getMove(i, j), board.getMove(j, i),
-                    board.getMove(i + offset, j), board.getMove(j, i - offset)};
+                int[] x = new int[]{i, j, (i + offset), (i + offset - n), j, j};
+                int[] y = new int[]{j, i, j, j, i - offset, i - offset + n};
+                Move[] moves = board.getMoves(x, y);
                 for (int k = 0; k < counters[0].length; k++) {
                     for (int p = 0; p < players.length; p++) {
                         if (moves[k] != null && moves[k].getPlayer().equals(players[p])) {
@@ -135,20 +140,6 @@ public class GameService {
         }
         return null;
     }
-
-   /* private static int[] analyze(GameBoard board, RuleBook rules, int turn, int x, int y, int offset, int[] counter, int c) {
-        int n = board.getSize();
-        Player[] players = rules.getPlayers();
-        Move move = board.getMove(x, y);
-        for (int p = 0; p <players.length; p++) {
-        if (move != null && move.getPlayer().equals(rules.getPlayerBasedOnTurn(turn))) {
-                return analyze(board, rules, turn, )
-            }
-        
-        //Move[] moves = new Move[]{board.getMove(i, j), board.getMove(j, i),
-            //board.getMove(i + offset, j), board.getMove(j, i - offset)};
-
-    }*/
 
     public static boolean gameOver(GameBoard board, RuleBook rules) {
         return getWinningPlayer(board, rules) != null

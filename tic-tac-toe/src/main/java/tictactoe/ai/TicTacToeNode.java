@@ -83,7 +83,7 @@ public class TicTacToeNode implements GameTreeNode {
      * Calculates player specific heuristic values. Method uses two-dimensional
      * "counters" array: first index is for player, second for direction: 0
      * vertical |, 1 horizontal -- , 2 diagonal1 / up-right (1/2) , 3 diagonal1
-     * / upright (2/2) 4 diagonal2 \ down-right (1/2), 4 diagonal2 / down-right
+     * / upright (2/2) 4 diagonal2 \ down-right (1/2), 5 diagonal2 / down-right
      * (2/2).
      */
     private int[] calculatePlayerSpecificValues() {
@@ -96,7 +96,7 @@ public class TicTacToeNode implements GameTreeNode {
             for (int j = 1; j <= n; j++) {
                 int[] x = new int[]{i, j, (i + offset), (i + offset - n), j, j};
                 int[] y = new int[]{j, i, j, j, i - offset, i - offset + n};
-                Move[] moves = getMovesFromCoordinates(x, y, 6);
+                Move[] moves = board.getMoves(x, y);
                 for (int k = 0; k < counters[0].length; k++) {
                     if (x[k] < 1 || x[k] > n || y[k] < 1 || y[k] > n) {
                         continue;
@@ -113,16 +113,6 @@ public class TicTacToeNode implements GameTreeNode {
             }
         }
         return playerValues;
-    }
-
-    private Move[] getMovesFromCoordinates(int[] x, int[] y, int n) {
-        Move[] moves = new Move[n];
-        for (int i = 0; i < n; i++) {
-            if (i < x.length && i < y.length) {
-                moves[i] = board.getMove(x[i], y[i]);
-            }
-        }
-        return moves;
     }
 
     private boolean observedRangeFullyOnBoard(int[] x, int[] y, int k) {

@@ -35,6 +35,17 @@ public class GameBoard {
         return null;
     }
 
+    public Move[] getMoves(int[] x, int[] y) {
+        int n = x.length;
+        Move[] moves = new Move[n];
+        for (int i = 0; i < n; i++) {
+            if (i < n && i < y.length) {
+                moves[i] = this.getMove(x[i], y[i]);
+            }
+        }
+        return moves;
+    }
+
     public int getSize() {
         return this.boardStatus.length - 1;
     }
