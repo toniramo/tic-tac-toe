@@ -4,25 +4,27 @@ import javafx.scene.paint.Color;
 import tictactoe.dao.Dao;
 
 /**
- * Class is responsible for running the main game logic and passing information
- * between different levels of the program.
+ * Game service responsible for running the main game logic and passing
+ * information between different levels of the program.
  */
 public class GameService {
 
     private final Dao gameData;
 
     /**
-     * Generate GameService object.
+     * Starts new active game service with link to given data access object.
      *
-     * @param dao data access object responsible for maintaining the game data.
+     * @param dao data access object responsible for maintaining the game data
      */
     public GameService(Dao dao) {
         this.gameData = dao;
     }
 
     /**
-     * Start new game. Method invokes initialization of game board and adds
+     * Starts new game. Method invokes initialization of game board and adds
      * players to game data based on given rules.
+     *
+     * @param rules rules of the game
      */
     public void startNewGame(RuleBook rules) {
         this.gameData.initializeGameBoard(rules);
@@ -37,6 +39,11 @@ public class GameService {
                 new Player[]{new Player("X"), new Player("O")}));
     }
 
+    /**
+     * Gets rule book based on which the game is defined
+     *
+     * @return rules of the game in question
+     */
     public RuleBook getRules() {
         return gameData.getRules();
     }
@@ -49,16 +56,16 @@ public class GameService {
     }
 
     /**
-     * Method to get current player in turn.
+     * Gets current player in turn.
      *
-     * @return Return Player object related to current player in turn.
+     * @return player in turn
      */
     public Player getCurrentPlayer() {
         return gameData.getCurrentPlayer();
     }
 
     /**
-     * Store players move if valid and change turn if game continues.
+     * Stores players move if valid and change turn if game continues.
      *
      * @param x X-coordinate of the move on game board, first valid starting
      * from 1.
@@ -92,26 +99,47 @@ public class GameService {
         return gameData.getMoveAt(x, y) == null;
     }
 
+    /**
+     * Checks if game is over. That is, has some of the players won, or is the
+     * board full.
+     *
+     * @return true if game is over, otherwise false
+     */
     public boolean gameOver() {
         return gameOver(this.gameData.getGameBoard(), this.getRules());
     }
 
+    /**
+     * Gets winning player with this game setup.
+     *
+     * @return winner if found, otherwise null
+     */
     public Player getWinningPlayer() {
         return getWinningPlayer(this.gameData.getGameBoard(), this.getRules());
     }
 
+    /**
+     * Checks if proposed move is valid on given game board.
+     *
+     * @param board game board from which to check the move
+     * @param x x-coordinate of the move
+     * @param y y-coordinate of the move
+     * @return true if proposed move is valid, otherwise false
+     */
     public static boolean validMove(GameBoard board, int x, int y) {
         int n = board.getSize();
         return (x > 0 && y > 0 && x <= n && y <= n && board.getMove(x, y) == null);
     }
 
-    /*
-     * Method uses two-dimensional
-     * "counters" array: first index is for player, second for direction: 
-     * 0 vertical |, 1 horizontal -- , 
-     * 2 diagonal1 / up-right (1/2), 3 diagonal1 / upright (2/2), 
-     * 4 diagonal2 \ down-right (1/2),  5 diagonal2 / down-right (2/2).
-     * This is same as in TicTacToeNode (consider ways to eliminate duplicate code)
+    /**
+     * Gets winning player (if any yet) with given game board and rule book.
+     * Method goes simulatenously through the game board in all possible
+     * directions (vertical, horizontal, diagonal) and terminates if player with
+     * needed marks in row to win is found.
+     *
+     * @param board game board to analyze
+     * @param rules rules used in determining the winner
+     * @return winner if found, otherwise null
      */
     public static Player getWinningPlayer(GameBoard board, RuleBook rules) {
         int n = board.getSize();
@@ -141,6 +169,15 @@ public class GameService {
         return null;
     }
 
+    /**
+     * Checks wheter game is over in given game board based on given rules. Game
+     * is over if one of the players have got enough marks in a row (determined
+     * by rules) or if game board is full.
+     *
+     * @param board game board to analyze
+     * @param rules rules used in determining the winner
+     * @return true if game is over, otherwise false
+     */
     public static boolean gameOver(GameBoard board, RuleBook rules) {
         return getWinningPlayer(board, rules) != null
                 || board.getNumberOfPlayedMoves() == Math.pow(board.getSize(), 2);
