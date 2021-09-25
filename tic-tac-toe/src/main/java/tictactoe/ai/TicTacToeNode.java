@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tictactoe.ai;
 
 import java.util.ArrayList;
@@ -10,8 +5,8 @@ import java.util.List;
 import tictactoe.domain.*;
 
 /**
- *
- * @author toniramo
+ * Represents tic-tac-toe specific node of game tree that is used to find most
+ * optimal move by AI.
  */
 public class TicTacToeNode implements GameTreeNode {
 
@@ -22,6 +17,18 @@ public class TicTacToeNode implements GameTreeNode {
     private int nodeDepth;
     private int turn;
 
+    /**
+     * Creates single tic-tac-toe node of game tree.
+     *
+     * @param board game board in its current, node spefic state
+     * @param rules game rules that determine for instance board size and
+     * required row length to win
+     * @param turn ordinal of player in turn, by default between 0 and 1
+     * @param minimizingNode indicates wheter player in turn is minimizing the
+     * value of the outcome, otherwise player is mazimizing the value
+     * @param maxSearchDepth limits the search depth of the game tree
+     * @param nodeDepth current depth in the game tree
+     */
     public TicTacToeNode(GameBoard board, RuleBook rules, int turn, boolean minimizingNode,
             int maxSearchDepth, int nodeDepth) {
         this.board = board;
@@ -32,6 +39,9 @@ public class TicTacToeNode implements GameTreeNode {
         this.turn = turn;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<GameTreeNode> getChildNodes() {
         List<GameTreeNode> childNodes = new ArrayList<>();
@@ -48,11 +58,17 @@ public class TicTacToeNode implements GameTreeNode {
         return childNodes;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isMinimizingNode() {
         return minimizingNode;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int value() {
         if (GameService.gameOver(board, rules)) {
@@ -65,11 +81,17 @@ public class TicTacToeNode implements GameTreeNode {
         return heuristicValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isEndState() {
         return GameService.gameOver(board, rules) || nodeDepth >= maxSearchDepth;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int heuristicValue() {
         int value = 0;
         int[] playerValues = calculatePlayerSpecificValues();
@@ -80,11 +102,10 @@ public class TicTacToeNode implements GameTreeNode {
     }
 
     /**
-     * Calculates player specific heuristic values. Method uses two-dimensional
-     * "counters" array: first index is for player, second for direction: 0
-     * vertical |, 1 horizontal -- , 2 diagonal1 / up-right (1/2) , 3 diagonal1
-     * / upright (2/2) 4 diagonal2 \ down-right (1/2), 5 diagonal2 / down-right
-     * (2/2).
+     * Calculates player specific heuristic values. Idea is to go through the
+     * game board simultaneously in all directions -horizontal, vertical,
+     * diagonal (up-right, down-right)) - and evaluate the value of moves in
+     * subsections with length equal to number of marks in a row needed to win.
      */
     private int[] calculatePlayerSpecificValues() {
         int n = rules.getBoardsize();
@@ -115,6 +136,16 @@ public class TicTacToeNode implements GameTreeNode {
         return playerValues;
     }
 
+    /**
+     * Checks if observed subsection of the board is fully on the game board. In
+     * other words, all coordinates should refer to location on board.
+     *
+     * @param x x-coordinates in terms of tiles on game board (left to right)
+     * @param y y-coordinates in terms of tiles on game board (bottom to up)
+     * @param k index of coordinate in array
+     * @return true if subsection is fully on board, otherwise, if it contains
+     * illegal moves, false.
+     */
     private boolean observedRangeFullyOnBoard(int[] x, int[] y, int k) {
         int n = rules.getBoardsize();
         int m = rules.getMarksToWin();
@@ -124,6 +155,17 @@ public class TicTacToeNode implements GameTreeNode {
                 || ((k == 4 || k == 5) && x[k] >= m && y[k] <= n - m + 1);
     }
 
+    /**
+     * Updates counter value with observed move. Counter is used to determine
+     * heuristic value of the node. Counter value indicates, based on number of
+     * digits, the number of marks there are within the range of observed
+     * subsection hinting the likelyhood of getting full winning row.
+     *
+     * @param value Counters current state
+     * @param move move on board to be analyzed
+     * @param p player for whom value will be evaluated
+     * @return updated counter value (reverts counter to 0 if opponents mark).
+     */
     private int updateCounterValue(int value, Move move, Player p) {
         if (move != null) {
             if (move.getPlayer().equals(p)) {
@@ -134,6 +176,13 @@ public class TicTacToeNode implements GameTreeNode {
         return value;
     }
 
+    /**
+     * Adds digit in front of given number. Used to update counter value.
+     *
+     * @param number
+     * @param toFront
+     * @return
+     */
     private static int addDigitInFront(int number, int toFront) {
         if (number == 0) {
             return toFront;
@@ -141,6 +190,12 @@ public class TicTacToeNode implements GameTreeNode {
         return number + (toFront * (int) Math.pow(10, digitCounter(number)));
     }
 
+    /**
+     * Reduces all digits of given number by one, unless number is 0.
+     *
+     * @param number number, or counter value, to be reduced.
+     * @return reduced number, 0 if number is 0.
+     */
     private static int reduceAllDigitsByOne(int number) {
         if (number == 0) {
             return 0;
@@ -152,14 +207,35 @@ public class TicTacToeNode implements GameTreeNode {
         return removeTrailingZeros(number);
     }
 
+    /**
+     * Calculates length of given numbers.
+     *
+     * @param number to be measured
+     * @return result of measurement
+     */
     private static int digitCounter(int number) {
         return number > 10 ? ((int) (Math.log10(number) + 1)) : 1;
     }
 
+    /**
+     * Removes any trailing zeros of given number, that is zeros from left to
+     * right until other number is encounter. Uses {@link #removeTrainingZeros(int, int)
+     * method to perform actual operation.
+     *
+     * @param number to be reduced
+     * @return reduced number without trailing zeros
+     */
     private static int removeTrailingZeros(int number) {
         return removeTrainingZeros(number, 10);
     }
 
+    /**
+     * Removes any trailing zeros of given number, that is zeros from left to
+     * right until other number is encounter.
+     *
+     * @param number to be reduced
+     * @return reduced number without trailing zeros
+     */
     private static int removeTrainingZeros(int number, int divider) {
         if (number % divider == 0 && number > 0) {
             return removeTrainingZeros((number / divider), divider * 10);
