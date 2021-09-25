@@ -8,7 +8,8 @@ Purpose of this project is to create variant of tic-tac-toe game with an AI to p
 
 ## Project documents
 
-[Project specification](./documentation/project_specification.md)
+- [Project specification](./documentation/project_specification.md)
+- [Testing document](./documentation/testing_document.md)
 
 ### Weekly reports
 - [Week 1](./documentation/weekly_reports/week1.md)
