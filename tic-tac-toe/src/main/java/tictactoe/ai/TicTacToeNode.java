@@ -20,22 +20,17 @@ public class TicTacToeNode implements GameTreeNode {
     /**
      * Creates single tic-tac-toe node of game tree.
      *
-     * @param board game board in its current, node spefic state
+     * @param board game board in its current, node specific state
      * @param rules game rules that determine for instance board size and
      * required row length to win
      * @param turn ordinal of player in turn, by default between 0 and 1
-     * @param minimizingNode indicates wheter player in turn is minimizing the
-     * value of the outcome, otherwise player is mazimizing the value
-     * @param maxSearchDepth limits the search depth of the game tree
-     * @param nodeDepth current depth in the game tree
+     * @param minimizingNode indicates whether player in turn is minimizing the
+     * value of the outcome, otherwise player is maximizing the value
      */
-    public TicTacToeNode(GameBoard board, RuleBook rules, int turn, boolean minimizingNode,
-            int maxSearchDepth, int nodeDepth) {
+    public TicTacToeNode(GameBoard board, RuleBook rules, int turn, boolean minimizingNode) {
         this.board = board;
         this.rules = rules;
         this.minimizingNode = minimizingNode;
-        this.maxSearchDepth = maxSearchDepth;
-        this.nodeDepth = nodeDepth;
         this.turn = turn;
     }
 
@@ -51,7 +46,7 @@ public class TicTacToeNode implements GameTreeNode {
                 if (GameService.validMove(this.board, x, y)) {
                     GameBoard child = board.getCopy();
                     child.setMove(new Move(this.rules.getPlayerBasedOnTurn(turn), x, y));
-                    childNodes.add(new TicTacToeNode(child, rules, (turn + 1) % 2, !minimizingNode, maxSearchDepth, nodeDepth + 1));
+                    childNodes.add(new TicTacToeNode(child, rules, (turn + 1) % 2, !minimizingNode));
                 }
             }
         }

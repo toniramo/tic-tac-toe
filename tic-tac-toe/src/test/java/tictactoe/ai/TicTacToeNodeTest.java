@@ -49,15 +49,10 @@ public class TicTacToeNodeTest {
     public void tearDown() {
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
     @Test
     public void moveInMiddleReturnValueOf20() {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 10, 10));
-        node = new TicTacToeNode(board, rules, 0, false, 1, 1);
+        node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(node.value(), 20);
     }
 
@@ -65,7 +60,7 @@ public class TicTacToeNodeTest {
     public void twoMovesFromSamePlayerInTheMiddleReturnValueOf72v1() {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 10, 10));
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 10, 11));
-        node = new TicTacToeNode(board, rules, 0, false, 1, 1);
+        node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(node.value(), 72);
     }
 
@@ -73,63 +68,63 @@ public class TicTacToeNodeTest {
     public void twoMovesFromSamePlayerInTheMiddleReturnValueOf72v2() {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 10, 10));
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 11, 10));
-        node = new TicTacToeNode(board, rules, 0, false, 1, 1);
+        node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(node.value(), 72);
     }
 
     @Test
     public void moveInCornerReturnsValueOf3v1() {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 1, 1));
-        node = new TicTacToeNode(board, rules, 0, false, 1, 1);
+        node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(node.value(), 3);
     }
 
     @Test
     public void moveInCornerReturnsValueOf3v2() {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 20, 1));
-        node = new TicTacToeNode(board, rules, 0, false, 1, 1);
+        node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(node.value(), 3);
     }
 
     @Test
     public void moveInCornerReturnsValueOf3v3() {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 1, 20));
-        node = new TicTacToeNode(board, rules, 0, false, 1, 1);
+        node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(node.value(), 3);
     }
 
     @Test
     public void moveInCornerReturnsValueOf3v4() {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 20, 20));
-        node = new TicTacToeNode(board, rules, 0, false, 1, 1);
+        node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(node.value(), 3);
     }
 
     @Test
     public void moveInCenterNextToEdgeReturnsValueOf8v1() {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 1, 10));
-        node = new TicTacToeNode(board, rules, 0, false, 1, 1);
+        node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(node.value(), 8);
     }
 
     @Test
     public void moveInCenterNextToEdgeReturnsValueOf8v2() {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 10, 1));
-        node = new TicTacToeNode(board, rules, 0, false, 1, 1);
+        node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(node.value(), 8);
     }
 
     @Test
     public void moveInCenterNextToEdgeReturnsValueOf8v3() {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 20, 10));
-        node = new TicTacToeNode(board, rules, 0, false, 1, 1);
+        node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(node.value(), 8);
     }
 
     @Test
     public void moveInCenterNextToEdgeReturnsValueOf8v4() {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 10, 20));
-        node = new TicTacToeNode(board, rules, 0, false, 1, 1);
+        node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(node.value(), 8);
     }
 
@@ -141,7 +136,7 @@ public class TicTacToeNodeTest {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 12, 10));
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 13, 10));
 
-        node = new TicTacToeNode(board, rules, 0, false, 1, 1);
+        node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(node.value(), Integer.MAX_VALUE);
     }
 
@@ -153,7 +148,7 @@ public class TicTacToeNodeTest {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(1), 12, 10));
         board.setMove(new Move(rules.getPlayerBasedOnTurn(1), 13, 10));
 
-        node = new TicTacToeNode(board, rules, 1, true, 1, 1);
+        node = new TicTacToeNode(board, rules, 1, true);
         assertEquals(node.value(), Integer.MIN_VALUE);
     }
 
@@ -165,7 +160,7 @@ public class TicTacToeNodeTest {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 9, 13));
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 9, 14));
 
-        node = new TicTacToeNode(board, rules, 0, false, 1, 1);
+        node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(node.value(), Integer.MAX_VALUE);
     }
 
@@ -177,7 +172,7 @@ public class TicTacToeNodeTest {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 12, 13));
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 13, 14));
 
-        node = new TicTacToeNode(board, rules, 0, false, 1, 1);
+        node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(node.value(), Integer.MAX_VALUE);
     }
 
@@ -189,7 +184,7 @@ public class TicTacToeNodeTest {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 12, 11));
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 13, 10));
 
-        node = new TicTacToeNode(board, rules, 0, false, 1, 1);
+        node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(Integer.MAX_VALUE, node.value());
     }
 }

@@ -16,8 +16,7 @@ public interface GameTreeNode {
     public int value();
 
     /**
-     * Tells whether this node is end state. In this case it means, if either
-     * game is over or maximum search depth is reached.
+     * Tells whether this node is end state. That is, is the game over.
      *
      * @return
      */
