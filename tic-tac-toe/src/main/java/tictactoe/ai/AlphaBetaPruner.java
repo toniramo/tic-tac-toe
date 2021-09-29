@@ -6,9 +6,9 @@
 package tictactoe.ai;
 
 /**
- * Implements minimax algorithm with alpha beta pruning and gets value for child node in game tree.
+ * Implements minimax algorithm with alpha beta pruning and gets value for child node in 
  */
-public class AlphaBetaPruner implements Solver {
+public class AlphaBetaPruner  {
 
     public static int getNodeValue(GameTreeNode node, int alpha, int beta, int maxSearchDepth, boolean isMinimizingNode) {
         if (isMinimizingNode) {
