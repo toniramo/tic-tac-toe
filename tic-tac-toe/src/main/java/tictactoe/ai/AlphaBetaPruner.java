@@ -6,9 +6,10 @@
 package tictactoe.ai;
 
 /**
- * Implements minimax algorithm with alpha beta pruning and gets value for child node in 
+ * Implements minimax algorithm with alpha beta pruning and gets value for child
+ * node in
  */
-public class AlphaBetaPruner  {
+public class AlphaBetaPruner {
 
     public static int getNodeValue(GameTreeNode node, int alpha, int beta, int maxSearchDepth, boolean isMinimizingNode) {
         if (isMinimizingNode) {
@@ -23,7 +24,7 @@ public class AlphaBetaPruner  {
         }
         int value = Integer.MIN_VALUE;
         for (GameTreeNode child : node.getChildNodes()) {
-            value = Math.max(value, minValue(child, alpha, beta, nodeDepth+1, maxSearchDepth));
+            value = Math.max(value, minValue(child, alpha, beta, nodeDepth + 1, maxSearchDepth));
             alpha = Math.max(alpha, value);
             if (alpha >= beta) {
                 return value;
@@ -38,7 +39,7 @@ public class AlphaBetaPruner  {
         }
         int value = Integer.MAX_VALUE;
         for (GameTreeNode child : node.getChildNodes()) {
-            value = Math.min(value, maxValue(child, alpha, beta, nodeDepth+1, maxSearchDepth));
+            value = Math.min(value, maxValue(child, alpha, beta, nodeDepth + 1, maxSearchDepth));
             beta = Math.min(beta, value);
             if (beta <= alpha) {
                 return value;
