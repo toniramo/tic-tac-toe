@@ -1,6 +1,5 @@
 package tictactoe.domain;
 
-import javafx.scene.paint.Color;
 import tictactoe.dao.Dao;
 
 /**
@@ -46,6 +45,14 @@ public class GameService {
      */
     public RuleBook getRules() {
         return gameData.getRules();
+    }
+    
+    public GameBoard getGameBoard() {
+        return gameData.getGameBoard();
+    }
+    
+    public int getTurn() {
+        return gameData.getNumberOfPlayedMoves() % gameData.getPlayers().length;
     }
 
     /**
