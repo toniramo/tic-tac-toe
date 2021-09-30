@@ -93,15 +93,6 @@ public class GUI extends Application {
         turn.addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue ov, Object oldValue, Object newValue) {
-                if (gameService.getCurrentPlayer().equals(ai.getPlayer())) {
-                    Move move = ai.chooseMove(); // TODO implement waiting for AI to complete analysis
-                    for (Node node : gameBoard.getChildren()) {
-                        if (GridPane.getColumnIndex(node) == move.getX()
-                                && GridPane.getRowIndex(node) == move.getY()) {
-                            makeMove(move.getX(), move.getY(), (StackPane) node, turnLabel);
-                        }
-                    }
-                }
                 if (gameService.gameOver()) {
                     String gameOverText;
                     Player winner = gameService.getWinningPlayer();
@@ -116,7 +107,16 @@ public class GUI extends Application {
                     gameBoard.getChildren().forEach((node) -> {
                         node.setOnMouseClicked(null);
                     });
+                } else if (gameService.getCurrentPlayer().equals(ai.getPlayer())) {
+                    Move move = ai.chooseMove(); // TODO implement waiting for AI to complete analysis
+                    for (Node node : gameBoard.getChildren()) {
+                        if (GridPane.getColumnIndex(node) == move.getX()
+                                && GridPane.getRowIndex(node) == move.getY()) {
+                            makeMove(move.getX(), move.getY(), (StackPane) node, turnLabel);
+                        }
+                    }
                 }
+
             }
         }
         );
