@@ -38,6 +38,7 @@ public class TicTacToeNode implements GameTreeNode {
      */
     @Override
     public List<GameTreeNode> getChildNodes() {
+        double start = System.currentTimeMillis();
         List<GameTreeNode> childNodes = new ArrayList<>();
         int n = this.rules.getBoardsize();
         for (int x = 1; x <= n; x++) {
@@ -49,6 +50,7 @@ public class TicTacToeNode implements GameTreeNode {
                 }
             }
         }
+        System.out.println("get childs took : " + (System.currentTimeMillis()-start));
         return childNodes;
     }
 
@@ -68,10 +70,10 @@ public class TicTacToeNode implements GameTreeNode {
         if (GameService.gameOver(board, rules)) {
             Player winner = GameService.getWinningPlayer(board, rules);
             if (winner != null) {
-                if (winner.equals(rules.getPlayerBasedOnTurn(turn))) {
+                //if (winner.equals(rules.getPlayerBasedOnTurn(turn))) {
                     return this.isMinimizingNode() ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-                }
-                return this.isMinimizingNode() ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+               // }
+                //return this.isMinimizingNode() ? Integer.MAX_VALUE : Integer.MIN_VALUE;
             }
             return 0;
         }
@@ -105,6 +107,7 @@ public class TicTacToeNode implements GameTreeNode {
      * subsections with length equal to number of marks in a row needed to win.
      */
     private int[] calculatePlayerSpecificValues() {
+        double start = System.currentTimeMillis();
         int n = rules.getBoardsize();
         Player[] players = rules.getPlayers();
         int[] playerValues = new int[players.length];
@@ -135,9 +138,9 @@ public class TicTacToeNode implements GameTreeNode {
                         if (marksOnRange[p][k] > 0 && observedRangeFullyOnBoard(x, y, k) && marksOnRange[((p+1)%2)][k] == 0) {
                             playerValues[p] += Math.pow(10, marksOnRange[p][k] - 1);
                         }
-                        if (k==2 && p==0) System.out.print(Arrays.toString(counters[0][2] ) + " ");
+                      //  if (k==2 && p==0) System.out.print(Arrays.toString(counters[0][2] ) + " ");
                         counters[p][k] = reduceMarkCountersByOne(counters[p][k]);
-                        if (k==2 && p==0) System.out.println(Arrays.toString(counters[0][2] ) + " ");
+                      //  if (k==2 && p==0) System.out.println(Arrays.toString(counters[0][2] ) + " ");
                         if (marksOnRange[p][k] > 0 && counters[p][k][marksOnRange[p][k]] == 0) {  
                             marksOnRange[p][k]--;
                         }
@@ -147,6 +150,7 @@ public class TicTacToeNode implements GameTreeNode {
                 offset++;
             }
         }
+        System.out.println("heuristic time: " + (System.currentTimeMillis()-start));
         return playerValues;
     }
 
