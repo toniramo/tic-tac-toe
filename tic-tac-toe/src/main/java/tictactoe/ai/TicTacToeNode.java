@@ -1,7 +1,6 @@
 package tictactoe.ai;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import tictactoe.domain.*;
 
@@ -93,47 +92,11 @@ public class TicTacToeNode implements GameTreeNode {
      */
     public int heuristicValue() {
         int value = 0;
-        int[] playerValues = calculatePlayerSpecificValues2();
+        int[] playerValues = calculatePlayerSpecificValues();
         for (int i = 0; i < playerValues.length; i++) {
             value = (i == turn) ? (value + playerValues[i]) : (value - playerValues[i]);
         }
-        //System.out.println("heuristic value: " + value);
         return this.isMinimizingNode() ? -value : value;
-    }
-
-    /**
-     * Calculates player specific heuristic values. Idea is to go through the
-     * game board simultaneously in all directions -horizontal, vertical,
-     * diagonal (up-right, down-right)) - and evaluate the value of moves in
-     * subsections with length equal to number of marks in a row needed to win.
-     */
-    private int[] calculatePlayerSpecificValues() {
-        int n = rules.getBoardsize();
-        Player[] players = rules.getPlayers();
-        int[] playerValues = new int[players.length];
-        for (int i = 1; i <= n; i++) {
-            int[][] counters = new int[players.length][6];
-            int offset = 0;
-            for (int j = 1; j <= n; j++) {
-                int[] x = new int[]{i, j, (i + offset), (i + offset - n), j, j};
-                int[] y = new int[]{j, i, j, j, i - offset, i - offset + n};
-                Move[] moves = board.getMoves(x, y);
-                for (int k = 0; k < counters[0].length; k++) {
-                    if (x[k] < 1 || x[k] > n || y[k] < 1 || y[k] > n) {
-                        continue;
-                    }
-                    for (int p = 0; p < players.length; p++) {
-                        counters[p][k] = updateCounterValue(counters[p][k], moves[k], players[p]);
-                        if (counters[p][k] > 0 && observedRangeFullyOnBoard(x, y, k)) {
-                            playerValues[p] += Math.pow(10, digitCounter(counters[p][k]) - 1);
-                        }
-                        counters[p][k] = reduceAllDigitsByOne(counters[p][k]);
-                    }
-                }
-                offset++;
-            }
-        }
-        return playerValues;
     }
     
     /**
@@ -142,7 +105,7 @@ public class TicTacToeNode implements GameTreeNode {
      * diagonal (up-right, down-right)) - and evaluate the value of moves in
      * subsections with length equal to number of marks in a row needed to win.
      */
-    private int[] calculatePlayerSpecificValues2() {
+    private int[] calculatePlayerSpecificValues() {
         int n = rules.getBoardsize();
         Player[] players = rules.getPlayers();
         int[] playerValues = new int[players.length];
@@ -164,34 +127,20 @@ public class TicTacToeNode implements GameTreeNode {
                                 if (marksOnRange[p][k] < rules.getMarksToWin()) {
                                        counters[p][k][++marksOnRange[p][k]] = rules.getMarksToWin();                             
                                 }
-
-                               // System.out.println(marksOnRange[p][k]);
-                            //} else {
-                                //counters[p][k] = new int[rules.getMarksToWin() + 1];
-                                //marksOnRange[p][k] = 0;
                             }
                         }
                         if (marksOnRange[p][k] == rules.getMarksToWin()) {
                             playerValues[p] = Integer.MAX_VALUE;
                             break;
                         }
-                       //if (k==0 && p==1 && j== 10) System.out.println("marks on range " + marksOnRange[p][k]);
                         if (marksOnRange[p][k] > 0 && observedRangeFullyOnBoard(x, y, k) && marksOnRange[((p+1)%2)][k] == 0) {
-                            //System.out.println("Adding value: " + (Math.pow(10, marksOnRange[k] - 1)));
                             playerValues[p] += Math.pow(10, marksOnRange[p][k] - 1);
-                             //System.out.println("p0:" + playerValues[0] + " p1 " + playerValues[1] + " i "  + i + " j " + j + " k " +k);
                         }
-                       // if (k==0 && p==1 && j== 10) System.out.println(Arrays.toString(counters[p][k]));
                         counters[p][k] = reduceMarkCountersByOne(counters[p][k]);
-                      //  if (k==0 && p==1 && j== 10) System.out.println(Arrays.toString(counters[p][k]));
-                        if (marksOnRange[p][k] > 0 && counters[p][k][marksOnRange[p][k]] == 0) {
-                            
-                          //  if (k==0 && p==1 && j== 10) System.out.println(counters[p][k][marksOnRange[p][k]]);
+                        if (marksOnRange[p][k] > 0 && counters[p][k][marksOnRange[p][k]] == 0) {  
                             marksOnRange[p][k]--;
                         }
-                       // if (k==0 && p==0) System.out.println(" after: " + marksOnRange[p][k]);i
                     }
-                    
                 }
                 offset++;
             }
@@ -236,94 +185,6 @@ public class TicTacToeNode implements GameTreeNode {
                 || (k == 1 && x[k] >= m)
                 || ((k == 2 || k == 3) && x[k] >= m && y[k] >= m)
                 || ((k == 4 || k == 5) && x[k] >= m && y[k] <= n - m + 1);
-    }
-
-    /**
-     * Updates counter value with observed move. Counter is used to determine
-     * heuristic value of the node. Counter value indicates, based on number of
-     * digits, the number of marks there are within the range of observed
-     * subsection hinting the likelyhood of getting full winning row.
-     *
-     * @param value Counters current state
-     * @param move move on board to be analyzed
-     * @param p player for whom value will be evaluated
-     * @return updated counter value (reverts counter to 0 if opponents mark).
-     */
-    private int updateCounterValue(int value, Move move, Player p) {
-        if (move != null) {
-            if (move.getPlayer().equals(p)) {
-                return addDigitInFront(value, rules.getMarksToWin());
-            }
-            return 0;
-        }
-        return value;
-    }
-
-    /**
-     * Adds digit in front of given number. Used to update counter value.
-     *
-     * @param number
-     * @param toFront
-     * @return
-     */
-    private static int addDigitInFront(int number, int toFront) {
-        if (number == 0) {
-            return toFront;
-        }
-        return number + (toFront * (int) Math.pow(10, digitCounter(number)));
-    }
-
-    /**
-     * Reduces all digits of given number by one, unless number is 0.
-     *
-     * @param number number, or counter value, to be reduced.
-     * @return reduced number, 0 if number is 0.
-     */
-    private static int reduceAllDigitsByOne(int number) {
-        if (number == 0) {
-            return 0;
-        }
-        int digits = digitCounter(number);
-        for (int i = 0; i < digits; i++) {
-            number -= (int) Math.pow(10, i);
-        }
-        return removeTrailingZeros(number);
-    }
-
-    /**
-     * Calculates length of given numbers.
-     *
-     * @param number to be measured
-     * @return result of measurement
-     */
-    private static int digitCounter(int number) {
-        return number > 10 ? ((int) (Math.log10(number) + 1)) : 1;
-    }
-
-    /**
-     * Removes any trailing zeros of given number, that is zeros from left to
-     * right until other number is encounter. Uses {@link #removeTrainingZeros(int, int)
-     * method to perform actual operation.
-     *
-     * @param number to be reduced
-     * @return reduced number without trailing zeros
-     */
-    private static int removeTrailingZeros(int number) {
-        return removeTrainingZeros(number, 10);
-    }
-
-    /**
-     * Removes any trailing zeros of given number, that is zeros from left to
-     * right until other number is encounter.
-     *
-     * @param number to be reduced
-     * @return reduced number without trailing zeros
-     */
-    private static int removeTrainingZeros(int number, int divider) {
-        if (number % divider == 0 && number > 0) {
-            return removeTrainingZeros((number / divider), divider * 10);
-        }
-        return number;
     }
 
 }
