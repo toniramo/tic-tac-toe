@@ -1,6 +1,7 @@
 package tictactoe.ai;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import tictactoe.domain.*;
 
@@ -58,7 +59,7 @@ public class TicTacToeNode implements GameTreeNode {
      */
     @Override
     public boolean isMinimizingNode() {
-        return minimizingNode;
+        return this.minimizingNode;
     }
 
     /**
@@ -69,7 +70,10 @@ public class TicTacToeNode implements GameTreeNode {
         if (GameService.gameOver(board, rules)) {
             Player winner = GameService.getWinningPlayer(board, rules);
             if (winner != null) {
-                return minimizingNode ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+                if (winner.equals(rules.getPlayerBasedOnTurn(turn))) {
+                    return this.isMinimizingNode() ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+                }
+                return this.isMinimizingNode() ? Integer.MAX_VALUE : Integer.MIN_VALUE;
             }
             return 0;
         }
@@ -81,7 +85,7 @@ public class TicTacToeNode implements GameTreeNode {
      */
     @Override
     public boolean isEndState() {
-        return GameService.gameOver(board, rules) || nodeDepth >= maxSearchDepth;
+        return GameService.gameOver(board, rules);
     }
 
     /**
@@ -89,11 +93,12 @@ public class TicTacToeNode implements GameTreeNode {
      */
     public int heuristicValue() {
         int value = 0;
-        int[] playerValues = calculatePlayerSpecificValues();
+        int[] playerValues = calculatePlayerSpecificValues2();
         for (int i = 0; i < playerValues.length; i++) {
             value = (i == turn) ? (value + playerValues[i]) : (value - playerValues[i]);
         }
-        return minimizingNode ? -value : value;
+        //System.out.println("heuristic value: " + value);
+        return this.isMinimizingNode() ? -value : value;
     }
 
     /**
@@ -129,6 +134,89 @@ public class TicTacToeNode implements GameTreeNode {
             }
         }
         return playerValues;
+    }
+    
+    /**
+     * Calculates player specific heuristic values. Idea is to go through the
+     * game board simultaneously in all directions -horizontal, vertical,
+     * diagonal (up-right, down-right)) - and evaluate the value of moves in
+     * subsections with length equal to number of marks in a row needed to win.
+     */
+    private int[] calculatePlayerSpecificValues2() {
+        int n = rules.getBoardsize();
+        Player[] players = rules.getPlayers();
+        int[] playerValues = new int[players.length];
+        for (int i = 1; i <= n; i++) {
+            int[][][] counters = new int[players.length][6][rules.getMarksToWin()+1];
+            int offset = 0;
+            int[][] marksOnRange = new int[players.length][counters[0].length + 1];
+            for (int j = 1; j <= n; j++) {
+                int[] x = new int[]{i, j, (i + offset), (i + offset - n), j, j};
+                int[] y = new int[]{j, i, j, j, i - offset, i - offset + n};
+                Move[] moves = board.getMoves(x, y);
+                for (int k = 0; k < counters[0].length; k++) {
+                    if (x[k] < 1 || x[k] > n || y[k] < 1 || y[k] > n) {
+                        continue;
+                    }
+                    for (int p = 0; p < players.length; p++) {
+                        if (moves[k] != null) {
+                            if (moves[k].getPlayer().equals(players[p])) {
+                                if (marksOnRange[p][k] < rules.getMarksToWin()) {
+                                       counters[p][k][++marksOnRange[p][k]] = rules.getMarksToWin();                             
+                                }
+
+                               // System.out.println(marksOnRange[p][k]);
+                            //} else {
+                                //counters[p][k] = new int[rules.getMarksToWin() + 1];
+                                //marksOnRange[p][k] = 0;
+                            }
+                        }
+                        if (marksOnRange[p][k] == rules.getMarksToWin()) {
+                            playerValues[p] = Integer.MAX_VALUE;
+                            break;
+                        }
+                       //if (k==0 && p==1 && j== 10) System.out.println("marks on range " + marksOnRange[p][k]);
+                        if (marksOnRange[p][k] > 0 && observedRangeFullyOnBoard(x, y, k) && marksOnRange[((p+1)%2)][k] == 0) {
+                            //System.out.println("Adding value: " + (Math.pow(10, marksOnRange[k] - 1)));
+                            playerValues[p] += Math.pow(10, marksOnRange[p][k] - 1);
+                             //System.out.println("p0:" + playerValues[0] + " p1 " + playerValues[1] + " i "  + i + " j " + j + " k " +k);
+                        }
+                       // if (k==0 && p==1 && j== 10) System.out.println(Arrays.toString(counters[p][k]));
+                        counters[p][k] = reduceMarkCountersByOne(counters[p][k]);
+                      //  if (k==0 && p==1 && j== 10) System.out.println(Arrays.toString(counters[p][k]));
+                        if (marksOnRange[p][k] > 0 && counters[p][k][marksOnRange[p][k]] == 0) {
+                            
+                          //  if (k==0 && p==1 && j== 10) System.out.println(counters[p][k][marksOnRange[p][k]]);
+                            marksOnRange[p][k]--;
+                        }
+                       // if (k==0 && p==0) System.out.println(" after: " + marksOnRange[p][k]);i
+                    }
+                    
+                }
+                offset++;
+            }
+        }
+        return playerValues;
+    }
+
+    /**
+     * Reduces counter value in all indexes of an array unless value is already 0.
+     * @param marks counter array
+     * @return updated counter array
+     */
+    public int[] reduceMarkCountersByOne(int[] marks) {
+        int[] result = new int[marks.length];
+        int j = 0;
+        for (int i = 1; i < marks.length; i++) {
+            if (marks[i]-1 == 0) {
+                i++;
+                continue;
+            }
+            if (marks[i] > 0) {
+                result[i - j] = marks[i] - 1;
+            }
+        }
+        return result;
     }
 
     /**

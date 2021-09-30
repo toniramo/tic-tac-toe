@@ -73,6 +73,22 @@ public class TicTacToeNodeTest {
     }
 
     @Test
+    public void twoMovesFromTwoDifferentPlayersInTheMiddleReturnValueOf0() {
+        board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 10, 10));
+        board.setMove(new Move(rules.getPlayerBasedOnTurn(1), 11, 10));
+        node = new TicTacToeNode(board, rules, 0, false);
+        assertEquals(node.value(), 0);
+    }
+
+    @Test
+    public void twoMovesFromTwoDifferentPlayersInDifferentCornersReturnValueOf0() {
+        board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 1, 1));
+        board.setMove(new Move(rules.getPlayerBasedOnTurn(1), 20, 20));
+        node = new TicTacToeNode(board, rules, 0, false);
+        assertEquals(node.value(), 0);
+    }
+
+    @Test
     public void moveInCornerReturnsValueOf3v1() {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 1, 1));
         node = new TicTacToeNode(board, rules, 0, false);
