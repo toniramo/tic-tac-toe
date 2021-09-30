@@ -117,6 +117,14 @@ public class TicTacToeNodeTest {
     }
 
     @Test
+    public void oneMoveInCornerAndAnotherFromTheSamePlayerCloseToItReturn31() {
+        board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 1, 1));
+        board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 5, 5));
+        node = new TicTacToeNode(board, rules, 0, false);
+        assertEquals(node.value(), 3);
+    }
+
+    @Test
     public void moveInCenterNextToEdgeReturnsValueOf8v1() {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 1, 10));
         node = new TicTacToeNode(board, rules, 0, false);

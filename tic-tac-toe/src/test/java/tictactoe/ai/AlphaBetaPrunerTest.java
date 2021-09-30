@@ -80,7 +80,6 @@ public class AlphaBetaPrunerTest {
         node = new TicTacToeNode(board, rules, 0, false);
         assertEquals(AlphaBetaPruner.getNodeValue(node, alpha, beta, 3), 20);
     }*/
-
     @Test
     public void oneMarkCornerOfBoardWithMaxDepth0Returns3() {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 1, 1));
@@ -93,6 +92,13 @@ public class AlphaBetaPrunerTest {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 1, 1));
         node = new TicTacToeNode(board, rules, 1, true);
         assertEquals(AlphaBetaPruner.getNodeValue(node, alpha, beta, 1), -17);
+    }
+
+    @Test
+    public void oneMarkCornerOfBoardAndWithMaxDepth1Returns31() {
+        board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 20, 1));
+        node = new TicTacToeNode(board, rules, 0, true);
+        assertEquals(AlphaBetaPruner.getNodeValue(node, alpha, beta, 1), 31);
     }
 
 }

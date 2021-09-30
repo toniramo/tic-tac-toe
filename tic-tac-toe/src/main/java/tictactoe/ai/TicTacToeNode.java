@@ -1,6 +1,7 @@
 package tictactoe.ai;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import tictactoe.domain.*;
 
@@ -13,8 +14,6 @@ public class TicTacToeNode implements GameTreeNode {
     private GameBoard board;
     private RuleBook rules;
     private boolean minimizingNode;
-    private int maxSearchDepth;
-    private int nodeDepth;
     private int turn;
 
     /**
@@ -136,10 +135,13 @@ public class TicTacToeNode implements GameTreeNode {
                         if (marksOnRange[p][k] > 0 && observedRangeFullyOnBoard(x, y, k) && marksOnRange[((p+1)%2)][k] == 0) {
                             playerValues[p] += Math.pow(10, marksOnRange[p][k] - 1);
                         }
+                        if (k==2 && p==0) System.out.print(Arrays.toString(counters[0][2] ) + " ");
                         counters[p][k] = reduceMarkCountersByOne(counters[p][k]);
+                        if (k==2 && p==0) System.out.println(Arrays.toString(counters[0][2] ) + " ");
                         if (marksOnRange[p][k] > 0 && counters[p][k][marksOnRange[p][k]] == 0) {  
                             marksOnRange[p][k]--;
                         }
+                        
                     }
                 }
                 offset++;
@@ -158,7 +160,7 @@ public class TicTacToeNode implements GameTreeNode {
         int j = 0;
         for (int i = 1; i < marks.length; i++) {
             if (marks[i]-1 == 0) {
-                i++;
+                j++;
                 continue;
             }
             if (marks[i] > 0) {
