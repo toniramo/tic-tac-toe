@@ -1,4 +1,4 @@
-package tictactoe.domain;
+package tictactoe.logic;
 
 import tictactoe.dao.Dao;
 
@@ -46,20 +46,36 @@ public class GameService {
     public RuleBook getRules() {
         return gameData.getRules();
     }
-    
+
+    /**
+     * Gets game board stored in game data.
+     *
+     * @return stored game board
+     */
     public GameBoard getGameBoard() {
         return gameData.getGameBoard();
     }
-    
+
+    /**
+     * Gets index of player in turn.
+     *
+     * @return index of player in turn
+     */
     public int getTurn() {
-        return gameData.getNumberOfPlayedMoves() % gameData.getPlayers().length;
+        return gameData.getTurn();
     }
 
     /**
      * Changes player in turn to the next one.
      */
     private void changeTurn() {
-        gameData.changeTurn();
+        int turn = getTurn();
+        if (turn == gameData.getRules().getPlayers().length - 1) {
+            turn = 0;
+        } else {
+            turn++;
+        }
+        gameData.setTurn(turn);
     }
 
     /**
@@ -68,7 +84,7 @@ public class GameService {
      * @return player in turn
      */
     public Player getCurrentPlayer() {
-        return gameData.getCurrentPlayer();
+        return gameData.getRules().getPlayerBasedOnTurn(getTurn());
     }
 
     /**
@@ -80,12 +96,11 @@ public class GameService {
      * from 1.
      */
     public void makeMove(int x, int y) {
-        if (this.validMove(x, y)) {
-            gameData.setMove(new Move(this.getCurrentPlayer(), x, y));
+        if (!this.validMove(x, y)) {
+            return;
         }
-        if (!gameOver(this.gameData.getGameBoard(), this.getRules())) {
-            this.changeTurn();
-        }
+        gameData.setMove(new Move(this.getCurrentPlayer(), x, y));
+        this.changeTurn();
     }
 
     /**
@@ -113,6 +128,7 @@ public class GameService {
      * @return true if game is over, otherwise false
      */
     public boolean gameOver() {
+
         return gameOver(this.gameData.getGameBoard(), this.getRules());
     }
 
@@ -140,48 +156,49 @@ public class GameService {
 
     /**
      * Gets winning player (if any yet) with given game board and rule book.
-     * Method goes simulatenously through the game board in all possible
-     * directions (vertical, horizontal, diagonal) and terminates if player with
-     * needed marks in row to win is found.
+     * Method checks the area around the latest move on the game board in all
+     * possible directions (vertical, horizontal, diagonal) and terminates if
+     * latest move resulted in win.
      *
-     * @param board game board to analyze
+     * @param board game board to analyse
      * @param rules rules used in determining the winner
      * @return winner if found, otherwise null
      */
     public static Player getWinningPlayer(GameBoard board, RuleBook rules) {
-        int n = board.getSize();
-        Player[] players = rules.getPlayers();
-        for (int i = 1; i <= n; i++) {
-            int[][] counters = new int[players.length][6];
-            int offset = 0;
-            for (int j = 1; j <= n; j++) {
-                int[] x = new int[]{i, j, (i + offset), (i + offset - n), j, j};
-                int[] y = new int[]{j, i, j, j, i - offset, i - offset + n};
-                Move[] moves = board.getMoves(x, y);
-                for (int k = 0; k < counters[0].length; k++) {
-                    for (int p = 0; p < players.length; p++) {
-                        if (moves[k] != null && moves[k].getPlayer().equals(players[p])) {
-                            counters[p][k]++;
-                            if (counters[p][k] >= rules.getMarksToWin()) {
-                                return players[p];
-                            }
-                        } else {
-                            counters[p][k] = 0;
-                        }
+        if (board.getNumberOfPlayedMoves() < rules.getMarksToWin()) {
+            return null;
+        }
+        int n = rules.getMarksToWin();
+        Move lastMove = board.getLastMove();
+        Player p = lastMove.getPlayer();
+        int x0 = lastMove.getX();
+        int y0 = lastMove.getY();
+        int[] counters = new int[4];
+        for (int i = 0; i < 2 * n; i++) {
+            int delta = i - (n - 1);
+            int[] x = new int[]{x0 + delta, x0, x0 + delta, x0 + delta};
+            int[] y = new int[]{y0, y0 - delta, y0 + delta, y0 - delta};
+            Move[] moves = board.getMoves(x, y);
+            for (int k = 0; k < counters.length; k++) {
+                if (moves[k] != null && moves[k].getPlayer().equals(p)) {
+                    counters[k]++;
+                    if (counters[k] >= rules.getMarksToWin()) {
+                        return p;
                     }
+                } else {
+                    counters[k] = 0;
                 }
-                offset++;
-            }
+            };
         }
         return null;
     }
 
     /**
-     * Checks wheter game is over in given game board based on given rules. Game
-     * is over if one of the players have got enough marks in a row (determined
-     * by rules) or if game board is full.
+     * Checks whether game is over in given game board based on given rules.
+     * Game is over if one of the players have got enough marks in a row
+     * (determined by rules) or if game board is full.
      *
-     * @param board game board to analyze
+     * @param board game board to analyse
      * @param rules rules used in determining the winner
      * @return true if game is over, otherwise false
      */
