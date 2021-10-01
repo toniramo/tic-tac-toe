@@ -14,8 +14,9 @@ public class Player {
 
     /**
      * Create snew player with default mark color (black) and type (human).
-     * @param mark chosen character representing players moves on board. 
-     * Usually either "X" or "O".
+     *
+     * @param mark chosen character representing players moves on board. Usually
+     * either "X" or "O".
      */
     public Player(String mark) {
         this(mark, Color.BLACK, PlayerType.HUMAN);
@@ -23,8 +24,9 @@ public class Player {
 
     /**
      * Creates new player with default type (human).
-     * @param mark chosen character representing players moves on board. 
-     * Usually either "X" or "O".
+     *
+     * @param mark chosen character representing players moves on board. Usually
+     * either "X" or "O".
      * @param color color of mark
      */
     public Player(String mark, Color color) {
@@ -33,8 +35,9 @@ public class Player {
 
     /**
      * Creates new player with custom parameters.
-     * @param mark chosen character representing players moves on board. 
-     * Usually either "X" or "O".
+     *
+     * @param mark chosen character representing players moves on board. Usually
+     * either "X" or "O".
      * @param color color of mark
      * @param type either human or AI player
      */
@@ -46,14 +49,16 @@ public class Player {
 
     /**
      * Gets player's mark.
+     *
      * @return mark of player
      */
     public String getMark() {
         return this.mark;
     }
-    
+
     /**
      * Gets color of player mark.
+     *
      * @return mark of player's mark
      */
     public Color getMarkColor() {
@@ -62,6 +67,7 @@ public class Player {
 
     /**
      * Gets type of player (either human or AI).
+     *
      * @return player type - human or AI.
      */
     public PlayerType getPlayerType() {
@@ -69,7 +75,7 @@ public class Player {
     }
 
     /**
-     * 
+     *
      * @return hash value
      */
     @Override
@@ -81,6 +87,7 @@ public class Player {
 
     /**
      * Tests if given object is same as this.
+     *
      * @param obj object to test
      * @return true if object is same as this, false otherwise
      */
@@ -100,7 +107,7 @@ public class Player {
     }
 
     /**
-     * Player type, either human or AI. 
+     * Player type, either human or AI.
      */
     public enum PlayerType {
         HUMAN,
