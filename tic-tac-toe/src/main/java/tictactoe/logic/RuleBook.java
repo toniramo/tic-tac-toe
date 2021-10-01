@@ -1,4 +1,4 @@
-package tictactoe.domain;
+package tictactoe.logic;
 
 import java.util.Arrays;
 
@@ -13,7 +13,7 @@ public class RuleBook {
     private final Player[] players;
 
     /**
-     * Create new rule book.
+     * Creates new rule book based on given parameters.
      *
      * @param boardSize width of the game board, that is number of tiles in an
      * edge
@@ -30,6 +30,7 @@ public class RuleBook {
 
     /**
      * Gets number of marks in a row needed to win the game.
+     *
      * @return number of needed marks in a row for win.
      */
     public int getMarksToWin() {
@@ -38,6 +39,7 @@ public class RuleBook {
 
     /**
      * Gets expected board size in terms of width of board edge
+     *
      * @return game board edge width
      */
     public int getBoardsize() {
@@ -46,6 +48,7 @@ public class RuleBook {
 
     /**
      * Gets all players of the game, by default two
+     *
      * @return players of the game.
      */
     public Player[] getPlayers() {
@@ -53,8 +56,11 @@ public class RuleBook {
     }
 
     /**
-     * Gets player based on turn, that is first player on turn 0, second on 1 by default.
-     * @param i turn, by default if first player's turn, i=0, and if second player's i=1.
+     * Gets player based on turn, that is first player on turn 0, second on 1 by
+     * default.
+     *
+     * @param i turn, by default if first player's turn, i=0, and if second
+     * player's i=1.
      * @return player on turn index i
      */
     public Player getPlayerBasedOnTurn(int i) {
@@ -63,6 +69,7 @@ public class RuleBook {
 
     /**
      * Gets hash value for this rule book.
+     *
      * @return hash value of this rule book
      */
     @Override
@@ -75,7 +82,8 @@ public class RuleBook {
     }
 
     /**
-     * Check if compared object is equal to this rule book.
+     * Tests if compared object is equal to this rule book.
+     *
      * @param obj
      * @return true if object is equal to this, false otherwise
      */
@@ -97,9 +105,6 @@ public class RuleBook {
         if (this.boardSize != other.boardSize) {
             return false;
         }
-        if (!Arrays.deepEquals(this.players, other.players)) {
-            return false;
-        }
-        return true;
+        return Arrays.deepEquals(this.players, other.players);
     }
 }
