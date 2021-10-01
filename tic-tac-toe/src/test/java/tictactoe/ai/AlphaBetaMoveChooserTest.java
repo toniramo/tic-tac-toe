@@ -134,6 +134,8 @@ public class AlphaBetaMoveChooserTest {
      * Creates test node in which one player is about to win and another has
      * marks in various corners of board. Experimental, not yet finished. WIP-
      */
+    
+    //CHECKSTYLE:OFF
     private int[][] createAlmostWinnigNode(int player, int direction, int n, int x0, int y0) {
         int[][] node = new int[n + 1][n + 1];
         for (int i = 1; i <= n; i++) {
@@ -181,4 +183,5 @@ public class AlphaBetaMoveChooserTest {
         }
         return node;
     }
+    //CHECKSTYLE:ON
 }
