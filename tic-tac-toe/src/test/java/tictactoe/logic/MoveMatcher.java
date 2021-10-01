@@ -1,16 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package domain;
+package tictactoe.logic;
 
 import org.mockito.ArgumentMatcher;
-import tictactoe.domain.Move;
 
 /**
- *
- * @author toniramo
+ * Matcher used in game service unit tests to test parameters given to game data mock.
  */
 public class MoveMatcher implements ArgumentMatcher<Move> {
 

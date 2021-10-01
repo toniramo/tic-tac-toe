@@ -1,10 +1,5 @@
-package domain;
+package tictactoe.logic;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 import javafx.scene.paint.Color;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,15 +16,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import tictactoe.dao.Dao;
 import tictactoe.dao.InMemoryDao;
-import tictactoe.domain.GameBoard;
-import tictactoe.domain.GameService;
-import tictactoe.domain.Move;
-import tictactoe.domain.Player;
-import tictactoe.domain.RuleBook;
 
 /**
- *
- * @author toniramo
+ * Tests of GameService class.
  */
 public class GameServiceTest {
 
@@ -61,8 +50,7 @@ public class GameServiceTest {
 
         when(mockedDao.getRules()).thenReturn(rules);
 
-        when(mockedDao.getGameBoard()).thenReturn(board);
-        setUpCurrentPlayer(player1);
+        when(mockedDao.getGameBoard()).thenReturn(board);;
     }
 
     @After
@@ -82,7 +70,7 @@ public class GameServiceTest {
     @Test
     public void makeMoveRequestsToChangeTurn() {
         gameService.makeMove(1, 1);
-        verify(mockedDao).changeTurn();
+        verify(mockedDao).setTurn(anyInt());
     }
 
     @Test
@@ -91,7 +79,6 @@ public class GameServiceTest {
         int y = 2;
         Move move = new Move(player1, x, y);
         when(mockedDao.getMoveAt(x, y)).thenReturn(null);
-        when(mockedDao.getCurrentPlayer()).thenReturn(player1);
         gameService.makeMove(x, y);
         verify(mockedDao, times(1)).setMove(argThat(new MoveMatcher(move)));
     }
@@ -132,6 +119,46 @@ public class GameServiceTest {
         assertTrue(gameService.getWinningPlayer().equals(player1));
     }
 
+    @Test
+    public void fiveinRowHorizontallyReturnsCorrectWinner() {
+        board.setMove(new Move(player1, 10, 10));
+        board.setMove(new Move(player1, 11, 10));
+        board.setMove(new Move(player1, 12, 10));
+        board.setMove(new Move(player1, 13, 10));
+        board.setMove(new Move(player1, 14, 10));
+        assertTrue(gameService.getWinningPlayer().equals(player1));
+    }
+
+    @Test
+    public void fiveinRowVerticallyReturnsCorrectWinner() {
+        board.setMove(new Move(player1, 10, 11));
+        board.setMove(new Move(player1, 10, 12));
+        board.setMove(new Move(player1, 10, 13));
+        board.setMove(new Move(player1, 10, 14));
+        board.setMove(new Move(player1, 10, 15));
+        assertTrue(gameService.getWinningPlayer().equals(player1));
+    }
+
+    @Test
+    public void fiveinRowDiagonallyReturnsCorrectWinnerV1() {
+        board.setMove(new Move(player1, 10, 11));
+        board.setMove(new Move(player1, 11, 12));
+        board.setMove(new Move(player1, 12, 13));
+        board.setMove(new Move(player1, 13, 14));
+        board.setMove(new Move(player1, 14, 15));
+        assertTrue(gameService.getWinningPlayer().equals(player1));
+    }
+
+    @Test
+    public void fiveinRowDiagonallyReturnsCorrectWinnerV2() {
+        board.setMove(new Move(player1, 14, 11));
+        board.setMove(new Move(player1, 13, 10));
+        board.setMove(new Move(player1, 12, 9));
+        board.setMove(new Move(player1, 11, 8));
+        board.setMove(new Move(player1, 10, 7));
+        assertTrue(gameService.getWinningPlayer().equals(player1));
+    }
+
     private GameBoard fillGameBoardWithMovesOfChosenPlayer(Player player, GameBoard board) {
         for (int x = 1; x <= n; x++) {
             for (int y = 1; y <= n; y++) {
@@ -141,7 +168,4 @@ public class GameServiceTest {
         return board;
     }
 
-    private void setUpCurrentPlayer(Player player) {
-        when(mockedDao.getCurrentPlayer()).thenReturn(player);
-    }
 }

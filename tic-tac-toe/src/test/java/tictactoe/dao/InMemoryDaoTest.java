@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dao;
+package tictactoe.dao;
 
 import javafx.scene.paint.Color;
 import org.junit.After;
@@ -12,11 +12,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import tictactoe.dao.Dao;
-import tictactoe.dao.InMemoryDao;
-import tictactoe.domain.Move;
-import tictactoe.domain.Player;
-import tictactoe.domain.RuleBook;
+import tictactoe.logic.Move;
+import tictactoe.logic.Player;
+import tictactoe.logic.RuleBook;
 
 /**
  *
@@ -88,13 +86,13 @@ public class InMemoryDaoTest {
 
     @Test
     public void getCurrentPlayerReturnsInitiallyFirstAddedPlayer() {
-        assertEquals(dao.getCurrentPlayer(), player1);
+        assertEquals(dao.getRules().getPlayerBasedOnTurn(dao.getTurn()), player1);
     }
 
     @Test
     public void getCurrentPlayerReturnsSecondAddedAfterChangeTurnIsCalled() {
-        dao.changeTurn();
-        assertEquals(dao.getCurrentPlayer(), player2);
+        dao.setTurn(1);
+        assertEquals(dao.getRules().getPlayerBasedOnTurn(dao.getTurn()), player2);
     }
 
 }
