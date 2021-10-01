@@ -11,6 +11,9 @@ on 9.9.2021 -->
     <property name="localeLanguage" value="en"/>
 
     <module name='TreeWalker'>
+        
+        <!--Ignore chosen parts of code-->
+        <module name="SuppressionCommentFilter"/>
 
         <property name='tabWidth' value='4' />
 
@@ -35,7 +38,7 @@ on 9.9.2021 -->
         <module name="OneStatementPerLine"/>
         <module name="MethodLength">
             <property name="tokens" value="METHOD_DEF"/>
-            <property name="max" value="30"/>
+            <property name="max" value="42"/>
             <property name="countEmpty" value="false"/>
         </module>
 
