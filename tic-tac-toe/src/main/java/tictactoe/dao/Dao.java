@@ -5,7 +5,9 @@
  */
 package tictactoe.dao;
 
-import tictactoe.domain.*;
+import tictactoe.logic.Move;
+import tictactoe.logic.RuleBook;
+import tictactoe.logic.GameBoard;
 
 /**
  * Interface for data access object storing the game data.
@@ -45,21 +47,15 @@ public interface Dao {
     public int getNumberOfPlayedMoves();
 
     /**
-     * Changes player in turn to next one.
+     * Set player in turn by player index.
+     * @param turn index of player in turn
      */
-    public void changeTurn();
-
-    /*
-     * Add new player to game data.
-     * @param player Give player as Player object
-     */
-    //public void addPlayer(Player player);
+    public void setTurn(int turn);
+    
     /**
-     *
-     * @return Current player in turn.
+     * Get player in turn by player index.
+     * @return index of player in turn
      */
-    public Player getCurrentPlayer();
-
-    public Player[] getPlayers();
+    public int getTurn();
 
 }

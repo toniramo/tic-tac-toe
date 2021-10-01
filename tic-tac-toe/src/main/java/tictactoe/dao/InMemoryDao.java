@@ -1,9 +1,8 @@
 package tictactoe.dao;
 
-import tictactoe.domain.GameBoard;
-import tictactoe.domain.Move;
-import tictactoe.domain.Player;
-import tictactoe.domain.RuleBook;
+import tictactoe.logic.GameBoard;
+import tictactoe.logic.Move;
+import tictactoe.logic.RuleBook;
 
 /**
  * Class to define data access object for storing game data in memory.
@@ -76,27 +75,15 @@ public class InMemoryDao implements Dao {
      * {@inheritDoc}
      */
     @Override
-    public Player getCurrentPlayer() {
-        return rules.getPlayers()[turn];
+    public int getTurn() {
+        return this.turn;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Player[] getPlayers() {
-        return this.rules.getPlayers();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void changeTurn() {
-        if (turn == rules.getPlayers().length - 1) {
-            turn = 0;
-        } else {
-            turn++;
-        }
+    public void setTurn(int turn) {
+        this.turn = turn;
     }
 }
