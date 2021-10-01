@@ -11,10 +11,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import tictactoe.domain.GameBoard;
-import tictactoe.domain.Move;
-import tictactoe.domain.Player;
-import tictactoe.domain.RuleBook;
+import tictactoe.logic.GameBoard;
+import tictactoe.logic.Move;
+import tictactoe.logic.Player;
+import tictactoe.logic.RuleBook;
 
 /**
  *
@@ -121,7 +121,7 @@ public class TicTacToeNodeTest {
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 1, 1));
         board.setMove(new Move(rules.getPlayerBasedOnTurn(0), 5, 5));
         node = new TicTacToeNode(board, rules, 0, false);
-        assertEquals(node.value(), 3);
+        assertEquals(node.value(), 31);
     }
 
     @Test

@@ -3,8 +3,11 @@ package tictactoe.ai;
 import java.util.List;
 
 /**
- * Interface representing node in game tree.
+ * Interface representing node in game tree. 
+ * No more maintained due to better performing algorithm 
+ * that does not use objects that implement this interface.
  */
+@Deprecated
 public interface GameTreeNode {
 
     /**

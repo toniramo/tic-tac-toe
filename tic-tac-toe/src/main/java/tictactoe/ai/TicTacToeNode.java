@@ -1,14 +1,21 @@
 package tictactoe.ai;
 
+import tictactoe.logic.Move;
+import tictactoe.logic.RuleBook;
+import tictactoe.logic.GameBoard;
+import tictactoe.logic.Player;
+import tictactoe.logic.GameService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import tictactoe.domain.*;
 
 /**
  * Represents tic-tac-toe specific node of game tree that is used to find most
- * optimal move by AI.
+ * optimal move by AI. This is no more developed further due to performance reasons. 
+ * AI keeps simpler data structure for node data and uses {@link AlphaBetaPruner} 
+ * to get the optimal move
  */
+@Deprecated
 public class TicTacToeNode implements GameTreeNode {
 
     private GameBoard board;
@@ -38,7 +45,7 @@ public class TicTacToeNode implements GameTreeNode {
      */
     @Override
     public List<GameTreeNode> getChildNodes() {
-        double start = System.currentTimeMillis();
+        // double start = System.currentTimeMillis();
         List<GameTreeNode> childNodes = new ArrayList<>();
         int n = this.rules.getBoardsize();
         for (int x = 1; x <= n; x++) {
@@ -50,7 +57,7 @@ public class TicTacToeNode implements GameTreeNode {
                 }
             }
         }
-        System.out.println("get childs took : " + (System.currentTimeMillis()-start));
+        //System.out.println("get childs took : " + (System.currentTimeMillis() - start));
         return childNodes;
     }
 
@@ -70,10 +77,7 @@ public class TicTacToeNode implements GameTreeNode {
         if (GameService.gameOver(board, rules)) {
             Player winner = GameService.getWinningPlayer(board, rules);
             if (winner != null) {
-                //if (winner.equals(rules.getPlayerBasedOnTurn(turn))) {
-                    return this.isMinimizingNode() ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-               // }
-                //return this.isMinimizingNode() ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+                return this.isMinimizingNode() ? Integer.MIN_VALUE : Integer.MAX_VALUE;
             }
             return 0;
         }
@@ -99,7 +103,7 @@ public class TicTacToeNode implements GameTreeNode {
         }
         return this.isMinimizingNode() ? -value : value;
     }
-    
+
     /**
      * Calculates player specific heuristic values. Idea is to go through the
      * game board simultaneously in all directions -horizontal, vertical,
@@ -107,12 +111,12 @@ public class TicTacToeNode implements GameTreeNode {
      * subsections with length equal to number of marks in a row needed to win.
      */
     private int[] calculatePlayerSpecificValues() {
-        double start = System.currentTimeMillis();
+        //double start = System.currentTimeMillis();
         int n = rules.getBoardsize();
         Player[] players = rules.getPlayers();
         int[] playerValues = new int[players.length];
         for (int i = 1; i <= n; i++) {
-            int[][][] counters = new int[players.length][6][rules.getMarksToWin()+1];
+            int[][][] counters = new int[players.length][6][rules.getMarksToWin() + 1];
             int offset = 0;
             int[][] marksOnRange = new int[players.length][counters[0].length + 1];
             for (int j = 1; j <= n; j++) {
@@ -127,7 +131,7 @@ public class TicTacToeNode implements GameTreeNode {
                         if (moves[k] != null) {
                             if (moves[k].getPlayer().equals(players[p])) {
                                 if (marksOnRange[p][k] < rules.getMarksToWin()) {
-                                       counters[p][k][++marksOnRange[p][k]] = rules.getMarksToWin();                             
+                                    counters[p][k][++marksOnRange[p][k]] = rules.getMarksToWin();
                                 }
                             }
                         }
@@ -135,27 +139,27 @@ public class TicTacToeNode implements GameTreeNode {
                             playerValues[p] = Integer.MAX_VALUE;
                             break;
                         }
-                        if (marksOnRange[p][k] > 0 && observedRangeFullyOnBoard(x, y, k) && marksOnRange[((p+1)%2)][k] == 0) {
+                        if (marksOnRange[p][k] > 0 && observedRangeFullyOnBoard(x, y, k) && marksOnRange[((p + 1) % 2)][k] == 0) {
                             playerValues[p] += Math.pow(10, marksOnRange[p][k] - 1);
                         }
-                      //  if (k==2 && p==0) System.out.print(Arrays.toString(counters[0][2] ) + " ");
                         counters[p][k] = reduceMarkCountersByOne(counters[p][k]);
-                      //  if (k==2 && p==0) System.out.println(Arrays.toString(counters[0][2] ) + " ");
-                        if (marksOnRange[p][k] > 0 && counters[p][k][marksOnRange[p][k]] == 0) {  
+                        if (marksOnRange[p][k] > 0 && counters[p][k][marksOnRange[p][k]] == 0) {
                             marksOnRange[p][k]--;
                         }
-                        
+
                     }
                 }
                 offset++;
             }
         }
-        System.out.println("heuristic time: " + (System.currentTimeMillis()-start));
+        //System.out.println("heuristic time: " + (System.currentTimeMillis() - start));
         return playerValues;
     }
 
     /**
-     * Reduces counter value in all indexes of an array unless value is already 0.
+     * Reduces counter value in all indexes of an array unless value is already
+     * 0.
+     *
      * @param marks counter array
      * @return updated counter array
      */
@@ -163,7 +167,7 @@ public class TicTacToeNode implements GameTreeNode {
         int[] result = new int[marks.length];
         int j = 0;
         for (int i = 1; i < marks.length; i++) {
-            if (marks[i]-1 == 0) {
+            if (marks[i] - 1 == 0) {
                 j++;
                 continue;
             }

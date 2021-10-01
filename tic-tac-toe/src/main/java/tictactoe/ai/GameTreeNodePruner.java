@@ -7,12 +7,14 @@ package tictactoe.ai;
 
 /**
  * Implements minimax algorithm with alpha beta pruning and gets value for child
- * node in
+ * node in game tree. Due to performance issues related to object arrays, class is replaced by 
+ * {@link AlphaBetaPruner2}.
  */
-public class AlphaBetaPruner {
+@Deprecated
+public class GameTreeNodePruner {
 
-    public static int getNodeValue(GameTreeNode node, int alpha, int beta, int maxSearchDepth, boolean isMinimizingNode) {
-        if (isMinimizingNode) {
+    public static int getNodeValue(GameTreeNode node, int alpha, int beta, int maxSearchDepth) {
+        if (node.isMinimizingNode()) {
             return minValue(node, alpha, beta, 0, maxSearchDepth);
         }
         return maxValue(node, alpha, beta, 0, maxSearchDepth);
