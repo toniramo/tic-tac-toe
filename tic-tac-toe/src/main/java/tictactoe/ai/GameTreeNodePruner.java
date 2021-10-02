@@ -8,7 +8,7 @@ package tictactoe.ai;
 /**
  * Implements minimax algorithm with alpha beta pruning and gets value for child
  * node in game tree. Due to performance issues related to object arrays, class is replaced by 
- * {@link AlphaBetaPruner2}.
+ * {@link AlphaBetaMoveChooser}.
  */
 @Deprecated
 public class GameTreeNodePruner {

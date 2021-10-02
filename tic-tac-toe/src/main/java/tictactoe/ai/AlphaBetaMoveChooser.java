@@ -6,6 +6,29 @@ package tictactoe.ai;
  */
 public class AlphaBetaMoveChooser {
 
+    /**
+     * Gets most optimal move based on alpha beta pruning and heuristic value if
+     * search depth is not enough to find desired end state. Algorithm expects
+     * both players to play most optimal moves (that algorithm can find).
+     *
+     * @param node state of game board with -1 indicating free tile, non-negative
+     * referring to player placed the mark
+     * @param playArea area within which marks are at given moment located, used
+     * to optimize search around already played marks
+     * @param playedMoves number of moves already placed on board, used to check
+     * if board is full
+     * @param turn number of player in turn (0 or 1)
+     * @param rowLenght number of marks in row needed to win
+     * @param alpha alpha value, in the beginning usually very low value such as
+     * -1e9
+     * @param beta beta value, in the beginning usually very high value such as
+     * 1e9
+     * @param maxSearchDepth limits the search depth to chosen depth and
+     * avoiding too exhaustive search. With current implementation already with
+     * depth of 2 has notable effect on running time. Though, even with 1,
+     * competitive moves can be found.
+     * @return potentially most optimal move
+     */
     public static int[] getMove(int[][] node, int[] playArea, int playedMoves,
             int turn, int rowLenght, int alpha, int beta, int maxSearchDepth) {
         int[] move = new int[2];
@@ -41,6 +64,28 @@ public class AlphaBetaMoveChooser {
         return move;
     }
 
+    /**
+     * Gets node value either based on end state if reached or heuristic, see
+     * {@link #heuristicBasedOnPlayArea(int[][], int[], int, int, int)}.
+     *
+     * @param node state of game board with -1 indicating free tile, non-negative
+     * referring to player placed the mark
+     * @param playArea area within which marks are at given moment located, used
+     * to optimize search around already played marks
+     * @param playedMoves number of moves already placed on board, used to check
+     * if board is full
+     * @param turn number of player in turn (0 or 1)
+     * @param rowLenght number of marks in row needed to win
+     * @param alpha alpha value, in the beginning usually very low value such as
+     * -1e9
+     * @param beta beta value, in the beginning usually very high value such as
+     * 1e9
+     * @param maxSearchDepth limits the search depth to chosen depth and
+     * avoiding too exhaustive search. With current implementation already with
+     * depth of 2 has notable effect on running time. Though, even with 1,
+     * competitive moves can be found.
+     * @return alphabeta / heuristic value of given node
+     */
     private static int value(int[][] node, int[] playArea, int[] move, int playedMoves,
             int turn, int rowLenght, int alpha, int beta, int nodeDepth, int maxSearchDepth) {
         int maxValue = (int) 1e9 - nodeDepth - (turn + 1) % 2;
@@ -80,6 +125,16 @@ public class AlphaBetaMoveChooser {
         return value;
     }
 
+    /**
+     * Increases given play area if needed (i.e. last move was placed next to on
+     * of the area borders).
+     *
+     * @param playArea
+     * @param x X-coordinate of given move
+     * @param y Y-coordinate of given move
+     * @return array of boolean values each representing on of the boards
+     * indicating if board is moved by one (true) or not (false).
+     */
     private static boolean[] increasePlayArea(int[] playArea, int x, int y) {
         boolean[] areaChanged = new boolean[4];
         if (x < playArea[0]) {
@@ -101,6 +156,14 @@ public class AlphaBetaMoveChooser {
         return areaChanged;
     }
 
+    /**
+     * Reverts play area back to previous state according to given boolean
+     * array.
+     *
+     * @param playArea play area to revert
+     * @param areaChanged array indicating which of the borders of game area was
+     * moved
+     */
     private static void decreasePlayArea(int[] playArea, boolean[] areaChanged) {
         if (areaChanged[0]) {
             playArea[0]++;
@@ -116,10 +179,27 @@ public class AlphaBetaMoveChooser {
         }
     }
 
+    /**
+     * Checks if game board is full (i.e. is game draW).
+     *
+     * @param node node to analyse
+     * @param playedMoves number of played moves.
+     * @return result of test wheter number of played moves matches with the
+     * number of tiles on game board
+     */
     private static boolean gameBoardFull(int[][] node, int playedMoves) {
         return Math.pow(node.length - 1, 2) == playedMoves;
     }
 
+    /**
+     * Checks if last move resulted to win in which case node is end state.
+     *
+     * @param node node to analyse
+     * @param move latest move as an array in which integer in first index
+     * represents x-coordinate of the move, and second y-coordinate
+     * @param m number of marks in row needed to win
+     * @return true if given move resulted in win, false otherwise
+     */
     private static boolean lastMoveWinning(int[][] node, int[] move, int m) {
         int n = node.length - 1;
         int x0 = move[0];
@@ -146,6 +226,25 @@ public class AlphaBetaMoveChooser {
         return false;
     }
 
+    /**
+     * Analyses play area with given node by going through it in 4 directions
+     * (horizontal, vertical, diagonal) with moving window with length equal to
+     * winning row length. Heuristic pursues to value higher - in folds of ten -
+     * sections that have more marks (i.e. closer to win) and on the other hand
+     * devalue (very little though) moves that have been achieved later in the
+     * game (i.e. with deeper search depths). If observation window contains
+     * marks of other player, its value is 0 for both players since there is no
+     * chance of getting needed row with that section of the board. Value of the
+     * whole play area is in the end calculated based on difference of both
+     * player's values.
+     *
+     * @param node node to analyse
+     * @param playArea play area within which played moves are found
+     * @param turn player in turn (0 for first, 1 for second)
+     * @param rowLenght number of marks in row needed to win
+     * @param nodeDepth depth of analysed node, starting from 0
+     * @return heuristic value of given node
+     */
     private static int heuristicBasedOnPlayArea(
             int[][] node, int[] playArea, int turn, int rowLenght, int nodeDepth) {
         int n = node.length - 1;
@@ -227,7 +326,7 @@ public class AlphaBetaMoveChooser {
                 || ((k == 2 || k == 3) && x[k] >= rowLenght && y[k] >= rowLenght)
                 || ((k == 4 || k == 5) && x[k] >= rowLenght && y[k] <= n - rowLenght + 1);
     }
- 
+
     /**
      * Experimental, alternative method to calculate heuristic value.
      */

@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Represents tic-tac-toe specific node of game tree that is used to find most
  * optimal move by AI. This is no more developed further due to performance reasons. 
- * AI keeps simpler data structure for node data and uses {@link AlphaBetaPruner} 
+ * AI keeps simpler data structure for node data and uses {@link GameTreeNodePruner} 
  * to get the optimal move
  */
 @Deprecated
