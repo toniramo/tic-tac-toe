@@ -46,16 +46,8 @@ public class AI {
      * @return
      */
     public Move chooseMove() {
-        Move lastMove = service.getGameBoard().getLastMove();
-        int xLast = 0;
-        int yLast = 0;
-        if (lastMove != null) {
-            xLast = lastMove.getX();
-            yLast = lastMove.getY();
-        }
+        updateStateBasedOnLastMove();
         int turn = service.getTurn();
-        state[xLast][yLast] = (service.getTurn() + 1) % 2;
-        updatePlayAreaBasedOnMove(xLast, yLast);
         int[] move = AlphaBetaMoveChooser.getMove(state,
                 playArea, service.getGameBoard().getNumberOfPlayedMoves(),
                 turn, service.getRules().getMarksToWin(), (int) -1e9, (int) 1e9, 1);
@@ -100,6 +92,32 @@ public class AI {
         if (y >= playArea[3] && y < service.getRules().getBoardsize()) {
             playArea[3] = y + 1;
         }
+    }
+
+    /**
+     * Gets player linked to this AI.
+     *
+     * @return player linked to this AI
+     */
+    public Player getPlayer() {
+        return this.player;
+    }
+
+    /**
+     * Updates AIs state based on last registered move. Can be used for instance
+     * AI vs. AI games in which user chooses the first move.
+     */
+    public void updateStateBasedOnLastMove() {
+        Move lastMove = service.getGameBoard().getLastMove();
+        int xLast = 0;
+        int yLast = 0;
+        if (lastMove != null) {
+            xLast = lastMove.getX();
+            yLast = lastMove.getY();
+        }
+        int turn = service.getTurn();
+        state[xLast][yLast] = (service.getTurn() + 1) % 2;
+        updatePlayAreaBasedOnMove(xLast, yLast);
     }
 
     /**

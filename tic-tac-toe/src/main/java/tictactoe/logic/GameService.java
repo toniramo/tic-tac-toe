@@ -142,6 +142,38 @@ public class GameService {
     }
 
     /**
+     * Gets winning row if any.
+     *
+     * @return winning row if any, otherwise null
+     */
+    public Move[] getWinningRow() {
+        int n = gameData.getRules().getMarksToWin();
+        Move lastMove = gameData.getGameBoard().getLastMove();
+        Player p = lastMove.getPlayer();
+        Move[][] row = new Move[4][n];
+        int x0 = lastMove.getX();
+        int y0 = lastMove.getY();
+        int[] counters = new int[4];
+        for (int i = 0; i < 2 * n - 1; i++) {
+            int delta = i - (n - 1);
+            int[] x = new int[]{x0 + delta, x0, x0 + delta, x0 + delta};
+            int[] y = new int[]{y0, y0 - delta, y0 + delta, y0 - delta};
+            Move[] moves = gameData.getGameBoard().getMoves(x, y);
+            for (int k = 0; k < counters.length; k++) {
+                if (moves[k] != null && moves[k].getPlayer().equals(p)) {
+                    row[k][counters[k]++] = moves[k];
+                    if (counters[k] >= gameData.getRules().getMarksToWin()) {
+                        return row[k];
+                    }
+                } else {
+                    counters[k] = 0;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Checks if proposed move is valid on given game board.
      *
      * @param board game board from which to check the move

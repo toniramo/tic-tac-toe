@@ -2,14 +2,13 @@ package tictactoe.ui;
 
 import javafx.application.Application;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -33,40 +32,38 @@ import tictactoe.logic.RuleBook;
 public class GUI extends Application {
 
     private GameService gameService;
-    //private AI ai;
     private SimpleIntegerProperty turn;
     private GridPane gameBoard;
     private AI[] ais;
+    private Stage stage;
 
     @Override
     public void init() {
-        /* 
-         * TODO: Choose game configuration via UI.
-         * At the moment can be done from here by passing chosen RuleBook to gameService
-         */
-        Player humanPlayer1 = new Player("X", Color.TOMATO, PlayerType.HUMAN);
-        Player humanPlayer2 = new Player("O", Color.STEELBLUE, PlayerType.HUMAN);
-        Player aiPlayer1 = new Player("X", Color.TOMATO, PlayerType.AI);
-        Player aiPlayer2 = new Player("O", Color.STEELBLUE, PlayerType.AI);
-
-        /*
-         * Choose one of the following: 
-         */
-        RuleBook humanAndAI = new RuleBook(20, 5, new Player[]{humanPlayer1, aiPlayer2});
-        RuleBook AIandHuman = new RuleBook(20, 5, new Player[]{aiPlayer1, humanPlayer2});
-        RuleBook onlyAIs = new RuleBook(20, 5, new Player[]{aiPlayer1, aiPlayer2});
-
         this.gameService = new GameService(new InMemoryDao());
-        this.gameService.startNewGame(AIandHuman); //<-- ...and use is as agrument.
-        this.ais = new AI[]{new AI(gameService, aiPlayer1), new AI(gameService, aiPlayer2)};
     }
 
     @Override
     public void start(Stage stage) {
+        this.stage = stage;
+        stage.setScene(setUpStartUpScene());
+        this.stage.show();
+    }
+
+    public void play(RuleBook rules) {
+        this.gameService.startNewGame(rules);
+        this.ais = new AI[2];
+        for (int i = 0; i < this.ais.length; i++) {
+            Player player = rules.getPlayerBasedOnTurn(i);
+            if (player.getPlayerType() == PlayerType.AI) {
+                ais[i] = new AI(this.gameService, player);
+            }
+        }
+
         VBox layout = new VBox();
         HBox topMenuLayout = new HBox();
 
         Button newGameButton = new Button("New game");
+        Button backToStart = new Button("Back to main menu");
         Button exitButton = new Button("Exit");
 
         Label turnLabel = new Label("Turn: " + gameService.getCurrentPlayer().getMark());
@@ -74,7 +71,7 @@ public class GUI extends Application {
 
         this.gameBoard = new GridPane();
 
-        topMenuLayout.getChildren().addAll(newGameButton, exitButton, turnLabel);
+        topMenuLayout.getChildren().addAll(newGameButton, backToStart, exitButton, turnLabel);
 
         int n = gameService.getRules().getBoardsize();
 
@@ -112,19 +109,30 @@ public class GUI extends Application {
                 } else {
                     gameOverText = " Draw";
                 }
-
                 turnLabel.setText("Game over - " + gameOverText);
-                //Turn off actions on game board.
+                //Turn off actions on game board and show winning row.
+                Move[] row = gameService.getWinningRow();
                 gameBoard.getChildren().forEach((node) -> {
                     node.setOnMouseClicked(null);
+                    for (int i = 0; i < rules.getMarksToWin(); i++) {
+                        if (GridPane.getColumnIndex(node) == row[i].getX()
+                                && GridPane.getRowIndex(node) == row[i].getY()) {
+                            Color color = gameService.getGameBoard().getLastMove().getPlayer().getMarkColor();
+                            double r = color.getRed();
+                            double g = color.getGreen();
+                            double b = color.getBlue();
+                            ((Rectangle) ((StackPane) node).getChildren().get(0)).setFill(new Color(r, g, b, 0.2));
+                        }
+                    }
                 });
+
             } else if (gameService.getCurrentPlayer().getPlayerType().equals(PlayerType.AI)) {
-                Move move;
-                if (gameService.getCurrentPlayer().equals(ais[0])) {
-                    move = ais[0].chooseMove();
-                } else {
-                    move = ais[1].chooseMove();
+                boolean aiVsAi = (ais[0] != null && ais[1] != null);
+                if (gameService.getGameBoard().getNumberOfPlayedMoves() == 1 && aiVsAi) {
+                    //update first AI player if aiVsAi game and user places first move.
+                    ais[0].updateStateBasedOnLastMove();
                 }
+                Move move = ais[gameService.getTurn()].chooseMove();
                 for (Node node : gameBoard.getChildren()) {
                     if (GridPane.getColumnIndex(node) == move.getX()
                             && GridPane.getRowIndex(node) == move.getY()) {
@@ -133,10 +141,18 @@ public class GUI extends Application {
                 }
             }
         });
-        turn.set(gameService.getTurn());
+
+        boolean aiVsAi = (ais[0] != null && ais[1] != null);
+        //Let user choose first move in AIvsAI.
+        if (!aiVsAi) {
+            turn.set(gameService.getTurn());
+        }
 
         newGameButton.setOnAction((ActionEvent event) -> {
-            this.init();
+            this.play(rules);
+        });
+
+        backToStart.setOnAction((ActionEvent event) -> {
             this.start(stage);
         });
 
@@ -163,4 +179,45 @@ public class GUI extends Application {
         turnLabel.setText("Turn: " + gameService.getCurrentPlayer().getMark());
         turn.set(gameService.getTurn());
     }
+
+    private Scene setUpStartUpScene() {
+        BorderPane layout = new BorderPane();
+        VBox menu = new VBox();
+
+        Label title = new Label("Tic-tac-toe");
+        Label subtitle = new Label("5-in-row variant\n");
+        Label info = new Label("Choose game mode:");
+
+        Button humanHuman = new Button("Human vs. human");
+        Button humanAi = new Button("Human vs. AI");
+        Button aiHuman = new Button("AI vs. human");
+        Button aiAi = new Button("AI vs. AI\n(choose 1st move)");
+        Button exit = new Button("Exit");
+
+        Player humanPlayer1 = new Player("X", Color.TOMATO, PlayerType.HUMAN);
+        Player humanPlayer2 = new Player("O", Color.STEELBLUE, PlayerType.HUMAN);
+        Player aiPlayer1 = new Player("X", Color.TOMATO, PlayerType.AI);
+        Player aiPlayer2 = new Player("O", Color.STEELBLUE, PlayerType.AI);
+
+        setUpGameModeButton(humanHuman, new RuleBook(20, 5, new Player[]{humanPlayer1, humanPlayer2}));
+        setUpGameModeButton(humanAi, new RuleBook(20, 5, new Player[]{humanPlayer1, aiPlayer2}));
+        setUpGameModeButton(aiHuman, new RuleBook(20, 5, new Player[]{aiPlayer1, humanPlayer2}));
+        setUpGameModeButton(aiAi, new RuleBook(20, 5, new Player[]{aiPlayer1, aiPlayer2}));
+
+        exit.setOnAction((ActionEvent event) -> {
+            stage.close();
+        });
+
+        menu.getChildren().addAll(title, subtitle, info, humanHuman, humanAi, aiHuman, aiAi, exit);
+        layout.setCenter(menu);
+        return new Scene(layout);
+    }
+
+    private void setUpGameModeButton(Button button, RuleBook rules) {
+        button.setOnAction((ActionEvent event) -> {
+            play(rules);
+        });
+
+    }
+
 }
