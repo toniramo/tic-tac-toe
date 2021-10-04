@@ -34,11 +34,11 @@ As a result, 4\*n\*m (n: width of play area, m: height) tile visits are made heu
 approximately 4\*n\*m\*(n\*m-p)^(d_max+1) visits are made during each turn in case any pruning does not take place (and exluding possible changes to play area and number of available moves). So for instance n=10, m=10, p=20 and d_max = 2 yields up to 3.2768e+13 visits. It is possible that some moves result to win so the number is likely smaller if p >= 8. Winning move in turn is checked around the latest move within range of 4 tiles from the one move was placed on. Again check is performed for all 4 directions resulting in 9*4=36 tile visits in total per check.
 
 ## Possible flaws and improvements (some may still be implementable during last weeks of the project)
-- User interface waits for AI to finish move before updating its state. This means that move that changed turn to AI is not shown on AI until also AI's move is registered. Not problem if loading time of move is fast but with e.g. deeper searching this affects user experience.
+- User interface waits for AI to finish move before updating its state. This means that move that changed turn to AI is not shown on UI until also AI's move is registered. Not problem if loading time of move is fast but with e.g. deeper searching this affects user experience.
 - UI to show winning row
 - Menu to UI to have option to select different game configurations (human vs AI, AI vs. human, AI vs. AI, human vs. human).
 - Improve alpha beta pruning algorithm further, e.g. by utilizing iterative deepening and/or changing the order of nodes to increase likelyhood of finding the most valuable node early on - for instance starting from moves closest to the latest moves.
-- Take into account human element in played: it is possible that opponent does not notice already achieved victory (e.g. | |X|X|X|X| |). In such case AI may just ''give up'' i.e. choose last of the observed moves since all are equally bad based on algorithm.
+- Take into account human element in game: it is possible that opponent does not notice already achieved victory (e.g. | |X|X|X|X| |). In such case AI may just ''give up'' i.e. choose last of the observed moves since all are equally bad based on algorithm.
 
 ## Sources
 - Same as in project specification (add here)
