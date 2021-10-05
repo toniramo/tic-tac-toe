@@ -1,5 +1,7 @@
 package tictactoe.ui;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
@@ -79,9 +81,9 @@ public class GUI extends Application {
         topMenuLayout.alignmentProperty().set(Pos.CENTER_LEFT);
         topMenuLayout.setPadding(new Insets(5));
 
-        Button newGameButton = createButton("New game", Color.LIGHTGREY, false);
-        Button backToStart = createButton("Back to main menu", Color.LIGHTGREY, false);
-        Button exitButton = createButton("Exit", Color.GREY, false);
+        Button newGameButton = createButton("New game", Color.LIGHTGREY, Color.SALMON, false);
+        Button backToStart = createButton("Back to main menu", Color.LIGHTGREY, Color.SALMON, false);
+        Button exitButton = createButton("Exit", Color.GREY, Color.STEELBLUE, false);
         exitButton.setStyle("-fx-text-fill: white");
 
         Label turnLabel = new Label("Turn: " + gameService.getCurrentPlayer().getMark());
@@ -105,14 +107,28 @@ public class GUI extends Application {
                 stack.getChildren().add(tile);
                 gameBoard.add(stack, i, j);
 
-                stack.setOnMouseClicked((var event) -> {
+                stack.setOnMouseClicked(e -> {
                     int x = GridPane.getColumnIndex(stack);
                     int y = GridPane.getRowIndex(stack);
 
                     if (gameService.validMove(x, y)) {
                         makeMove(x, y, stack, turnLabel);
                     }
-                    stack.setOnMouseClicked(null);
+                });
+                stack.setOnMouseEntered(e -> {
+                    Player player = gameService.getCurrentPlayer();
+                    Label mark = new Label();
+                    mark.setFont(Font.font("Helvetica", FontWeight.BOLD, 25));
+                    mark.setText(player.getMark());
+                    Color color = player.getMarkColor();
+                    double r = color.getRed();
+                    double g = color.getGreen();
+                    double b = color.getBlue();
+                    mark.setTextFill(new Color(r, g, b, 0.5));
+                    stack.getChildren().add(mark);
+                });
+                stack.setOnMouseExited(e -> {
+                    stack.getChildren().remove(1);
                 });
             }
         }
@@ -131,6 +147,8 @@ public class GUI extends Application {
                 Move[] row = gameService.getWinningRow();
                 gameBoard.getChildren().forEach((node) -> {
                     node.setOnMouseClicked(null);
+                    node.setOnMouseEntered(null);
+                    node.setOnMouseExited(null);
                     for (int i = 0; i < rules.getMarksToWin(); i++) {
                         if (GridPane.getColumnIndex(node) == row[i].getX()
                                 && GridPane.getRowIndex(node) == row[i].getY()) {
@@ -192,6 +210,9 @@ public class GUI extends Application {
         mark.setText(playerBeforeMove.getMark());
         mark.setTextFill(playerBeforeMove.getMarkColor());
         tile.getChildren().add(mark);
+        tile.setOnMouseClicked(null);
+        tile.setOnMouseEntered(null);
+        tile.setOnMouseExited(null);
         gameService.makeMove(x, y);
         turnLabel.setText("Turn: " + gameService.getCurrentPlayer().getMark());
         turn.set(gameService.getTurn());
@@ -219,15 +240,15 @@ public class GUI extends Application {
 
         Label info = new Label("Choose game mode:");
 
-        Button humanHuman = createButton("Human vs. human", Color.LIGHTGREY, true);
-        Button humanAi = createButton("Human vs. AI", Color.LIGHTGREY, true);
-        Button aiHuman = createButton("AI vs. human", Color.LIGHTGREY, true);
-        Button aiAi = createButton("AI vs. AI\n(choose 1st move)", Color.LIGHTGREY, true);
+        Button humanHuman = createButton("Human vs. human", Color.LIGHTGREY, Color.SALMON, true);
+        Button humanAi = createButton("Human vs. AI", Color.LIGHTGREY, Color.SALMON, true);
+        Button aiHuman = createButton("AI vs. human", Color.LIGHTGREY, Color.SALMON, true);
+        Button aiAi = createButton("AI vs. AI\n(choose 1st move)", Color.LIGHTGREY, Color.SALMON, true);
 
         Region r2 = new Region();
         r2.setMinHeight(20);
 
-        Button exit = createButton("Exit", Color.GREY, true);
+        Button exit = createButton("Exit", Color.GREY, Color.STEELBLUE, true);
         exit.setStyle("-fx-text-fill: white");
 
         Player humanPlayer1 = new Player("X", Color.TOMATO, PlayerType.HUMAN);
@@ -257,7 +278,7 @@ public class GUI extends Application {
 
     }
 
-    private Button createButton(String message, Color color, boolean useMaximumWidth) {
+    private Button createButton(String message, Color color, Color color2, boolean useMaximumWidth) {
 
         Button button = new Button(message);
 
@@ -268,8 +289,8 @@ public class GUI extends Application {
         button.setMinHeight(50);
 
         BackgroundFill buttonFill = new BackgroundFill(color, new CornerRadii(10), Insets.EMPTY);
-        BackgroundFill buttonPressedFill = new BackgroundFill(color.darker(), new CornerRadii(10), Insets.EMPTY);
-        BackgroundFill mouseOverFill = new BackgroundFill(color.brighter(), new CornerRadii(10), Insets.EMPTY);
+        BackgroundFill buttonPressedFill = new BackgroundFill(color2.brighter(), new CornerRadii(10), Insets.EMPTY);
+        BackgroundFill mouseOverFill = new BackgroundFill(color2, new CornerRadii(10), Insets.EMPTY);
 
         button.setBackground(new Background(buttonFill));
         button.setOnMousePressed(e -> button.setBackground(new Background(buttonPressedFill)));
