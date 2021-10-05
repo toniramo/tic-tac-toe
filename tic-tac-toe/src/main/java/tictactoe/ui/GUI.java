@@ -289,7 +289,7 @@ public class GUI extends Application {
     }
 
     private void setBackground(Pane pane) {
-        BackgroundImage backgroundImage = new BackgroundImage(new Image("file:../documentation/images/background.png", windowWidth / 1.6, 0, true, true),
+        BackgroundImage backgroundImage = new BackgroundImage(new Image("file:../documentation/images/background2.png", windowWidth / 1.6, 0, true, true),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
 
         pane.setBackground(new Background(backgroundImage));
