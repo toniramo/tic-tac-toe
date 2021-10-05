@@ -4,19 +4,32 @@ import javafx.application.Application;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import tictactoe.ai.AI;
 import tictactoe.dao.InMemoryDao;
@@ -36,6 +49,8 @@ public class GUI extends Application {
     private GridPane gameBoard;
     private AI[] ais;
     private Stage stage;
+    private final int windowHeight = 700;
+    private final int windowWidth = 700;
 
     @Override
     public void init() {
@@ -60,13 +75,17 @@ public class GUI extends Application {
         }
 
         VBox layout = new VBox();
-        HBox topMenuLayout = new HBox();
+        HBox topMenuLayout = new HBox(7);
+        topMenuLayout.alignmentProperty().set(Pos.CENTER_LEFT);
+        topMenuLayout.setPadding(new Insets(5));
 
-        Button newGameButton = new Button("New game");
-        Button backToStart = new Button("Back to main menu");
-        Button exitButton = new Button("Exit");
+        Button newGameButton = createButton("New game", Color.LIGHTGREY, false);
+        Button backToStart = createButton("Back to main menu", Color.LIGHTGREY, false);
+        Button exitButton = createButton("Exit", Color.GREY, false);
+        exitButton.setStyle("-fx-text-fill: white");
 
         Label turnLabel = new Label("Turn: " + gameService.getCurrentPlayer().getMark());
+        turnLabel.fontProperty().set(Font.font("Helvetica", FontWeight.THIN, 20));
         turnLabel.setPadding(new Insets(10, 10, 10, 10));
 
         this.gameBoard = new GridPane();
@@ -81,7 +100,7 @@ public class GUI extends Application {
 
                 Rectangle tile = new Rectangle(40, 40);
                 tile.setFill(Color.WHITE);
-                tile.setStroke(Color.GRAY);
+                tile.setStroke(Color.GREY.brighter());
 
                 stack.getChildren().add(tile);
                 gameBoard.add(stack, i, j);
@@ -90,8 +109,6 @@ public class GUI extends Application {
                     int x = GridPane.getColumnIndex(stack);
                     int y = GridPane.getRowIndex(stack);
 
-                    Label mark = new Label();
-                    mark.setFont(Font.font(STYLESHEET_MODENA, FontWeight.BOLD, 25));
                     if (gameService.validMove(x, y)) {
                         makeMove(x, y, stack, turnLabel);
                     }
@@ -171,7 +188,7 @@ public class GUI extends Application {
     private void makeMove(int x, int y, StackPane tile, Label turnLabel) {
         Player playerBeforeMove = gameService.getCurrentPlayer();
         Label mark = new Label();
-        mark.setFont(Font.font(STYLESHEET_MODENA, FontWeight.BOLD, 25));
+        mark.setFont(Font.font("Helvetica", FontWeight.BOLD, 25));
         mark.setText(playerBeforeMove.getMark());
         mark.setTextFill(playerBeforeMove.getMarkColor());
         tile.getChildren().add(mark);
@@ -182,17 +199,36 @@ public class GUI extends Application {
 
     private Scene setUpStartUpScene() {
         BorderPane layout = new BorderPane();
-        VBox menu = new VBox();
+        setBackground(layout);
+        layout.setMinSize(windowWidth, windowHeight);
+        VBox menu = new VBox(10);
+        menu.setMaxSize(windowWidth / 2.5, windowHeight / 1.8);
+        setBackgroundFill(menu, new Color(1, 1, 1, 0.95), 20, -40);
+
+        DropShadow shadow = new DropShadow();
+        shadow.spreadProperty().set(0.5);
+        shadow.setColor(new Color(0.5, 0.5, 0.5, 0.5));
+        menu.setEffect(shadow);
 
         Label title = new Label("Tic-tac-toe");
-        Label subtitle = new Label("5-in-row variant\n");
+        title.setFont(Font.font("Helvetica", FontWeight.BOLD, 32));
+        Label subtitle = new Label("5-in-row variant");
+
+        Region r1 = new Region();
+        r1.setMinHeight(20);
+
         Label info = new Label("Choose game mode:");
 
-        Button humanHuman = new Button("Human vs. human");
-        Button humanAi = new Button("Human vs. AI");
-        Button aiHuman = new Button("AI vs. human");
-        Button aiAi = new Button("AI vs. AI\n(choose 1st move)");
-        Button exit = new Button("Exit");
+        Button humanHuman = createButton("Human vs. human", Color.LIGHTGREY, true);
+        Button humanAi = createButton("Human vs. AI", Color.LIGHTGREY, true);
+        Button aiHuman = createButton("AI vs. human", Color.LIGHTGREY, true);
+        Button aiAi = createButton("AI vs. AI\n(choose 1st move)", Color.LIGHTGREY, true);
+
+        Region r2 = new Region();
+        r2.setMinHeight(20);
+
+        Button exit = createButton("Exit", Color.GREY, true);
+        exit.setStyle("-fx-text-fill: white");
 
         Player humanPlayer1 = new Player("X", Color.TOMATO, PlayerType.HUMAN);
         Player humanPlayer2 = new Player("O", Color.STEELBLUE, PlayerType.HUMAN);
@@ -208,7 +244,8 @@ public class GUI extends Application {
             stage.close();
         });
 
-        menu.getChildren().addAll(title, subtitle, info, humanHuman, humanAi, aiHuman, aiAi, exit);
+        menu.setAlignment(Pos.CENTER);
+        menu.getChildren().addAll(title, subtitle, r1, info, humanHuman, humanAi, aiHuman, aiAi, r2, exit);
         layout.setCenter(menu);
         return new Scene(layout);
     }
@@ -218,6 +255,52 @@ public class GUI extends Application {
             play(rules);
         });
 
+    }
+
+    private Button createButton(String message, Color color, boolean useMaximumWidth) {
+
+        Button button = new Button(message);
+
+        if (useMaximumWidth) {
+            button.setMaxWidth(Double.MAX_VALUE);
+        }
+
+        button.setMinHeight(50);
+
+        BackgroundFill buttonFill = new BackgroundFill(color, new CornerRadii(10), Insets.EMPTY);
+        BackgroundFill buttonPressedFill = new BackgroundFill(color.darker(), new CornerRadii(10), Insets.EMPTY);
+        BackgroundFill mouseOverFill = new BackgroundFill(color.brighter(), new CornerRadii(10), Insets.EMPTY);
+
+        button.setBackground(new Background(buttonFill));
+        button.setOnMousePressed(e -> button.setBackground(new Background(buttonPressedFill)));
+        button.setOnMouseReleased(e -> button.setBackground(new Background(buttonFill)));
+        button.setOnMouseEntered(e -> button.setBackground(new Background(mouseOverFill)));
+        button.setOnMouseExited(e -> button.setBackground(new Background(buttonFill)));
+
+        DropShadow shadow = new DropShadow();
+        shadow.radiusProperty().set(2);
+        shadow.spreadProperty().set(0.5);
+        shadow.setColor(new Color(0, 0, 0, 0.3));
+
+        button.setEffect(shadow);
+
+        button.textAlignmentProperty().set(TextAlignment.CENTER);
+        return button;
+    }
+
+    private void setBackground(Pane pane) {
+        BackgroundImage backgroundImage = new BackgroundImage(new Image("file:../documentation/images/background.png", windowWidth / 1.6, 0, true, true),
+                BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+
+        pane.setBackground(new Background(backgroundImage));
+
+    }
+
+    private void setBackgroundFill(Pane pane, Color color, int cornerRadii, int inset) {
+        BackgroundFill bf = new BackgroundFill(
+                color,
+                new CornerRadii(cornerRadii), new Insets(inset));
+        pane.setBackground(new Background(bf));
     }
 
 }
