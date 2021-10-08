@@ -6,35 +6,18 @@
 package tictactoe.ai;
 
 import java.util.Random;
-import javafx.scene.paint.Color;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import tictactoe.dao.InMemoryDao;
-import tictactoe.logic.GameService;
-import tictactoe.logic.Player;
-import tictactoe.logic.RuleBook;
 
 /**
  * AlphaBetaMoveChooser tests
  */
 public class AlphaBetaMoveChooserTest {
 
-    /* private Player humanPlayer1 = new Player("X", Color.TOMATO, Player.PlayerType.HUMAN);
-    private Player humanPlayer2 = new Player("O", Color.STEELBLUE, Player.PlayerType.HUMAN);
-    private Player aiPlayer1 = new Player("X", Color.TOMATO, Player.PlayerType.AI);
-    private Player aiPlayer2 = new Player("O", Color.STEELBLUE, Player.PlayerType.AI);
-
-    private RuleBook humanAndAI = new RuleBook(20, 5, new Player[]{humanPlayer1, aiPlayer2});
-    private RuleBook AIandHuman = new RuleBook(20, 5, new Player[]{aiPlayer1, humanPlayer2});
-    private RuleBook onlyAIs = new RuleBook(20, 5, new Player[]{aiPlayer1, aiPlayer2});
-     
-    private GameService gameService  = new GameService(new InMemoryDao());*/
-    //this.gameService.startNewGame (AIandHuman);
-    //public static int[] getMove(int[][] node, int[] playArea, int playedMoves, int turn, int rowLenght, int alpha, int beta, int maxSearchDepth)
     @BeforeClass
     public static void setUpClass() {
     }
@@ -53,7 +36,7 @@ public class AlphaBetaMoveChooserTest {
     }
 
     @Test
-    public void winningMoveIsChosenWhenPossibleV1() {
+    public void winningHorizontalMoveIsChosenV1() {
         int[][] node = initializeNode(20);
         node[10][10] = 0;
         node[11][10] = 0;
@@ -70,7 +53,7 @@ public class AlphaBetaMoveChooserTest {
     }
 
     @Test
-    public void winningMoveIsChosenWhenPossibleV2() {
+    public void winningHorizontalMoveIsChosenV2() {
         int[][] node = initializeNode(20);
         node[10][10] = 1;
         node[11][10] = 1;
@@ -87,7 +70,85 @@ public class AlphaBetaMoveChooserTest {
     }
 
     @Test
-    public void winningMoveIsCounteredWhenPossibleV1() {
+    public void winningHorizontalMoveIsChosenV3() {
+        int[][] node = initializeNode(20);
+        int x0 = 1;
+        int y0 = 1;
+        int direction = 0; // horizontal
+        int player = 0;
+        createKInRow(node, player, direction, 20, 4, x0, y0);
+
+        int[] move = AlphaBetaMoveChooser.getMove(node, new int[]{1, 1, 20, 20}, 8, 0, 5, (int) -1e9, (int) 1e9, 1);
+        assertTrue(move[0] == (x0 + 4) && move[1] == y0);
+    }
+
+    @Test
+    public void winningHorizontalMoveIsChosenV4() {
+        int[][] node = initializeNode(20);
+        int x0 = 15;
+        int y0 = 20;
+        int direction = 0; // horizontal
+        int player = 0;
+        createKInRow(node, player, direction, 20, 4, x0, y0);
+
+        int[] move = AlphaBetaMoveChooser.getMove(node, new int[]{1, 1, 20, 20}, 8, 0, 5, (int) -1e9, (int) 1e9, 1);
+        assertTrue((move[0] == (x0 + 4) && move[1] == y0) || (move[0] == (x0 - 1) && move[1] == (y0)));
+    }
+
+    @Test
+    public void winningVerticalMoveIsChosenV1() {
+        int[][] node = initializeNode(20);
+        int x0 = 9;
+        int y0 = 6;
+        int direction = 1; // horizontal
+        int player = 1;
+        createKInRow(node, player, direction, 20, 4, x0, y0);
+
+        int[] move = AlphaBetaMoveChooser.getMove(node, new int[]{1, 1, 20, 20}, 8, 1, 5, (int) -1e9, (int) 1e9, 1);
+        assertTrue((move[0] == x0 && move[1] == y0 + 4) || (move[0] == x0 && move[1] == y0 - 1));
+    }
+
+    @Test
+    public void winningVerticalMoveIsChosenV2() {
+        int[][] node = initializeNode(20);
+        int x0 = 20;
+        int y0 = 14;
+        int direction = 1; // horizontal
+        int player = 1;
+        createKInRow(node, player, direction, 20, 4, x0, y0);
+
+        int[] move = AlphaBetaMoveChooser.getMove(node, new int[]{1, 1, 20, 20}, 8, 1, 5, (int) -1e9, (int) 1e9, 1);
+        assertTrue((move[0] == x0 && move[1] == y0 + 4) || (move[0] == x0 && move[1] == y0 - 1));
+    }
+
+    @Test
+    public void winningDiagonalMoveIsChosenV1() {
+        int[][] node = initializeNode(20);
+        int x0 = 10;
+        int y0 = 10;
+        int direction = 2; // horizontal
+        int player = 1;
+        createKInRow(node, player, direction, 20, 4, x0, y0);
+
+        int[] move = AlphaBetaMoveChooser.getMove(node, new int[]{1, 1, 20, 20}, 8, 1, 5, (int) -1e9, (int) 1e9, 1);
+        assertTrue((move[0] == x0 + 4 && move[1] == y0 + 4) || (move[0] == x0 - 1 && move[1] == y0 - 1));
+    }
+
+    @Test
+    public void winningDiagonalMoveIsChosenV2() {
+        int[][] node = initializeNode(20);
+        int x0 = 10;
+        int y0 = 10;
+        int direction = 3; // horizontal
+        int player = 1;
+        createKInRow(node, player, direction, 20, 4, x0, y0);
+
+        int[] move = AlphaBetaMoveChooser.getMove(node, new int[]{1, 1, 20, 20}, 8, 1, 5, (int) -1e9, (int) 1e9, 1);
+        assertTrue((move[0] == x0 + 4 && move[1] == y0 - 4) || (move[0] == x0 - 1 && move[1] == y0 + 1));
+    }
+
+    @Test
+    public void winningMoveIsCounteredV1() {
         int[][] node = initializeNode(20);
         node[10][10] = 0;
         node[11][10] = 0;
@@ -104,7 +165,7 @@ public class AlphaBetaMoveChooserTest {
     }
 
     @Test
-    public void winningMoveIsCounteredWhenPossibleV2() {
+    public void winningMoveIsCounteredV2() {
         int[][] node = initializeNode(20);
         node[10][10] = 1;
         node[11][10] = 1;
@@ -132,56 +193,78 @@ public class AlphaBetaMoveChooserTest {
 
     /**
      * Creates test node in which one player is about to win and another has
-     * marks in various corners of board. Experimental, not yet finished. WIP-
+     * marks in various corners of board.
      */
-    
-    //CHECKSTYLE:OFF
-    private int[][] createAlmostWinnigNode(int player, int direction, int n, int x0, int y0) {
-        int[][] node = new int[n + 1][n + 1];
+    private void createKInRow(int[][] node, int player, int direction, int n, int k, int x0, int y0) {
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
                 node[i][j] = -1;
             }
         }
-        for (int i = 0; i < 4; i++) {
-            int x = 0;
-            int y = 0;
-            if (direction == 0) {
-                x = x0 + i;
-                y = y0;
-            }
-            if (direction == 1) {
-                x = x0;
-                y = y0 + i;
-            }
-            if (direction == 2) {
-                x = x0 + i;
-                y = y0 + i;
-            }
-            if (direction == 3) {
-                x = x0 + i;
-                y = y0 - i;
-            }
+        for (int i = 0; i < k; i++) {
+            int x = getNextX(x0, direction, i);
+            int y = getNextY(y0, direction, i);
             node[x][y] = player;
         }
-        int j = 0;
-        int k = 0;
-        while (j <= 5) {
-            if (node[1 + k][1 + k] < 0) {
-                node[1 + k][1 + k] = (player + 1) % 2;
-                j++;
-            }
-            if (node[n - k][n - k] < 0) {
-                node[n - k][n - k] = (player + 1) % 2;
-                j++;
-            }
-            if (node[1 + k][n - k] < 0) {
-                node[1 + k][n - k] = (player + 1) % 2;
-                j++;
-            }
-            k++;
-        }
-        return node;
+        generateRandomMoves(node, (player + 1) % 2, n, k - 1, 13);
     }
-    //CHECKSTYLE:ON
+
+    /**
+     * Gets next x-coordinate when moving on line in chosen direction.
+     *
+     * @param x0 x-coordinate of starting point
+     * @param direction direction in which row is formed ( 0: horizontal / right
+     * to left 1: vertical / down to tup 2: diagonal / down left to up right 3:
+     * diagonal / up left to down right)
+     * @param i index in row
+     * @return next x-coordinate
+     */
+    private int getNextX(int x0, int direction, int i) {
+        if (direction == 1) {
+            return x0;
+        }
+        return x0 + i;
+    }
+
+    /**
+     * Gets next y-coordinate when moving on line in chosen direction.
+     *
+     * @param y0 y-coordinate of starting point
+     * @param direction direction in which row is formed ( 0: horizontal / right
+     * to left 1: vertical / down to tup 2: diagonal / down left to up right 3:
+     * diagonal / up left to down right)
+     * @param i index in row
+     * @return next y-coordinate
+     */
+    private int getNextY(int y0, int direction, int i) {
+        if (direction == 0) {
+            return y0;
+        }
+        if (direction == 1 || direction == 2) {
+            return y0 + i;
+        }
+        return y0 - i;
+    }
+
+    /**
+     * Generates m random moves on board (uses random seed to get repeatable
+     * resuts).
+     *
+     * @param node status of game board
+     * @param player player whose marks are located on board
+     * @param n board size (width / lenght)
+     * @param m number generated moves
+     */
+    private void generateRandomMoves(int[][] node, int player, int n, int m, int seed) {
+        Random random = new Random(seed);
+        int j = 0;
+        while (j <= m) {
+            int x = random.nextInt(n) + 1;
+            int y = random.nextInt(n) + 1;
+            if (node[x][y] < 0) {
+                node[x][y] = player;
+                j++;
+            }
+        }
+    }
 }
