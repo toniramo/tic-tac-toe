@@ -1,7 +1,7 @@
 package tictactoe.ui;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
@@ -33,6 +33,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import tictactoe.ai.AI;
 import tictactoe.dao.InMemoryDao;
 import tictactoe.logic.GameService;
@@ -83,7 +84,7 @@ public class GUI extends Application {
 
         Button newGameButton = createButton("New game", Color.LIGHTGREY, Color.SALMON, false);
         Button backToStart = createButton("Back to main menu", Color.LIGHTGREY, Color.SALMON, false);
-        Button exitButton = createButton("Exit", Color.GREY, Color.STEELBLUE, false);
+        Button exitButton = createButton("Exit", Color.GREY, Color.STEELBLUE.desaturate(), false);
         exitButton.setStyle("-fx-text-fill: white");
 
         Label turnLabel = new Label("Turn: " + gameService.getCurrentPlayer().getMark());
@@ -129,6 +130,7 @@ public class GUI extends Application {
                 });
                 stack.setOnMouseExited(e -> {
                     stack.getChildren().remove(1);
+
                 });
             }
         }
@@ -168,12 +170,15 @@ public class GUI extends Application {
                     ais[0].updateStateBasedOnLastMove();
                 }
                 Move move = ais[gameService.getTurn()].chooseMove();
-                for (Node node : gameBoard.getChildren()) {
-                    if (GridPane.getColumnIndex(node) == move.getX()
-                            && GridPane.getRowIndex(node) == move.getY()) {
-                        makeMove(move.getX(), move.getY(), (StackPane) node, turnLabel);
+                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), (ActionEvent event) -> {
+                    for (Node node : gameBoard.getChildren()) {
+                        if (GridPane.getColumnIndex(node) == move.getX()
+                                && GridPane.getRowIndex(node) == move.getY()) {
+                            makeMove(move.getX(), move.getY(), (StackPane) node, turnLabel);
+                        }
                     }
-                }
+                }));
+                timeline.play();
             }
         });
 
@@ -248,7 +253,7 @@ public class GUI extends Application {
         Region r2 = new Region();
         r2.setMinHeight(20);
 
-        Button exit = createButton("Exit", Color.GREY, Color.STEELBLUE, true);
+        Button exit = createButton("Exit", Color.GREY, Color.STEELBLUE.desaturate(), true);
         exit.setStyle("-fx-text-fill: white");
 
         Player humanPlayer1 = new Player("X", Color.TOMATO, PlayerType.HUMAN);
@@ -279,7 +284,6 @@ public class GUI extends Application {
     }
 
     private Button createButton(String message, Color color, Color color2, boolean useMaximumWidth) {
-
         Button button = new Button(message);
 
         if (useMaximumWidth) {
@@ -289,7 +293,7 @@ public class GUI extends Application {
         button.setMinHeight(50);
 
         BackgroundFill buttonFill = new BackgroundFill(color, new CornerRadii(10), Insets.EMPTY);
-        BackgroundFill buttonPressedFill = new BackgroundFill(color2.brighter(), new CornerRadii(10), Insets.EMPTY);
+        BackgroundFill buttonPressedFill = new BackgroundFill(color2.brighter().desaturate(), new CornerRadii(10), Insets.EMPTY);
         BackgroundFill mouseOverFill = new BackgroundFill(color2, new CornerRadii(10), Insets.EMPTY);
 
         button.setBackground(new Background(buttonFill));
