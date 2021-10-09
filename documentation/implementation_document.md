@@ -31,18 +31,24 @@ Most exhaustive calculation taking place while algorithm is executed is heuristi
 In total, there are n+n+2*(2*n-1) slices of game board to analyze'(this including now the short diagonals with lenght of 1-4 in which window is out of bounds). Moving window is implemented so that it visits each tile four times coming from all available directions once. (Notice that it could be improved a bit to avoid diagonals where maximum lenght is between 1-4). 
 
 As a result, 4\*n\*m (n: width of play area, m: height) tile visits are made heuristic calculation. Given that there are n\*m-p (p: played moves), and max search depth d_max is set, up to
-approximately 4\*n\*m\*(n\*m-p)^(d_max+1) visits are made during each turn in case any pruning does not take place (and exluding possible changes to play area and number of available moves). So for instance n=10, m=10, p=20 and d_max = 2 yields up to 3.2768e+13 visits. It is possible that some moves result to win so the number is likely smaller if p >= 8. Winning move in turn is checked around the latest move within range of 4 tiles from the one move was placed on. Again check is performed for all 4 directions resulting in 9*4=36 tile visits in total per check.
+approximately 4\*n\*m\*(n\*m-p)^(d_max+1) visits are made during each turn in case any pruning does not take place (and exluding possible changes to play area and number of available moves). So for instance n=10, m=10, p=20 and d_max = 2 yields up to 3.2768e+13 visits. It is possible that some moves result to win so the number is likely smaller if p >= 8. Winning move in turn is checked around the latest move within range of 4 tiles from the one move was placed on. Again check is performed for all 4 directions resulting in 9\*4=36 tile visits in total per check. 
 
 ## Possible flaws and improvements (some may still be implementable during last weeks of the project)
-- User interface waits for AI to finish move before updating its state. This means that move that changed turn to AI is not shown on UI until also AI's move is registered. Not problem if loading time of move is fast but with e.g. deeper searching this affects user experience.
-- UI to show winning row
-- Menu to UI to have option to select different game configurations (human vs AI, AI vs. human, AI vs. AI, human vs. human).
-- Improve alpha beta pruning algorithm further, e.g. by utilizing iterative deepening and/or changing the order of nodes to increase likelyhood of finding the most valuable node early on - for instance starting from moves closest to the latest moves.
+- User interface waits for AI to finish move before updating its state. This means that move that changed turn to AI is not shown on UI until also AI's move is registered. Not problem if loading time of move is fast but with e.g. deeper searching this affects user experience. **PARTIALLY DONE** (week 5)
+- UI to show winning row **DONE** (week 5)
+- Menu to UI to have option to select different game configurations (human vs AI, AI vs. human, AI vs. AI, human vs. human). **DONE** (week 5)
+- Improve alpha beta pruning algorithm further, e.g. by utilizing iterative deepening and/or changing the order of nodes to increase likelyhood of finding the most valuable node early on - for instance starting from moves closest to the latest moves. **PARTIALLY DONE** (week 5)
 - Take into account human element in game: it is possible that opponent does not notice already achieved victory (e.g. | |X|X|X|X| |). In such case AI may just ''give up'' i.e. choose last of the observed moves since all are equally bad based on algorithm.
 
 ## Sources
-- Same as in project specification (add here)
-- Introduction to Artificial intelligence course material, [part 2h](https://materiaalit.github.io/intro-to-ai/part2/)
+- https://en.wikipedia.org/wiki/Minimax
+- https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
+- https://en.wikipedia.org/wiki/Branching_factor
+- https://en.wikipedia.org/wiki/M,n,k-game
+- http://www.cs.umd.edu/~hajiagha/474GT15/Lecture12122013.pdf
+- https://cis.temple.edu/~vasilis/Courses/CIS603/Lectures/l7.html
+- Introduction to Artificial intelligence course material, [part 2](https://materiaalit.github.io/intro-to-ai/part2/)
+- StackOverflow with error cases.
 
 Notes (to be removed):
 Implementation document should contain:
