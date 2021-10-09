@@ -24,7 +24,7 @@ Improved performance and potentially clever moves
 ## Other things
 In addition to these changes, I wrote new tests to among other things validate AI. To do that, I needed to study about mocking further since AI uses static methods of AlphaBetaMoveChooser and mocking such is not done exactly same way as with non-static methods. While also modifying the alpha beta class in question, I started to think if it was wise to use static methods in the first place. (Well, this was because separate TicTacToeNode class included earlier some of the methods now added to this. ) That is, there are bunch of arguments to be passed between each method within the class which may sometimes feel somewhat tedious. Then again, it is transparent what variables each method in question uses.
 
-Documentation was partly updated as usual. Also, made (peer-review)[https://github.com/jarkmaen/labyrintin-ratkaisija/issues/1] of other course project which was teaching. As a result, I even got idea about how to animate AI's moves on game board (needed JavaFX Timeline object like reviewed project had used).
+Documentation was partly updated as usual. Also, made [peer-review](https://github.com/jarkmaen/labyrintin-ratkaisija/issues/1) of other course project which was teaching. As a result, I even got idea about how to animate AI's moves on game board (needed JavaFX Timeline object like reviewed project had used).
 
 ## Next
 At least:
