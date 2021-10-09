@@ -20,8 +20,11 @@ repositories {
 
 dependencies {
     testCompile 'junit:junit:4.13'
-    testImplementation "junit:junit:4.13"
-    testImplementation "org.mockito:mockito-core:3.+"
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'org.mockito:mockito-core:3.+'
+    testImplementation 'org.mockito:mockito-inline:3.4.0'
+    testCompile 'net.bytebuddy:byte-buddy-agent:1.10.13'
+    compile 'net.bytebuddy:byte-buddy:1.10.13'
 }
 
 task myJavadocs(type: Javadoc) {

@@ -130,7 +130,7 @@ public class AlphaBetaMoveChooserTest {
         int player = 1;
         createKInRow(node, player, direction, 20, 4, x0, y0);
 
-        int[] move = AlphaBetaMoveChooser.getMove(node, new int[]{1, 1, 20, 20}, 8, 1, 5, (int) -1e9, (int) 1e9, 1);
+        int[] move = AlphaBetaMoveChooser.getMoveWithOptimizedSearchDepth(node, new int[]{1, 1, 20, 20}, 8, 1, 5, (int) -1e9, (int) 1e9);
         assertTrue((move[0] == x0 + 4 && move[1] == y0 + 4) || (move[0] == x0 - 1 && move[1] == y0 - 1));
     }
 
@@ -143,7 +143,7 @@ public class AlphaBetaMoveChooserTest {
         int player = 1;
         createKInRow(node, player, direction, 20, 4, x0, y0);
 
-        int[] move = AlphaBetaMoveChooser.getMove(node, new int[]{1, 1, 20, 20}, 8, 1, 5, (int) -1e9, (int) 1e9, 1);
+        int[] move = AlphaBetaMoveChooser.getMoveWithOptimizedSearchDepth(node, new int[]{1, 1, 20, 20}, 8, 1, 5, (int) -1e9, (int) 1e9);
         assertTrue((move[0] == x0 + 4 && move[1] == y0 - 4) || (move[0] == x0 - 1 && move[1] == y0 + 1));
     }
 
@@ -160,7 +160,7 @@ public class AlphaBetaMoveChooserTest {
         node[13][11] = 1;
         node[10][12] = 1;
 
-        int[] move = AlphaBetaMoveChooser.getMove(node, new int[]{8, 9, 14, 13}, 8, 1, 5, (int) -1e9, (int) 1e9, 1);
+        int[] move = AlphaBetaMoveChooser.getMoveWithOptimizedSearchDepth(node, new int[]{8, 9, 14, 13}, 8, 1, 5, (int) -1e9, (int) 1e9);
         assertTrue(move[0] == 14 && move[1] == 10);
     }
 
@@ -177,7 +177,7 @@ public class AlphaBetaMoveChooserTest {
         node[13][11] = 0;
         node[10][12] = 0;
 
-        int[] move = AlphaBetaMoveChooser.getMove(node, new int[]{8, 9, 14, 13}, 8, 0, 5, (int) -1e9, (int) 1e9, 1);
+        int[] move = AlphaBetaMoveChooser.getMoveWithOptimizedSearchDepth(node, new int[]{8, 9, 14, 13}, 8, 0, 5, (int) -1e9, (int) 1e9);
         assertTrue(move[0] == 14 && move[1] == 10);
     }
 
