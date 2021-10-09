@@ -1,4 +1,4 @@
-# tic-tac-toe (5-in-row variant)
+# Tic-tac-toe (5-in-row variant)
 
 Purpose of this project is to create variant of tic-tac-toe game with an AI to play against with. Project is made for course [Data Structures lab](https://tiralabra.github.io/2021_p1/en/) of University of Helsinki.
 
@@ -17,3 +17,4 @@ Purpose of this project is to create variant of tic-tac-toe game with an AI to p
 - [Week 2](./documentation/weekly_reports/week2.md)
 - [Week 3](./documentation/weekly_reports/week3.md)
 - [Week 4](./documentation/weekly_reports/week4.md)
+- [Week 5](./documentation/weekly_reports/week4.md)
