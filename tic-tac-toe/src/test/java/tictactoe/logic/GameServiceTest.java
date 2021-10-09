@@ -1,8 +1,10 @@
 package tictactoe.logic;
 
+import java.util.Arrays;
 import javafx.scene.paint.Color;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -157,6 +159,28 @@ public class GameServiceTest {
         board.setMove(new Move(player1, 11, 8));
         board.setMove(new Move(player1, 10, 7));
         assertTrue(gameService.getWinningPlayer().equals(player1));
+    }
+
+    @Test
+    public void fiveinRowDiagonallyReturnsCorrectWinningRow() {
+        Move[] moves = new Move[]{new Move(player1, 14, 11),
+            new Move(player1, 13, 10), new Move(player1, 12, 9),
+            new Move(player1, 11, 8), new Move(player1, 10, 7)};
+        board.setMove(moves[0]);
+        board.setMove(moves[1]);
+        board.setMove(moves[2]);
+        board.setMove(moves[3]);
+        board.setMove(moves[4]);
+
+        Move[] row = gameService.getWinningRow();
+        for (Move move : moves) {
+            assertTrue(Arrays.asList(row).contains(move));
+        }
+    }
+    
+    @Test
+    public void winningRowIsNullWithEmptyBoard() {
+        assertEquals(null, gameService.getWinningRow());
     }
 
     private GameBoard fillGameBoardWithMovesOfChosenPlayer(Player player, GameBoard board) {

@@ -148,6 +148,9 @@ public class GameService {
      */
     public Move[] getWinningRow() {
         int n = gameData.getRules().getMarksToWin();
+        if (gameData.getGameBoard().getNumberOfPlayedMoves() < n) {
+            return null;
+        }
         Move lastMove = gameData.getGameBoard().getLastMove();
         Player p = lastMove.getPlayer();
         Move[][] row = new Move[4][n];
