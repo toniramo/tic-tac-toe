@@ -11,8 +11,8 @@ public class AlphaBetaMoveChooser {
      * search depth is not enough to find desired end state. Algorithm expects
      * both players to play most optimal moves (that algorithm can find).
      *
-     * @param node state of game board with -1 indicating free tile, non-negative
-     * referring to player placed the mark
+     * @param node state of game board with -1 indicating free tile,
+     * non-negative referring to player placed the mark
      * @param playArea area within which marks are at given moment located, used
      * to optimize search around already played marks
      * @param playedMoves number of moves already placed on board, used to check
@@ -36,6 +36,9 @@ public class AlphaBetaMoveChooser {
         for (int x = playArea[0]; x <= playArea[2]; x++) {
             for (int y = playArea[1]; y <= playArea[3]; y++) {
                 if (x > 0 && x < node.length && y > 0 && y < node[0].length && node[x][y] < 0) {
+                    if (noNeighbours(node, playArea, x, y) && playedMoves > 0) {
+                        continue;
+                    }
                     node[x][y] = turn;
                     int alphaBetaValue = value(node, playArea, new int[]{x, y},
                             playedMoves + 1, (turn + 1) % 2, rowLenght, alpha, beta, 0, maxSearchDepth);
@@ -65,11 +68,83 @@ public class AlphaBetaMoveChooser {
     }
 
     /**
+     * Gets move based on optimized maximum search depth depending on available
+     * free tiles. Method calls {@link #optimizedMaxSearchDepth(int[], int)} to
+     * determine optmized depth and then
+     * {@link #getMove(int[][], int[], int, int, int, int, int, int)} to get the
+     * actual move.
+     *
+     * @param node state of game board with -1 indicating free tile,
+     * non-negative referring to player placed the mark
+     * @param playArea area within which marks are at given moment located, used
+     * to optimize search around already played marks
+     * @param playedMoves number of moves already placed on board, used to check
+     * if board is full
+     * @param turn number of player in turn (0 or 1)
+     * @param rowLenght number of marks in row needed to win
+     * @param alpha alpha value, in the beginning usually very low value such as
+     * -1e9
+     * @param beta beta value, in the beginning usually very high value such as
+     * 1e9
+     * @return potentially most optimal move
+     */
+    public static int[] getMoveWithOptimizedSearchDepth(int[][] node, int[] playArea, int playedMoves,
+            int turn, int rowLenght, int alpha, int beta) {
+        return getMove(node, playArea, playedMoves, turn, rowLenght, alpha, beta,
+                optimizedMaxSearchDepth(playArea, playedMoves));
+    }
+
+    /**
+     * Checks if chosen tile has neighbouring marks.
+     *
+     * @param node state of game board
+     * @param area play area within which marks are located
+     * @param x x-coordinate of observed tile
+     * @param y y-coordinate of observed tile
+     * @return true if tile has no neighbour, otherwise false
+     */
+    private static boolean noNeighbours(int[][] node, int[] area, int x, int y) {
+        boolean result = true;
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                if (x + dx < area[0] || x + dx > area[2] || y + dy < area[1] || y + dy > area[3]) {
+                    continue;
+                }
+                if (node[x + dx][y + dy] >= 0) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Gets optimized maximum search depth in game tree based on free tiles on play area.
+     * @param area Play area within which marks are located
+     * @param playedMoves Number of played moves
+     * @return maximum search depth based on free tiles on play area
+     */
+    private static int optimizedMaxSearchDepth(int[] area, int playedMoves) {
+        int freeTiles = (area[3] - area[1] + 1) * (area[2] - area[0] + 1) - playedMoves;
+        if (freeTiles < 9) {
+            return 4;
+        }
+        if (freeTiles < 37) {
+            return 3;
+        }
+        if (freeTiles < 77) {
+            return 2;
+        }
+        return 1;
+    }
+
+    /**
      * Gets node value either based on end state if reached or heuristic, see
      * {@link #heuristicBasedOnPlayArea(int[][], int[], int, int, int)}.
      *
-     * @param node state of game board with -1 indicating free tile, non-negative
-     * referring to player placed the mark
+     * @param node state of game board with -1 indicating free tile,
+     * non-negative referring to player placed the mark
      * @param playArea area within which marks are at given moment located, used
      * to optimize search around already played marks
      * @param playedMoves number of moves already placed on board, used to check
@@ -88,7 +163,7 @@ public class AlphaBetaMoveChooser {
      */
     private static int value(int[][] node, int[] playArea, int[] move, int playedMoves,
             int turn, int rowLenght, int alpha, int beta, int nodeDepth, int maxSearchDepth) {
-        int maxValue = (int) 1e9 - nodeDepth - (turn + 1) % 2;
+        int maxValue = (int) 1e9 - nodeDepth;
         if (lastMoveWinning(node, move, rowLenght)) {
             return (turn + 1) % 2 == 0 ? maxValue : -maxValue;
         }
@@ -102,6 +177,9 @@ public class AlphaBetaMoveChooser {
         for (int x = playArea[0] - 1; x <= playArea[2] + 1; x++) {
             for (int y = playArea[1] - 1; y <= playArea[3] + 1; y++) {
                 if (x > 0 && x < node.length && y > 0 && y < node[0].length && node[x][y] < 0) {
+                    if (noNeighbours(node, playArea, x, y)) {
+                        continue;
+                    }
                     node[x][y] = turn;
                     boolean[] areaChanged = increasePlayArea(playArea, x, y);
                     int alphaBetaValue = value(node, playArea, new int[]{x, y},
@@ -248,6 +326,7 @@ public class AlphaBetaMoveChooser {
     private static int heuristicBasedOnPlayArea(
             int[][] node, int[] playArea, int turn, int rowLenght, int nodeDepth) {
         int n = node.length - 1;
+        //int n = Math.max(playArea[2], playArea[3]);
         int[] playerValues = new int[2];
         for (int i = 1; i <= n; i++) {
             int[][][] counters = new int[2][6][rowLenght + 1];
@@ -273,8 +352,7 @@ public class AlphaBetaMoveChooser {
                         if (marksOnRange[p][k] > 0
                                 && observedRangeFullyOnBoard(x, y, k, n, rowLenght)
                                 && marksOnRange[((p + 1) % 2)][k] == 0) {
-                            playerValues[p] += Math.pow(10, marksOnRange[p][k] - 1) - nodeDepth - ((p + turn) % 2);
-
+                            playerValues[p] += Math.pow(10, marksOnRange[p][k] - 1) - nodeDepth; //- ((p + turn) % 2);
                         }
                         counters[p][k] = reduceMarkCountersByOne(counters[p][k]);
                         if (marksOnRange[p][k] > 0 && counters[p][k][marksOnRange[p][k]] == 0) {

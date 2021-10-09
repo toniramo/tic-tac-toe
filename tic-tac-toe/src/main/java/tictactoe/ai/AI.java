@@ -48,12 +48,12 @@ public class AI {
     public Move chooseMove() {
         updateStateBasedOnLastMove();
         int turn = service.getTurn();
-        int[] move = AlphaBetaMoveChooser.getMove(state,
+        int[] move = AlphaBetaMoveChooser.getMoveWithOptimizedSearchDepth(state,
                 playArea, service.getGameBoard().getNumberOfPlayedMoves(),
-                turn, service.getRules().getMarksToWin(), (int) -1e9, (int) 1e9, 1);
+                turn, service.getRules().getMarksToWin(), (int) -1e9, (int) 1e9);
         state[move[0]][move[1]] = turn;
         updatePlayAreaBasedOnMove(move[0], move[1]);
-        return new Move(service.getCurrentPlayer(), move[0], move[1]);
+        return new Move(player, move[0], move[1]);
     }
 
     /**
@@ -114,9 +114,8 @@ public class AI {
         if (lastMove != null) {
             xLast = lastMove.getX();
             yLast = lastMove.getY();
+            state[xLast][yLast] = (service.getTurn() + 1) % 2;
         }
-        int turn = service.getTurn();
-        state[xLast][yLast] = (service.getTurn() + 1) % 2;
         updatePlayAreaBasedOnMove(xLast, yLast);
     }
 
