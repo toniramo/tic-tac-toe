@@ -1,5 +1,12 @@
 package tictactoe.ui;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -34,6 +41,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javax.imageio.ImageIO;
 import tictactoe.ai.AI;
 import tictactoe.dao.InMemoryDao;
 import tictactoe.logic.GameService;
@@ -314,11 +322,15 @@ public class GUI extends Application {
     }
 
     private void setBackground(Pane pane) {
-        BackgroundImage backgroundImage = new BackgroundImage(new Image("file:../documentation/images/background2.png", windowWidth / 1.6, 0, true, true),
+        Image image = null;
+        try {
+            image = new Image(getClass().getResource("/background2.png").toURI().toString(), windowWidth / 1.6, 0, true, true);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        BackgroundImage backgroundImage = new BackgroundImage(image,
                 BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
-
         pane.setBackground(new Background(backgroundImage));
-
     }
 
     private void setBackgroundFill(Pane pane, Color color, int cornerRadii, int inset) {
