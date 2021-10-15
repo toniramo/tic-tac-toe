@@ -19,7 +19,8 @@ public class RuleBookTest {
         Player[] players = new Player[]{new Player("X"), new Player("O")};
         RuleBook book1 = new RuleBook(n, k, players);
         RuleBook book2 = new RuleBook(n, k, players);
-        assertEquals(book1, book2);
+        assertTrue(book1.equals(book2) && book2.equals(book1));
+        assertTrue(book1.hashCode() == book2.hashCode());
     }
 
     @Test
@@ -29,6 +30,7 @@ public class RuleBookTest {
         Player[] players = new Player[]{new Player("X"), new Player("O")};
         RuleBook book1 = new RuleBook(n, k, players);
         RuleBook book2 = new RuleBook(n - 1, k + 1, players);
-        assertFalse(book1.equals(book2));
+        assertFalse(book1.equals(book2) && book2.equals(book1));
+        assertFalse(book1.hashCode() == book2.hashCode());
     }
 }
