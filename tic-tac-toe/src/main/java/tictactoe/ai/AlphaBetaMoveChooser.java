@@ -1,5 +1,7 @@
 package tictactoe.ai;
 
+import tictactoe.annotations.ExcludeFromJacocoGeneratedReport;
+
 /**
  * Implements minimax algorithm with alpha beta pruning and gets move with
  * highest estimated value
@@ -120,7 +122,9 @@ public class AlphaBetaMoveChooser {
     }
 
     /**
-     * Gets optimized maximum search depth in game tree based on free tiles on play area.
+     * Gets optimized maximum search depth in game tree based on free tiles on
+     * play area.
+     *
      * @param area Play area within which marks are located
      * @param playedMoves Number of played moves
      * @return maximum search depth based on free tiles on play area
@@ -410,6 +414,7 @@ public class AlphaBetaMoveChooser {
      */
     //CHECKSTYLE:OFF
     @Deprecated
+    @ExcludeFromJacocoGeneratedReport
     private static int heuristicBasedOnLastMove(
             int[][] node, int[] playArea, int[] move, int turn, int rowLenght) {
         int n = node.length - 1;
