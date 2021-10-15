@@ -1,10 +1,6 @@
 package tictactoe.ui;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
@@ -41,7 +37,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javax.imageio.ImageIO;
 import tictactoe.ai.AI;
 import tictactoe.dao.InMemoryDao;
 import tictactoe.logic.GameService;
@@ -107,88 +102,14 @@ public class GUI extends Application {
 
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
-                StackPane stack = new StackPane();
-
-                Rectangle tile = new Rectangle(40, 40);
-                tile.setFill(Color.WHITE);
-                tile.setStroke(Color.GREY.brighter());
-
-                stack.getChildren().add(tile);
+                StackPane stack = drawGameBoardTile();
                 gameBoard.add(stack, i, j);
-
-                stack.setOnMouseClicked(e -> {
-                    int x = GridPane.getColumnIndex(stack);
-                    int y = GridPane.getRowIndex(stack);
-
-                    if (gameService.validMove(x, y)) {
-                        makeMove(x, y, stack, turnLabel);
-                    }
-                });
-                stack.setOnMouseEntered(e -> {
-                    Player player = gameService.getCurrentPlayer();
-                    Label mark = new Label();
-                    mark.setFont(Font.font("Helvetica", FontWeight.BOLD, 25));
-                    mark.setText(player.getMark());
-                    Color color = player.getMarkColor();
-                    double r = color.getRed();
-                    double g = color.getGreen();
-                    double b = color.getBlue();
-                    mark.setTextFill(new Color(r, g, b, 0.5));
-                    stack.getChildren().add(mark);
-                });
-                stack.setOnMouseExited(e -> {
-                    stack.getChildren().remove(1);
-
-                });
+                placeMove(stack, turnLabel);
+                showTransparentMarkWhenMouseAbove(stack);
             }
         }
-        turn = new SimpleIntegerProperty(-1);
-        turn.addListener((var ov, var oldValue, var newValue) -> {
-            if (gameService.gameOver()) {
-                String gameOverText;
-                Player winner = gameService.getWinningPlayer();
-                if (gameService.getWinningPlayer() != null) {
-                    gameOverText = " Winner: " + winner.getMark();
-                } else {
-                    gameOverText = " Draw";
-                }
-                turnLabel.setText("Game over - " + gameOverText);
-                //Turn off actions on game board and show winning row.
-                Move[] row = gameService.getWinningRow();
-                gameBoard.getChildren().forEach((node) -> {
-                    node.setOnMouseClicked(null);
-                    node.setOnMouseEntered(null);
-                    node.setOnMouseExited(null);
-                    for (int i = 0; i < rules.getMarksToWin(); i++) {
-                        if (GridPane.getColumnIndex(node) == row[i].getX()
-                                && GridPane.getRowIndex(node) == row[i].getY()) {
-                            Color color = gameService.getGameBoard().getLastMove().getPlayer().getMarkColor();
-                            double r = color.getRed();
-                            double g = color.getGreen();
-                            double b = color.getBlue();
-                            ((Rectangle) ((StackPane) node).getChildren().get(0)).setFill(new Color(r, g, b, 0.2));
-                        }
-                    }
-                });
 
-            } else if (gameService.getCurrentPlayer().getPlayerType().equals(PlayerType.AI)) {
-                boolean aiVsAi = (ais[0] != null && ais[1] != null);
-                if (gameService.getGameBoard().getNumberOfPlayedMoves() == 1 && aiVsAi) {
-                    //update first AI player if aiVsAi game and user places first move.
-                    ais[0].updateStateBasedOnLastMove();
-                }
-                Move move = ais[gameService.getTurn()].chooseMove();
-                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), (ActionEvent event) -> {
-                    for (Node node : gameBoard.getChildren()) {
-                        if (GridPane.getColumnIndex(node) == move.getX()
-                                && GridPane.getRowIndex(node) == move.getY()) {
-                            makeMove(move.getX(), move.getY(), (StackPane) node, turnLabel);
-                        }
-                    }
-                }));
-                timeline.play();
-            }
-        });
+        addTurnListener(rules, turnLabel);
 
         boolean aiVsAi = (ais[0] != null && ais[1] != null);
         //Let user choose first move in AIvsAI.
@@ -216,6 +137,106 @@ public class GUI extends Application {
         stage.show();
     }
 
+    private void addTurnListener(RuleBook rules, Label turnLabel) {
+        turn = new SimpleIntegerProperty(-1);
+
+        turn.addListener((var ov, var oldValue, var newValue) -> {
+            if (gameService.gameOver()) {
+                String gameOverText;
+                Player winner = gameService.getWinningPlayer();
+                if (gameService.getWinningPlayer() != null) {
+                    gameOverText = " Winner: " + winner.getMark();
+                } else {
+                    gameOverText = " Draw";
+                }
+                turnLabel.setText("Game over - " + gameOverText);
+                //Turn off actions on game board and show winning row.
+                Move[] row = gameService.getWinningRow();
+                gameBoard.getChildren().forEach((node) -> {
+                    disableTile((StackPane) node);
+                    for (int i = 0; i < rules.getMarksToWin(); i++) {
+                        if (GridPane.getColumnIndex(node) == row[i].getX()
+                                && GridPane.getRowIndex(node) == row[i].getY()) {
+                            highlightTile((StackPane) node);
+                        }
+                    }
+                });
+            } else if (gameService.getCurrentPlayer().getPlayerType().equals(PlayerType.AI)) {
+                playAiTurn(turnLabel);
+            }
+
+        });
+    }
+
+    private void playAiTurn(Label turnLabel) {
+        boolean aiVsAi = (ais[0] != null && ais[1] != null);
+        if (gameService.getGameBoard().getNumberOfPlayedMoves() == 1 && aiVsAi) {
+            //update first AI player if aiVsAi game and user places first move.
+            ais[0].updateStateBasedOnLastMove();
+        }
+        Move move = ais[gameService.getTurn()].chooseMove();
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), (ActionEvent event) -> {
+            for (Node node : gameBoard.getChildren()) {
+                if (GridPane.getColumnIndex(node) == move.getX()
+                        && GridPane.getRowIndex(node) == move.getY()) {
+                    makeMove(move.getX(), move.getY(), (StackPane) node, turnLabel);
+                }
+            }
+        }));
+        timeline.play();
+    }
+
+    private void highlightTile(StackPane stack) {
+        Color color = gameService.getGameBoard().getLastMove().getPlayer().getMarkColor();
+        double r = color.getRed();
+        double g = color.getGreen();
+        double b = color.getBlue();
+        ((Rectangle) ((StackPane) stack).getChildren().get(0)).setFill(new Color(r, g, b, 0.2));
+    }
+
+    private void placeMove(StackPane stack, Label turnLabel) {
+        stack.setOnMouseClicked(e -> {
+            int x = GridPane.getColumnIndex(stack);
+            int y = GridPane.getRowIndex(stack);
+            if (gameService.validMove(x, y)) {
+                makeMove(x, y, stack, turnLabel);
+            }
+        });
+    }
+
+    private StackPane drawGameBoardTile() {
+        StackPane stack = new StackPane();
+        Rectangle tile = new Rectangle(40, 40);
+        tile.setFill(Color.WHITE);
+        tile.setStroke(Color.GREY.brighter());
+        stack.getChildren().add(tile);
+        return stack;
+    }
+
+    private void showTransparentMarkWhenMouseAbove(StackPane stack) {
+        stack.setOnMouseEntered(e -> {
+            Player player = gameService.getCurrentPlayer();
+            Label mark = new Label();
+            mark.setFont(Font.font("Helvetica", FontWeight.BOLD, 25));
+            mark.setText(player.getMark());
+            Color color = player.getMarkColor();
+            double r = color.getRed();
+            double g = color.getGreen();
+            double b = color.getBlue();
+            mark.setTextFill(new Color(r, g, b, 0.5));
+            stack.getChildren().add(mark);
+        });
+        stack.setOnMouseExited(e -> {
+            stack.getChildren().remove(1);
+        });
+    }
+
+    private void disableTile(StackPane tile) {
+        tile.setOnMouseClicked(null);
+        tile.setOnMouseEntered(null);
+        tile.setOnMouseExited(null);
+    }
+
     private void makeMove(int x, int y, StackPane tile, Label turnLabel) {
         Player playerBeforeMove = gameService.getCurrentPlayer();
         Label mark = new Label();
@@ -223,9 +244,7 @@ public class GUI extends Application {
         mark.setText(playerBeforeMove.getMark());
         mark.setTextFill(playerBeforeMove.getMarkColor());
         tile.getChildren().add(mark);
-        tile.setOnMouseClicked(null);
-        tile.setOnMouseEntered(null);
-        tile.setOnMouseExited(null);
+        disableTile(tile);
         gameService.makeMove(x, y);
         turnLabel.setText("Turn: " + gameService.getCurrentPlayer().getMark());
         turn.set(gameService.getTurn());
