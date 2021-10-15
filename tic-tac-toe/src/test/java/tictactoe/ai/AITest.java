@@ -7,19 +7,16 @@ package tictactoe.ai;
 
 import javafx.scene.paint.Color;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.AdditionalMatchers.aryEq;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyObject;
 import org.mockito.MockedStatic;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import tictactoe.logic.GameBoard;
 import tictactoe.logic.GameService;
@@ -37,17 +34,6 @@ public class AITest {
     private AI ai;
     private MockedStatic<AlphaBetaMoveChooser> alphaBeta;
     private GameService mockedService;
-
-    public AITest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
 
     @Before
     public void setUp() {
@@ -75,7 +61,7 @@ public class AITest {
     public void chooseMoveCallsAlphaBeta() {
         int[] move = new int[]{2, 2};
         alphaBeta.when(() -> AlphaBetaMoveChooser.getMoveWithOptimizedSearchDepth(any(int[][].class),
-               any(int[].class), anyInt(), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(move);
+                any(int[].class), anyInt(), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(move);
         ai.chooseMove();
         alphaBeta.verify(() -> AlphaBetaMoveChooser.getMoveWithOptimizedSearchDepth(
                 any(int[][].class), any(int[].class), anyInt(), anyInt(), anyInt(), anyInt(), anyInt()), times(1));
@@ -88,5 +74,40 @@ public class AITest {
                 any(int[].class), anyInt(), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(move);
         assertTrue(ai.chooseMove().equals(new Move(ai.getPlayer(), move[0], move[1])));
     }
-    
+
+    @Test
+    public void duringFirstMoveAICallsChooserWithPlayAreaOfx10y10tox10y10() {
+        int n = 20;
+        int[] move = new int[]{2, 2};
+        Move aisChoice;
+
+        alphaBeta.when(() -> AlphaBetaMoveChooser.getMoveWithOptimizedSearchDepth(any(int[][].class),
+                aryEq(new int[]{10, 10, 10, 10}), anyInt(), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(move);
+        try {
+            aisChoice = ai.chooseMove();
+        } catch (NullPointerException e) {
+            aisChoice = null;
+        }
+        assertTrue(aisChoice != null && aisChoice.equals(new Move(ai.getPlayer(), move[0], move[1])));
+    }
+
+    @Test
+    public void aiCallsMoveChooserWithUpdatedPlayAreaWhenItsNotFirstMove() {
+        int n = 20;
+        int[] move = new int[]{2, 2};
+        Move aisChoice;
+
+        GameBoard board = new GameBoard(20);
+        board.setMove(new Move(new Player("O"), 3, 3));
+        when(mockedService.getGameBoard()).thenReturn(board);
+
+        alphaBeta.when(() -> AlphaBetaMoveChooser.getMoveWithOptimizedSearchDepth(any(int[][].class),
+                aryEq(new int[]{2, 2, 4, 4}), anyInt(), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(move);
+        try {
+            aisChoice = ai.chooseMove();
+        } catch (NullPointerException e) {
+            aisChoice = null;
+        }
+        assertTrue(aisChoice != null && aisChoice.equals(new Move(ai.getPlayer(), move[0], move[1])));
+    }
 }
