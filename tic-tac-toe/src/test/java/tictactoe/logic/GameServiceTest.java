@@ -2,11 +2,7 @@ package tictactoe.logic;
 
 import java.util.Arrays;
 import javafx.scene.paint.Color;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,17 +29,6 @@ public class GameServiceTest {
     private RuleBook rules = new RuleBook(n, k, new Player[]{player1, player2});
     private GameBoard board = new GameBoard(rules.getBoardsize());
 
-    public GameServiceTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     @Before
     public void setUp() {
         mockedDao = mock(InMemoryDao.class);
@@ -51,12 +36,18 @@ public class GameServiceTest {
         gameService.startNewGame(rules);
 
         when(mockedDao.getRules()).thenReturn(rules);
-
-        when(mockedDao.getGameBoard()).thenReturn(board);;
+        when(mockedDao.getGameBoard()).thenReturn(board);
     }
 
-    @After
-    public void tearDown() {
+    @Test
+    public void startNewGameWithoutParametersStartsGameWithDefaults() {
+        Player player1 = new Player("X");
+        Player player2 = new Player("O");
+        RuleBook rules = new RuleBook(20, 5, new Player[]{player1, player2});
+        gameService.startNewGame();
+        assertTrue(gameService.getRules().equals(rules));
+        assertTrue(gameService.getGameBoard().getSize() == 20
+                && gameService.getGameBoard().getNumberOfPlayedMoves() == 0);
     }
 
     @Test
@@ -70,9 +61,17 @@ public class GameServiceTest {
     }
 
     @Test
-    public void makeMoveRequestsToChangeTurn() {
+    public void makeMoveRequestsToChangeTurnFrom0To1() {
+        when(mockedDao.getTurn()).thenReturn(0);
         gameService.makeMove(1, 1);
-        verify(mockedDao).setTurn(anyInt());
+        verify(mockedDao).setTurn(1);
+    }
+
+    @Test
+    public void makeMoveRequestsToChangeTurnFrom1To0() {
+        when(mockedDao.getTurn()).thenReturn(1);
+        gameService.makeMove(1, 1);
+        verify(mockedDao).setTurn(0);
     }
 
     @Test
@@ -96,10 +95,10 @@ public class GameServiceTest {
 
     @Test
     public void tryingToMakeMoveOutOfBoundsDoesNotRequestSettingItInDao() {
-        gameService.makeMove(0, n / 2);
-        gameService.makeMove(n / 3, -n);
-        gameService.makeMove(n + 1, n / 4);
-        gameService.makeMove(n, n + 2);
+        gameService.makeMove(0, n / 2);      // x<0
+        gameService.makeMove(n / 3, -n);     // y<0
+        gameService.makeMove(n + 1, n / 4);  // x>n
+        gameService.makeMove(n, n + 2);      // y>n
         verify(mockedDao, times(0)).setMove(any(Move.class));
     }
 
@@ -107,6 +106,53 @@ public class GameServiceTest {
     public void noWinnerWithEmptyBoard() {
         board = new GameBoard(rules.getBoardsize());
         assertTrue(gameService.getWinningPlayer() == null);
+    }
+
+    @Test
+    public void gameIsOverWhenFirstPlayerHasWinningRow() {
+        board.setMove(new Move(player1, 10, 1));
+        board.setMove(new Move(player1, 11, 2));
+        board.setMove(new Move(player1, 12, 3));
+        board.setMove(new Move(player1, 13, 4));
+        board.setMove(new Move(player1, 14, 5));
+        assertTrue(gameService.gameOver());
+    }
+
+    @Test
+    public void gameIsOverWhenSecondPlayerHasWinningRow() {
+        board.setMove(new Move(player2, 1, 1));
+        board.setMove(new Move(player2, 1, 2));
+        board.setMove(new Move(player2, 1, 3));
+        board.setMove(new Move(player2, 1, 4));
+        board.setMove(new Move(player2, 1, 5));
+        assertTrue(gameService.gameOver());
+    }
+
+    @Test
+    public void fullBoardResultsInDraw() {
+        /* 
+           1 2 3
+         3 O X O
+         2 X O X
+         1 X O X
+         */
+        GameBoard smallBoard = new GameBoard(3);
+        smallBoard.setMove(new Move(player1, 2, 3));
+        smallBoard.setMove(new Move(player1, 1, 2));
+        smallBoard.setMove(new Move(player1, 1, 1));
+        smallBoard.setMove(new Move(player1, 3, 2));
+        smallBoard.setMove(new Move(player1, 3, 1));
+
+        smallBoard.setMove(new Move(player2, 3, 1));
+        smallBoard.setMove(new Move(player2, 3, 3));
+        smallBoard.setMove(new Move(player2, 2, 2));
+        smallBoard.setMove(new Move(player2, 2, 1));
+
+        gameService.startNewGame(new RuleBook(3, 3, new Player[]{player1, player2}));
+        when(mockedDao.getGameBoard()).thenReturn(smallBoard);
+        assertTrue(gameService.gameOver()
+                && gameService.getWinningPlayer() == null
+                && gameService.getWinningRow() == null);
     }
 
     @Test
@@ -177,7 +223,7 @@ public class GameServiceTest {
             assertTrue(Arrays.asList(row).contains(move));
         }
     }
-    
+
     @Test
     public void winningRowIsNullWithEmptyBoard() {
         assertEquals(null, gameService.getWinningRow());
