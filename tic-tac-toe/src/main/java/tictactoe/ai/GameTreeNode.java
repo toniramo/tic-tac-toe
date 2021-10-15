@@ -1,6 +1,7 @@
 package tictactoe.ai;
 
 import java.util.List;
+import tictactoe.annotations.ExcludeFromJacocoGeneratedReport;
 
 /**
  * Interface representing node in game tree. 
@@ -8,6 +9,7 @@ import java.util.List;
  * that does not use objects that implement this interface.
  */
 @Deprecated
+@ExcludeFromJacocoGeneratedReport
 public interface GameTreeNode {
 
     /**

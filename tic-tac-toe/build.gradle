@@ -4,7 +4,7 @@ plugins {
     id 'checkstyle'
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.10'
-} 
+}
 
 javafx {
     version = "11.0.2"
@@ -40,6 +40,10 @@ task myJavadocs(type: Javadoc) {
     source = sourceSets.main.allJava
 }
 
+jacoco {
+    toolVersion = "0.8.7"
+}
+
 jacocoTestReport {
     reports {
         xml.enabled = true
@@ -47,7 +51,7 @@ jacocoTestReport {
     }
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
-                    fileTree(dir: it, exclude: ['**/Main.class','**/ui/**'])
+                    fileTree(dir: it, exclude: ['**/Main.class','**/ui/**', '**/annotations/**'])
                 }))
     }
 }

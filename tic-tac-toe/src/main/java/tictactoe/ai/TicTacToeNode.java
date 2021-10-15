@@ -8,6 +8,7 @@ import tictactoe.logic.GameService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import tictactoe.annotations.ExcludeFromJacocoGeneratedReport;
 
 /**
  * Represents tic-tac-toe specific node of game tree that is used to find most
@@ -16,6 +17,7 @@ import java.util.List;
  * to get the optimal move
  */
 @Deprecated
+@ExcludeFromJacocoGeneratedReport
 public class TicTacToeNode implements GameTreeNode {
 
     private GameBoard board;

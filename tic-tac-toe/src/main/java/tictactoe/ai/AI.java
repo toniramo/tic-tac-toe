@@ -1,5 +1,6 @@
 package tictactoe.ai;
 
+import tictactoe.annotations.ExcludeFromJacocoGeneratedReport;
 import tictactoe.logic.GameBoard;
 import tictactoe.logic.GameService;
 import tictactoe.logic.Move;
@@ -129,6 +130,7 @@ public class AI {
      */
     //CHECKSTYLE:OFF
     @Deprecated
+    @ExcludeFromJacocoGeneratedReport
     public Move chooseMoveUsingGameTreeObject() {
         GameBoard board = service.getGameBoard();
         RuleBook rules = service.getRules();

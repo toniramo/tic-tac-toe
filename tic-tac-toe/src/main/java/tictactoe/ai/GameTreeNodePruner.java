@@ -5,12 +5,15 @@
  */
 package tictactoe.ai;
 
+import tictactoe.annotations.ExcludeFromJacocoGeneratedReport;
+
 /**
  * Implements minimax algorithm with alpha beta pruning and gets value for child
  * node in game tree. Due to performance issues related to object arrays, class is replaced by 
  * {@link AlphaBetaMoveChooser}.
  */
 @Deprecated
+@ExcludeFromJacocoGeneratedReport
 public class GameTreeNodePruner {
 
     public static int getNodeValue(GameTreeNode node, int alpha, int beta, int maxSearchDepth) {
