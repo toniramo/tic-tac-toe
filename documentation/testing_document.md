@@ -32,15 +32,20 @@ During the test, AI vs. AI games from all possible starting positions are played
 
 Notice that it takes up to **1,5 - 2 h** to run the test.
 
-Based on [run on 15.10.2021](./test_data/performance_test_20211015.txt) (see graph below) most of the moves are found within acceptable 2 seconds. In fact, average move evaluation time was in most of the games well below 1 second. Although, occasional peaks of even up to 10 seconds (one observation even over 20 seconds) where seen, but relatively ralely compared to the size of whole sample set. This indicates that the search depths are reasonable, although some tweaking could be done for thershold of level 3.
+Based on [run on 15.10.2021](./test_data/performance_test_20211015.txt) (see graph below) most of the moves are found within acceptable 2 seconds. In fact, average move evaluation time was in most of the games well below 1 second. Although, occasional peaks of even up to 10 seconds (one observation even over 20 seconds) where seen, but relatively ralely compared to the size of whole sample set. This indicates that the search depths are reasonable, although some tweaking could be done for thershold between max search depths 2 and 3. 
+
+Pay attention also how the extremes of the sample set start to spread exponentially when approaching the treshold of each search depth (most noticable in case of 3). Though, as the average search times remain way below the maximum values, we can presume that the alpha-beta pruning is done succesfully. Otherwise there would be equally many nodes for given number of free tiles searched every time and thus observed search times would approach the observed extremes.
 
 ![result](./test_data/performance_test_20211015.svg)
+👆Visualization of test data: x-axis shows number of free tiles on play area, left y-axis together with red dots time to find move (in seconds), and right y-axis with grey dots used search depth
 
 It is hard to evaluate goodness of two AIs that are set to play against each other but at least some measures combined with certain assumptions could be used to estimate it.
 
 For instance, we can assume that first player should win most of the cases. Used heuristic is not perfect and certain starting positions may not be the most optimal for winning (like corner 1,1) so it is likely that occasionally first player looses. Based on test results, first AI wins 258 out of 400 or up to 64,5% of the cases. This indicates that the AI is most often able to take the benefit of potential winning positions and avoid most absurd moves.
 
 Another measure of goodness, or at least reference point for future development, could be number of moves per game if we assume that the length of the game depends on the competence of the players (although, even equally bad players could make the game last long if winning moves are not utilized properly). In this run average game length (in terms of moves) was 22.575. Shortest game needed 9 moves (that is, first player got 5 in row as soon as possible) and longest took up to 60 moves.
+
+**Notes**
 
 According to [instructions](https://tiralabra.github.io/2021_p1/en/documentation/), document should include:
 > - What has been tested and how
