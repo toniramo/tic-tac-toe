@@ -22,6 +22,24 @@ Manual testing takes place via UI with game modes "Human vs. AI" (human player s
 
 Automated validation is performed with JUnit automated tests found in [src/test/java/tictactoe/ai](https://github.com/toniramo/tic-tac-toe/tree/main/tic-tac-toe/src/test/java/tictactoe/ai). Cases ensure that AI, depending on case, either chooses winning move or counters others. Cases include various starting locations and row directions.
 
+## Performance of AI
+
+Performance of AI is tested with [AIPerformanceTest.java](https://github.com/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/test/java/tictactoe/ai/AIPerformanceTest.java). It is excluded from regular test cycle and should be executed separately with command line:
+```sh
+./gradlew performanceTest
+```
+During the test, AI vs. AI games from all possible starting positions are played and certain key measurements are logged in resulting test file `./tictactoe/build/reports/tests/performanceTest/data/perfTest_*txt`.
+
+Notice that it takes up to **1,5 - 2 h** to run the test.
+
+Based on [run on 15.10.2021](./test_data/performance_test_20211015.txt) (see graph below) most of the moves are found within acceptable 2 seconds. In fact, average move evaluation time was in most of the games well below 1 second. Although, occasional peaks of even up to 10 seconds (one observation even over 20 seconds) where seen, but relatively ralely compared to the size of whole sample set. This indicates that the search depths are reasonable, although some tweaking could be done for thershold of level 3.
+
+![result](./test_data/performance_test_20211015.svg)
+
+It is hard to evaluate goodness of two AIs that are set to play against each other but at least some measures combined with certain assumptions could be used to estimate it.
+
+For instance, we can assume that first player should win most of the cases. Used heuristic is not perfect and certain starting positions may not be the most optimal for winning (like corner 1,1) so it is likely that occasionally first player looses. Based on test results, first AI wins 258 out of 400 or up to 64,5% of the cases. This indicates that the AI is most often able to take the benefit of potential winning positions and avoid most absurd moves.
+
 **Temporary notes (to be removed):**
 Earlier ideas and thoughts about testing:
 - At least alpha beta pruning should be able to work so that obvious winning cases are observed by AI - and in general at least most bizarre moves should be avoided by AI and by so make it a reasonable opponent. 
