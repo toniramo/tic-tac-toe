@@ -40,11 +40,7 @@ It is hard to evaluate goodness of two AIs that are set to play against each oth
 
 For instance, we can assume that first player should win most of the cases. Used heuristic is not perfect and certain starting positions may not be the most optimal for winning (like corner 1,1) so it is likely that occasionally first player looses. Based on test results, first AI wins 258 out of 400 or up to 64,5% of the cases. This indicates that the AI is most often able to take the benefit of potential winning positions and avoid most absurd moves.
 
-**Temporary notes (to be removed):**
-Earlier ideas and thoughts about testing:
-- At least alpha beta pruning should be able to work so that obvious winning cases are observed by AI - and in general at least most bizarre moves should be avoided by AI and by so make it a reasonable opponent. 
-- It could be interresting to study number of nodes visited with and without alpha beta pruning and perhaps performance as well
-- With programs like this, it may be hard to come up with repeatable tests (unless very close to end state defined states with limited childs and obvious good choises are set up before the test). At least subjective test can be made by playing against the AI on the user interface. One option could be to make two AIs playing against each other and see what happens (repeat multiple times and collect some statistic).
+Another measure of goodness, or at least reference point for future development, could be number of moves per game if we assume that the length of the game depends on the competence of the players (although, even equally bad players could make the game last long if winning moves are not utilized properly). In this run average game length (in terms of moves) was 22.575. Shortest game needed 9 moves (that is, first player got 5 in row as soon as possible) and longest took up to 60 moves.
 
 According to [instructions](https://tiralabra.github.io/2021_p1/en/documentation/), document should include:
 > - What has been tested and how
