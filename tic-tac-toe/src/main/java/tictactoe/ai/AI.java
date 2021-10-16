@@ -67,11 +67,24 @@ public class AI {
      */
     private void updatePlayAreaBasedOnMove(int x, int y) {
         if (playArea[0] == 0) {
+            int dx0 = 0, dy0 = 0, dx1 = 0, dy1 = 0;
             if (x > 0 && y > 0) {
-                playArea[0] = x - 1;
-                playArea[1] = y - 1;
-                playArea[2] = x + 1;
-                playArea[3] = y + 1;
+                if (x > 1) {
+                    dx0 = -1;
+                }
+                if (y > 1) {
+                    dy0 = -1;
+                }
+                if (x < service.getRules().getBoardsize()) {
+                    dx1 = 1;
+                }
+                if (y < service.getRules().getBoardsize()) {
+                    dy1 = 1;
+                }
+                playArea[0] = x + dx0;
+                playArea[1] = y + dy0;
+                playArea[2] = x + dx1;
+                playArea[3] = y + dy1;
                 return;
             }
             if (x == 0 || y == 0) {
@@ -93,6 +106,16 @@ public class AI {
         if (y >= playArea[3] && y < service.getRules().getBoardsize()) {
             playArea[3] = y + 1;
         }
+    }
+
+    /**
+     * Gets current play area, that is area within which played marks are
+     * located.
+     *
+     * @return area [0]:xmin [1]:ymin [2]:xmax [3]:ymax
+     */
+    public int[] getPlayArea() {
+        return this.playArea;
     }
 
     /**

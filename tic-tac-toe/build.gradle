@@ -36,8 +36,18 @@ jar {
     }
 }
 
-task myJavadocs(type: Javadoc) {
+task javadocs(type: Javadoc) {
     source = sourceSets.main.allJava
+}
+
+test {
+    exclude '**/AIPerformanceTest.class'
+}
+
+task performanceTest( type: Test ) {
+    filter {
+        includeTestsMatching "*.AIPerformanceTest"
+    }
 }
 
 jacoco {
