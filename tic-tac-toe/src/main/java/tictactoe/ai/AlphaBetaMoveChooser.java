@@ -356,7 +356,7 @@ public class AlphaBetaMoveChooser {
                         if (marksOnRange[p][k] > 0
                                 && observedRangeFullyOnBoard(x, y, k, n, rowLenght)
                                 && marksOnRange[((p + 1) % 2)][k] == 0) {
-                            playerValues[p] += Math.pow(10, marksOnRange[p][k] - 1) - nodeDepth; //- ((p + turn) % 2);
+                            playerValues[p] += Math.pow(10, marksOnRange[p][k] - 1) - ((p + turn + 1) % 2);
                         }
                         counters[p][k] = reduceMarkCountersByOne(counters[p][k]);
                         if (marksOnRange[p][k] > 0 && counters[p][k][marksOnRange[p][k]] == 0) {
