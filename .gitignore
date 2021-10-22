@@ -16,3 +16,6 @@ gradle-app.setting
 
 #Netbeands related
 /tic-tac-toe/nbproject/
+
+# Temporary files
+*~
