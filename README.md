@@ -1,10 +1,15 @@
+
 # Tic-tac-toe (5-in-row variant)
+
 
 Purpose of this project is to create variant of tic-tac-toe game with an AI to play against with. Project is made for course [Data Structures lab](https://tiralabra.github.io/2021_p1/en/) of University of Helsinki.
 
 ![Gradle workflow](https://github.com/toniramo/tic-tac-toe/actions/workflows/gradle.yml/badge.svg)
 
 [![codecov](https://codecov.io/gh/toniramo/tic-tac-toe/branch/main/graph/badge.svg?token=08l4tRIjI8)](https://codecov.io/gh/toniramo/tic-tac-toe)
+
+![banner](https://user-images.githubusercontent.com/47885648/138700100-da56f5a6-8dad-49ed-9e16-c77c663a6660.png)
+
 
 ## Project documents
 
