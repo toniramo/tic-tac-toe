@@ -85,6 +85,7 @@ public class AIPerformanceTest {
             double start = System.nanoTime();
             Move move = ais[turn].chooseMove();
             double end = System.nanoTime();
+            assertThatMoveIsValid(move);
             service.makeMove(move.getX(), move.getY());
             total += end - start;
             int[] areaAfter = ais[turn].getPlayArea();
@@ -103,10 +104,16 @@ public class AIPerformanceTest {
         }
     }
 
+    private void assertThatMoveIsValid(Move move) {
+        assertTrue(move.getX() > 0 && move.getX() <= service.getRules().getBoardsize()
+                && move.getY() > 0 && move.getY() <= service.getRules().getBoardsize());
+    }
+
     /**
      * Writes header to the resulting test data file.
+     *
      * @param writer writer that is connected to the test data file
-     * @throws IOException 
+     * @throws IOException
      */
     private void writeHeader(FileWriter writer) throws IOException {
         writer.write("x0,y0,x,y,turn,number of moves before,number of moves after,"
