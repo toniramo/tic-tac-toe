@@ -2,6 +2,7 @@ package tictactoe.ai;
 
 import javafx.scene.paint.Color;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -103,5 +104,46 @@ public class AITest {
             aisChoice = null;
         }
         assertTrue(aisChoice != null && aisChoice.equals(new Move(ai.getPlayer(), move[0], move[1])));
+    }
+
+    @Test
+    public void playAreaCoordinatesAreInitiallyZero() {
+        Assert.assertArrayEquals(ai.getPlayArea(), new int[]{0, 0, 0, 0});
+    }
+
+    @Test
+    public void playAreaIsUpdatedCorrectlyWhenUpdatePlayAreaIsCalled() {
+        GameBoard board = new GameBoard(20);
+        board.setMove(new Move(ai.getPlayer(), 10, 10));
+        when(mockedService.getGameBoard()).thenReturn(board);
+        ai.updateStateBasedOnLastMove();
+        Assert.assertArrayEquals(ai.getPlayArea(), new int[]{9, 9, 11, 11});
+    }
+
+    @Test
+    public void playAreaIsUpdatedCorrectlyBasedOnChosenMove() {
+        int[] move = new int[]{9, 13};
+        alphaBeta.when(() -> AlphaBetaMoveChooser.getMoveWithOptimizedSearchDepth(any(int[][].class),
+                any(int[].class), anyInt(), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(move);
+        ai.chooseMove();
+        Assert.assertArrayEquals(ai.getPlayArea(), new int[]{8, 10, 10, 14});
+    }
+
+    @Test
+    public void playAreaIsUpdatedCorrectlyBasedOnChosenMoveV2() {
+        int[] move = new int[]{1, 1};
+        alphaBeta.when(() -> AlphaBetaMoveChooser.getMoveWithOptimizedSearchDepth(any(int[][].class),
+                any(int[].class), anyInt(), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(move);
+        ai.chooseMove();
+        Assert.assertArrayEquals(ai.getPlayArea(), new int[]{1, 1, 10, 10});
+    }
+
+    @Test
+    public void playAreaIsUpdatedCorrectlyBasedOnChosenMoveV3() {
+        int[] move = new int[]{20, 20};
+        alphaBeta.when(() -> AlphaBetaMoveChooser.getMoveWithOptimizedSearchDepth(any(int[][].class),
+                any(int[].class), anyInt(), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(move);
+        ai.chooseMove();
+        Assert.assertArrayEquals(ai.getPlayArea(), new int[]{10, 10, 20, 20});
     }
 }

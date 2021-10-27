@@ -1,6 +1,7 @@
 package tictactoe.ai;
 
 import java.util.Random;
+import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -213,6 +214,43 @@ public class AlphaBetaMoveChooserTest {
 
         int[] move = AlphaBetaMoveChooser.getMoveWithOptimizedSearchDepth(node, new int[]{1, 1, 20, 20}, 8, turn, 5, (int) -1e9, (int) 1e9);
         assertTrue((move[0] == x0 + k && move[1] == y0 - k) || (move[0] == x0 - 1 && move[1] == y0 + 1));
+    }
+
+    @Test
+    public void optimizedSearchDepthWithPlayAreaOf3x3With1MoveReturns4() {
+        assertEquals(AlphaBetaMoveChooser.optimizedMaxSearchDepth(new int[]{3, 3, 5, 5}, 1), 4);
+    }
+
+    @Test
+    public void optimizedSearchDepthWithPlayAreaOf3x4With3MoveReturns3() {
+        assertEquals(AlphaBetaMoveChooser.optimizedMaxSearchDepth(new int[]{3, 3, 6, 6}, 3), 3);
+    }
+
+    @Test
+    public void optimizedSearchDepthWithPlayAreaOf6x7ith6MoveReturns3() {
+        assertEquals(AlphaBetaMoveChooser.optimizedMaxSearchDepth(new int[]{3, 3, 8, 9}, 6), 3);
+    }
+
+    @Test
+    public void optimizedSearchDepthWithPlayAreaOf6x7ith5MoveReturns2() {
+        assertEquals(AlphaBetaMoveChooser.optimizedMaxSearchDepth(new int[]{3, 3, 8, 9}, 5), 2);
+    }
+
+    @Test
+    public void optimizedSearchDepthWithPlayAreaOf7x13ith14MoveReturns2() {
+        assertEquals(AlphaBetaMoveChooser.optimizedMaxSearchDepth(new int[]{3, 3, 9, 15}, 15), 2);
+    }
+
+    @Test
+    public void optimizedSearchDepthWithPlayAreaOf7x13ith13MoveReturns1() {
+        assertEquals(AlphaBetaMoveChooser.optimizedMaxSearchDepth(new int[]{3, 3, 9, 15}, 14), 1);
+    }
+
+    @Test
+    public void ifGameBoardIsFullChooserReturnsZeros() {
+        int[][] node = initializeNode(3);
+        Assert.assertArrayEquals(AlphaBetaMoveChooser.getMove(
+                node, new int[]{1, 1, 3, 3}, 4, 0, 3, (int) -1e9, (int) 1e9, 3), new int[]{0, 0});
     }
 
     private int[][] initializeNode(int n) {
