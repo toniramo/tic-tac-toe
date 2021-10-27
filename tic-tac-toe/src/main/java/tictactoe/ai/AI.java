@@ -67,44 +67,32 @@ public class AI {
      */
     private void updatePlayAreaBasedOnMove(int x, int y) {
         if (playArea[0] == 0) {
-            int dx0 = 0, dy0 = 0, dx1 = 0, dy1 = 0;
-            if (x > 0 && y > 0) {
-                if (x > 1) {
-                    dx0 = -1;
-                }
-                if (y > 1) {
-                    dy0 = -1;
-                }
-                if (x < service.getRules().getBoardsize()) {
-                    dx1 = 1;
-                }
-                if (y < service.getRules().getBoardsize()) {
-                    dy1 = 1;
-                }
-                playArea[0] = x + dx0;
-                playArea[1] = y + dy0;
-                playArea[2] = x + dx1;
-                playArea[3] = y + dy1;
-                return;
-            }
             if (x == 0 || y == 0) {
                 int n = service.getRules().getBoardsize();
                 playArea = new int[]{n / 2, n / 2, n / 2, n / 2};
                 return;
             }
-
+            playArea[0] = x;
+            playArea[1] = y;
+            playArea[2] = x;
+            playArea[3] = y;
         }
-        if (x <= playArea[0] && x > 1) {
-            playArea[0] = x - 1;
+        int n = service.getRules().getBoardsize();
+        int dx0 = x > 1 ? -1 : 0;
+        int dx1 = x < n ? 1 : 0;
+        int dy0 = y > 1 ? -1 : 0;
+        int dy1 = y < n ? 1 : 0;
+        if (x <= playArea[0]) {
+            playArea[0] = x + dx0;
         }
-        if (x >= playArea[2] && x < service.getRules().getBoardsize()) {
-            playArea[2] = x + 1;
+        if (x >= playArea[2]) {
+            playArea[2] = x + dx1;
         }
-        if (y <= playArea[1] && y > 1) {
-            playArea[1] = y - 1;
+        if (y <= playArea[1]) {
+            playArea[1] = y + dy0;
         }
-        if (y >= playArea[3] && y < service.getRules().getBoardsize()) {
-            playArea[3] = y + 1;
+        if (y >= playArea[3]) {
+            playArea[3] = y + dy1;
         }
     }
 
