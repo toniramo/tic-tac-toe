@@ -41,7 +41,9 @@ task javadocs(type: Javadoc) {
 }
 
 test {
-    exclude '**/AIPerformanceTest.class'
+    exclude '**/ai/AIPerformanceTest.class',\
+            '**/ai/GameTreeNodePrunerTest.class',
+            '**/ai/TicTacToeNodeTest.class'
 }
 
 task performanceTest( type: Test ) {

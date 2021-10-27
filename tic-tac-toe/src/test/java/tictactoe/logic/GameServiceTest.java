@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -222,6 +221,48 @@ public class GameServiceTest {
         for (Move move : moves) {
             assertTrue(Arrays.asList(row).contains(move));
         }
+    }
+
+    @Test
+    public void validMoveReturnsTrueWhenMovesAreValid() {
+        Move[] moves = new Move[]{new Move(player1, 14, 11),
+            new Move(player1, 13, 10), new Move(player1, 12, 9),
+            new Move(player1, 11, 8), new Move(player1, 10, 7)};
+        board.setMove(moves[0]);
+        board.setMove(moves[1]);
+        board.setMove(moves[2]);
+        board.setMove(moves[3]);
+        board.setMove(moves[4]);
+        for (Move move : moves) {
+            when(mockedDao.getMoveAt(move.getX(), move.getY())).thenReturn(move);
+        }
+        assertTrue(gameService.validMove(20, 20));
+        assertTrue(gameService.validMove(1, 1));
+        assertTrue(gameService.validMove(1, 20));
+        assertTrue(gameService.validMove(20, 1));
+        assertTrue(gameService.validMove(10, 10));
+    }
+
+    @Test
+    public void validMoveReturnsFalseWhenMovesAreInvalid() {
+        Move[] moves = new Move[]{new Move(player1, 14, 11),
+            new Move(player1, 13, 10), new Move(player1, 12, 9),
+            new Move(player1, 11, 8), new Move(player1, 10, 7)};
+        board.setMove(moves[0]);
+        board.setMove(moves[1]);
+        board.setMove(moves[2]);
+        board.setMove(moves[3]);
+        board.setMove(moves[4]);
+        for (Move move : moves) {
+            when(mockedDao.getMoveAt(move.getX(), move.getY())).thenReturn(move);
+        }
+        assertFalse(gameService.validMove(21, 20));
+        assertFalse(gameService.validMove(20, 21));
+        assertFalse(gameService.validMove(0, 1));
+        assertFalse(gameService.validMove(1, 0));
+        assertFalse(gameService.validMove(13, 10));
+        assertFalse(gameService.validMove(10, 7));
+        assertFalse(gameService.validMove(11, 8));
     }
 
     @Test
