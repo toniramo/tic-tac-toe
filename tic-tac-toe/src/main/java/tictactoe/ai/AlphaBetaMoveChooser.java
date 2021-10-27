@@ -72,7 +72,7 @@ public class AlphaBetaMoveChooser {
     /**
      * Gets move based on optimized maximum search depth depending on available
      * free tiles. Method calls {@link #optimizedMaxSearchDepth(int[], int)} to
-     * determine optmized depth and then
+     * determine optimized depth and then
      * {@link #getMove(int[][], int[], int, int, int, int, int, int)} to get the
      * actual move.
      *
@@ -106,19 +106,19 @@ public class AlphaBetaMoveChooser {
      * @return true if tile has no neighbour, otherwise false
      */
     private static boolean noNeighbours(int[][] node, int[] area, int x, int y) {
-        boolean result = true;
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
-                if (x + dx < area[0] || x + dx > area[2] || y + dy < area[1] || y + dy > area[3]) {
+                if ((dx == 0 && dy == 0)
+                        || x + dx < area[0] || x + dx > area[2]
+                        || y + dy < area[1] || y + dy > area[3]) {
                     continue;
                 }
                 if (node[x + dx][y + dy] >= 0) {
-                    result = false;
-                    break;
+                    return false;
                 }
             }
         }
-        return result;
+        return true;
     }
 
     /**
@@ -129,7 +129,7 @@ public class AlphaBetaMoveChooser {
      * @param playedMoves Number of played moves
      * @return maximum search depth based on free tiles on play area
      */
-    private static int optimizedMaxSearchDepth(int[] area, int playedMoves) {
+    static int optimizedMaxSearchDepth(int[] area, int playedMoves) {
         int freeTiles = (area[3] - area[1] + 1) * (area[2] - area[0] + 1) - playedMoves;
         if (freeTiles < 9) {
             return 4;
@@ -175,7 +175,7 @@ public class AlphaBetaMoveChooser {
             return 0;
         }
         if (nodeDepth >= maxSearchDepth) {
-            return heuristicBasedOnPlayArea(node, playArea, (turn + 1 % 2), rowLenght, nodeDepth);
+            return heuristicBasedOnPlayArea(node, playArea, (turn + 1 % 2), rowLenght);
         }
         int value = (turn == 0) ? -maxValue : maxValue;
         for (int x = playArea[0] - 1; x <= playArea[2] + 1; x++) {
@@ -266,7 +266,7 @@ public class AlphaBetaMoveChooser {
      *
      * @param node node to analyse
      * @param playedMoves number of played moves.
-     * @return result of test wheter number of played moves matches with the
+     * @return result of test whether number of played moves matches with the
      * number of tiles on game board
      */
     private static boolean gameBoardFull(int[][] node, int playedMoves) {
@@ -328,10 +328,10 @@ public class AlphaBetaMoveChooser {
      * @return heuristic value of given node
      */
     private static int heuristicBasedOnPlayArea(
-            int[][] node, int[] playArea, int turn, int rowLenght, int nodeDepth) {
+            int[][] node, int[] playArea, int turn, int rowLenght) {
         int n = node.length - 1;
-        //int n = Math.max(playArea[2], playArea[3]);
         int[] playerValues = new int[2];
+        outerloop:
         for (int i = 1; i <= n; i++) {
             int[][][] counters = new int[2][6][rowLenght + 1];
             int offset = 0;
@@ -341,16 +341,14 @@ public class AlphaBetaMoveChooser {
                 int[] y = new int[]{j, i, j, j, i - offset, i - offset + n};
                 for (int k = 0; k < x.length; k++) {
                     if (x[k] < 1 || x[k] > n || y[k] < 1 || y[k] > n
-                            || x[k] < playArea[0] || x[k] > playArea[2]
-                            || y[k] < playArea[1] || y[k] > playArea[3]) {
+                            || x[k] < playArea[0] - 4 || x[k] > playArea[2] + 4
+                            || y[k] < playArea[1] - 4 || y[k] > playArea[3] + 4) {
                         continue;
                     }
                     for (int p = 0; p < 2; p++) {
-                        if (node[x[k]][y[k]] >= 0) {
-                            if (node[x[k]][y[k]] == p) {
-                                if (marksOnRange[p][k] < rowLenght) {
-                                    counters[p][k][++marksOnRange[p][k]] = rowLenght;
-                                }
+                        if (node[x[k]][y[k]] == p) {
+                            if (marksOnRange[p][k] < rowLenght) {
+                                counters[p][k][++marksOnRange[p][k]] = rowLenght;
                             }
                         }
                         if (marksOnRange[p][k] > 0
