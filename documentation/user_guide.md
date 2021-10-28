@@ -1,7 +1,7 @@
 # User guide
 
 1. Build and run project using [Command-line commands](#command-line-commands).
-2. [Play](how-to-play) the game.
+2. [Play](#how-to-play) the game.
 
 ## Command-line commands
 **Note:** Instructions expect you to run commands from `<project root>/tic-tac-toe`.
@@ -110,3 +110,4 @@ Or if you have had enough, just click "Exit".
 
 ![exit2](https://user-images.githubusercontent.com/47885648/139241326-95998dd9-b0ef-43dc-8161-09c39a0400e3.png)
 
+**Have fun!**
