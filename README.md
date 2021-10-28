@@ -4,18 +4,20 @@
 
 Purpose of this project is to create variant of tic-tac-toe game with an AI to play against with. 
 
-Project is made for course [Data Structures lab](https://tiralabra.github.io/2021_p1/en/) of University of Helsinki.
+Project is made for course [Data Structures lab](https://tiralabra.github.io/2021_p1/en/) of University of Helsinki. 
 
-**Build status:** ![Gradle workflow](https://github.com/toniramo/tic-tac-toe/actions/workflows/gradle.yml/badge.svg)
+:warning: **Note** that course ends on 31.10.2021 after which is it unlikely that project will be updated.
+
+:traffic_light: **Build status:** ![Gradle workflow](https://github.com/toniramo/tic-tac-toe/actions/workflows/gradle.yml/badge.svg)
  [![codecov](https://codecov.io/gh/toniramo/tic-tac-toe/branch/main/graph/badge.svg?token=08l4tRIjI8)](https://codecov.io/gh/toniramo/tic-tac-toe)
 
-**Latest release:** [v1.0.0](https://github.com/toniramo/tic-tac-toe/releases/tag/v1.0.0)
+:tada: **Latest release:** **[v1.0.0](https://github.com/toniramo/tic-tac-toe/releases/tag/v1.0.0)**
 
 ![game](https://user-images.githubusercontent.com/47885648/139243668-16495ee3-b793-44f8-87d0-41e96fbed901.png)
 
 
 
-## Project documents
+## :page_facing_up: Project documents 
 
 - [Project specification](./documentation/project_specification.md)
 - [Testing document](./documentation/testing_document.md)
