@@ -1,9 +1,9 @@
-# Testing document (draft)
+# Testing document
 
 ## Maintaing quality 
 Unit level testing is carried out with JUnit and partially supported with Mockito library to mock other classes when appropriate. 
 
-More information about testing coverage can be found (almost in real time) from Codecov, navigate via this badge:
+More information about testing coverage is [below](#unit-test-coverage-status) and in Codecov, navigate via this badge:
 
 > [![codecov](https://codecov.io/gh/toniramo/tic-tac-toe/branch/main/graph/badge.svg?token=08l4tRIjI8)](https://codecov.io/gh/toniramo/tic-tac-toe)
 
@@ -14,6 +14,46 @@ Focus in automated testing development has been in the most important and comple
 Additionally quality has been monitored with continuous CI with Gradle workflow (thanks to which actually also the Codecov is updated). It updates the CI status not alone based on test results but also other quality factors like compliance with configured checkstyle rules. See status by monitoring this badge: 
 > ![Gradle workflow](https://github.com/toniramo/tic-tac-toe/actions/workflows/gradle.yml/badge.svg)
 
+### Unit test coverage status
+
+Summary of test coverage on 28.10.2021 14:30:
+
+| Package/Class  | Complexity<sup>1</sup> | Coverage<sup>2</sup>  | 
+| ------------- | ------------- | ------------- |
+| **tictactoe**     | **83%**  | **88%** |
+| tictactoe/**ai**   | **92%**  | **96%** |
+| tictactoe/ai/[AI.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/ai/AI.java)   | 95%  | 98% |
+| tictactoe/ai/[AlphaBetaMoveChooser.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/ai/AlphaBetaMoveChooser.java)   | 95%  | 98% | 
+| tictactoe/**logic**   | **71%**  | **81%** |
+| tictactoe/logic/[GameBoard.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/GameBoard.java)  | 57%  | 67% |
+| tictactoe/logic/[GameService.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/GameService.java)  | 83%  | 96% |
+| tictactoe/logic/[Move.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/Move.java)  | 58%  | 63% |
+| tictactoe/logic/[Player.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/Player.java)  | 64%  | 77% |
+| tictactoe/logic/[RuleBook.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/RuleBook.java)  | 75%  | 77% |
+| tictactoe/**dao**  | **80%**  | **81%** |
+| tictactoe/dao/[InMemoryDao.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/dao/InMemoryDao.java) | 80%  | 81% |
+
+<sup>1</sup>  Coverage of branches in code, <sup>2</sup>  Coverage of code lines
+
+Test coverage progress during the course:
+
+![Coverage chart](./images/p399x2py.svg)
+
+### Running unit tests
+
+As mentioned in section [Checks, tests and reports](https://github.com/toniramo/tic-tac-toe/blob/main/documentation/user_guide.md#checks-tests-and-reports) of the user guide, you can run unit tests from `<project root>/tictactoe`with command
+```
+./gradlew test
+```
+
+If you wish to generate also testing reports, you can execute following command:
+```
+./tictactoe/gradlew check
+```
+This runs checks (checkstyle) and units test and generates related reports:
+   - Output reports for checkstyle, `main.html` and `test.html`, will be found from `./build/reports/checkstyle`.
+   - Jacoco test report is generated in `./build/reports/jacoco/test/html`. You can see main page of the report by opening `index.html`.
+
 ## Validating AI
 Competence of the AI (or minimax algoritm that it is based on) is evaluated both manually and in automated manner. 
 
@@ -21,7 +61,7 @@ Manual testing takes place via user interface (UI) with game modes "Human vs. AI
 
 Automated validation is performed with JUnit automated tests found in [src/test/java/tictactoe/ai](https://github.com/toniramo/tic-tac-toe/tree/main/tic-tac-toe/src/test/java/tictactoe/ai). Cases ensure that AI, depending on case, either chooses winning move or counters that of other's. Cases include various starting locations and row directions. 
 
-## Performance of AI
+### Performance of AI
 
 Performance of AI is tested with [AIPerformanceTest.java](https://github.com/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/test/java/tictactoe/ai/AIPerformanceTest.java). It is excluded from regular test cycle and should be executed separately with command line:
 ```sh
@@ -31,7 +71,7 @@ During the test, AI vs. AI games from all possible starting positions ((1,1),(1,
 
 Notice that it takes up to **1.5 - 2.0 h** to run the test.
 
-### Results
+#### Results
 
 Based on [run on 21.10.2021](./test_data/performance_test_20211021.txt) (see [figure 1](#figure1)), performance of the AI is decent; move is in majority of cases chosen in less than 5 seconds even with less strict limits of 3 and 4 for search depth. In fact, most of the measured move evaluation times are well below 1 second average being around 0.6 seconds. 
 
@@ -41,17 +81,17 @@ High extremes are also seen during the test, though rarely; occasional peaks of 
 <a name="figure1"></a>
 **Figure 1.** Move evaluation time of AI by number of free tiles on play area. Each transparent red X represent observation and transparent red trendlines exponential trends of observed worst cases per each search depth. Vertical grey lines (|) indicate the thershold values between used search depths (4:\[0,8\], 3:\[9,36\], 2:\[37,76\], 1:\[77,\[)
 
-#### Realized complexities based on data
+##### Realized complexities based on data
 
 As we know from [project specification](https://github.com/toniramo/tic-tac-toe/blob/main/documentation/project_specification.md#expected-time-and-space-complexities-of-the-program), time complexity of the algorithm depends on branching factor b (in practice number of free tiles within observed play area) and search depth d (limited by used maximum search depth, see [this method](https://github.com/toniramo/tic-tac-toe/blob/179c57bc7a7026f39a7717c85384f284690b3620/tic-tac-toe/src/main/java/tictactoe/ai/AlphaBetaMoveChooser.java#L132)). In the worst case, time for each evaluation is roughly O(b^d). The exponential nature of the equation is evident in trendlines of figure 1 that are fitted to most extreme observations. Then again, the best case complexity is about O(b^(d/2)). As indicated above, the result is mostly closer to the lower end due to many measures taken in code to optimize the search time: 
 (i) use of alpha-beta pruning together with 
 (ii) choosing only tiles adjacent to reserved tiles (within play area) and
 (iii) using adaptive search depth. Additionally, as the game progresses enough, it becomes increasingly likely that the game ends so end leafs of game tree are found sooner and search is terminated earlier.
 
-#### Additional observations
+##### Additional observations
 
 Even though the focus is on performance, some additional validation can be done during the test and from the output data. For instance, test checks every chosen move and ensures it is within the game board. The data in turn indicates that the first AI player, since having the advantage of having the first move, wins most of the games as expected; out of 400 games first AI wins 284 (or 71%). Is is likely that some starting moves that the first player is forced to play are not optimal for winning (like corners) and gives the advantage to the second player potentially justifying the most of the outcomes of the 116 lost games. Another interresting measure is game lenght. With two equally strong players, it does not necessarily provide any details of the competence of either one but may still be worth monitoring. Though, at least if both players are doing their best, the game should last most of the time longer than 9 moves which lenght of the shortest possible game (first player gets 5 in row on her fifth turn). In this case, game lenghts ranges from 9 to up 81 average being 20.5. Shortest possible game happens only once.
 
-#### Discussion
+##### Discussion
 
 It is worth considering how strict requirements are placed on the maximum search time. That is, as is the case now, we have fairly decent AI with _mostly_ fast decision time. Is it fine if very ralely longer searching times are seen or should those be avoided entirely? If requirement should be strict, we could avoid the extremes for instance by lowering the threshold between search depths of 3 and 2. Personally, I am satisfied with the current implementation and have not seen such dramatic waiting times in actual game play.
