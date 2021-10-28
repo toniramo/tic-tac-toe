@@ -34,7 +34,7 @@ Run both checkstyle and unit tests and generate reports:
 
 Run unit tests:
 ```
-./tictactoe/gradlew test
+./gradlew test
 ```
 
 Run AI performance test:
