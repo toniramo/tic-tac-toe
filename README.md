@@ -19,10 +19,10 @@ Project is made for course [Data Structures lab](https://tiralabra.github.io/202
 
 ## :page_facing_up: Project documents 
 
-- [Project specification](./documentation/project_specification.md)
-- [Testing document](./documentation/testing_document.md)
-- [Implementation document](./documentation/implementation_document.md)
-- [User guide](./documentation/user_guide.md)
+- :crystal_ball: [Project specification](./documentation/project_specification.md)
+- :chart_with_upwards_trend: [Testing document](./documentation/testing_document.md)
+- :hammer: [Implementation document](./documentation/implementation_document.md)
+- :blush: [User guide](./documentation/user_guide.md)
 
 ### Weekly reports
 - [Week 1](./documentation/weekly_reports/week1.md)
