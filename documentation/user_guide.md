@@ -64,16 +64,18 @@ Consequently, there are two players who play against each other and in turns. Pl
 1. First player places `X` on chosen free tile on board. If game has not ended (3), second player gets the turn (2).
 2. Second player places `O` on chosen free tile on board. If game has not ended (3), first player gets the turn (1).
 3. Game ends if 
-    - first player wins: there are 5 Xs in row.
+    - first player wins: there are 5 Xs in row. 
     - second player wins:  there are 5 Os in row.
       - 5 in rows can be located horizontally (➡), vertically (⬆) or diagonally (↗ or ↘).
-    - draw: game board is full without either of players having winning row. 
+    - it is draw: game board is full without either of players having winning row. 
 
 ### Starting the game
 
-When you start the program, first thing you see is the main menu: <picture>
+When you start the program, first thing you see is the main menu.
+From here you can start a new game by clicking the button corresponding the [game mode](#game-modes) of you choice or exit the game:
 
-From here you can start new game by choosing one of the [game modes](#game-modes) or exit the game.
+![menu](https://user-images.githubusercontent.com/47885648/139231798-27780966-a6e2-4f63-a2ae-f72a1ffa764b.gif)
+
 
 ### Game modes
 There are four different game modes to choose from:
@@ -83,13 +85,28 @@ There are four different game modes to choose from:
 - `AI vs. AI`: both are computer players but human chooses the first move of the first player
 
 ### During the game
-When it is your (or other human player's) turn, you can simply place your mark on chosen free tile by dragging mouse above it and left-click. User interface (UI) shows transparent mark above free tile on which mark will be placed if left-click is performed.
 
-Once game is over, no more moves can be placed on board. UI shows the winning row (if any) by highlighting the tiles behind marks forming that row.
+When it is your (or other human player's) turn, you can simply place your mark on chosen free tile by dragging mouse above it and left-click. If move is valid (i.e. tile is free), game shows transparent mark above the tile on which mark will be placed if left-click is performed. Once placement is done, mark becomes opaque and the other player gets the turn.
+
+![human_vs_human_cropped](https://user-images.githubusercontent.com/47885648/139236072-211599b9-a995-48dd-ab8c-caa4c614f3c6.gif)
+
+
+Once game is over, no more moves can be placed on board. Winning row is shown (if any) by highlighting the tiles behind marks forming that row.
+
+![gameOver_cropped](https://user-images.githubusercontent.com/47885648/139236621-3c14c104-0c0d-481a-ad2d-c2007cbc497f.png)
+
 
 ### Starting a new game 
-If you wish to start a new game with the same game mode, choose "New game" during the play.
-<picture>
+If you wish to start a new game with the same game mode, press "New game" during or after the game.
 
-If you wish to start a new game but with different game mode (or even with the same), choose "Back to main menu" and choose another game mode of your choice.
+![newGame_cropped](https://user-images.githubusercontent.com/47885648/139239169-f8e49b46-3d3a-45ba-8ba8-c59633151eb2.gif)
+
+
+If you wish to start a new game but with different game mode, press "Back to main menu" and choose another [game mode](#game-modes) of your choice.
+
+![backToMenu](https://user-images.githubusercontent.com/47885648/139240925-2b66324c-0075-4838-8e28-328843cb44e4.gif)
+
+Or if you have had enough, just click "Exit".
+
+![exit2](https://user-images.githubusercontent.com/47885648/139241326-95998dd9-b0ef-43dc-8161-09c39a0400e3.png)
 
