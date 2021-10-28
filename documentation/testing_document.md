@@ -18,20 +18,21 @@ Additionally quality has been monitored with continuous CI with Gradle workflow 
 
 Summary of test coverage on 28.10.2021 14:30:
 
-| Package/Class  | Complexity<sup>1</sup> | Coverage<sup>2</sup>  | 
-| ------------- | ------------- | ------------- |
-| **tictactoe**     | **83%**  | **88%** |
-| tictactoe/**ai**   | **92%**  | **96%** |
-| tictactoe/ai/[AI.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/ai/AI.java)   | 95%  | 98% |
-| tictactoe/ai/[AlphaBetaMoveChooser.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/ai/AlphaBetaMoveChooser.java)   | 95%  | 98% | 
-| tictactoe/**logic**   | **71%**  | **81%** |
-| tictactoe/logic/[GameBoard.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/GameBoard.java)  | 57%  | 67% |
-| tictactoe/logic/[GameService.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/GameService.java)  | 83%  | 96% |
-| tictactoe/logic/[Move.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/Move.java)  | 58%  | 63% |
-| tictactoe/logic/[Player.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/Player.java)  | 64%  | 77% |
-| tictactoe/logic/[RuleBook.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/RuleBook.java)  | 75%  | 77% |
-| tictactoe/**dao**  | **80%**  | **81%** |
-| tictactoe/dao/[InMemoryDao.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/dao/InMemoryDao.java) | 80%  | 81% |
+
+| Package/Class  | Complexity<sup>1</sup> | Coverage<sup>2</sup>  | | ☰ Tracked lines   |  🟢 Lines hit | 🟡 Lines partials  | 🔴 Lines missed  |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| **tictactoe**     | **83%**  | **88%** | |**396** | **349** | **19** | **28** |
+| tictactoe/**ai**   | **92%**  | **96%** | |**195**	| **187** |	**6** |	**2** |
+| [AI.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/ai/AI.java)   | 95%  | 98% | | 52	| 51	| 1	| 0 |
+| [AlphaBetaMoveChooser.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/ai/AlphaBetaMoveChooser.java)   | 95%  | 98% | | 143 |	136 |	5 |	2 |
+| tictactoe/**logic**   | **71%**  | **81%** | | **185** |	**149**	| **13**	 | **23** |
+| [GameBoard.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/GameBoard.java)  | 57%  | 67% | |	33	| 22	| 2	| 9 |
+| [GameService.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/GameService.java)  | 83%  | 96% | | 73	| 70	| 1	| 2 |
+| [Move.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/Move.java)  | 58%  | 63% | |	27	|  17	| 5	| 5 |
+| [Player.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/Player.java)  | 64%  | 77% | 	| 26	| 20	| 2	| 4 |
+| [RuleBook.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/RuleBook.java)  | 75%  | 77% |  |	26	| 20 | 3 | 3 |
+| tictactoe/**dao**  | **80%**  | **81%** | | **16**	| **13** | **0** |	**3** |
+| [InMemoryDao.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/dao/InMemoryDao.java) | 80%  | 81% | | 16	| 13	| 0	 | 3 |
 
 <sup>1</sup>  Coverage of branches in code, <sup>2</sup>  Coverage of code lines
 
@@ -94,4 +95,10 @@ Even though the focus is on performance, some additional validation can be done 
 
 ##### Discussion
 
-It is worth considering how strict requirements are placed on the maximum search time. That is, as is the case now, we have fairly decent AI with _mostly_ fast decision time. Is it fine if very ralely longer searching times are seen or should those be avoided entirely? If requirement should be strict, we could avoid the extremes for instance by lowering the threshold between search depths of 3 and 2. Personally, I am satisfied with the current implementation and have not seen such dramatic waiting times in actual game play.
+It is worth considering how strict requirements are placed on the maximum search time. That is, as is the case now, we have fairly decent AI with _mostly_ fast decision time. Is it fine if very ralely longer searching times are seen or should those be avoided entirely? If requirement should be strict, we could avoid the extremes for instance by lowering the threshold between search depths of 3 and 2 to 25 (and correspondingly threshold between 4 and 3 could be increased to 12 and that of between 2 and 1 to 100) as illustrated in figure 2 below. Personally, I am satisfied with the current implementation and have not seen such dramatic waiting times in actual game play.
+
+![chart(1)](https://user-images.githubusercontent.com/47885648/139281566-e1c48d85-62e8-4923-a41f-f9e3091862fa.png)
+
+
+**Figure 2**. Estimations based on test data: maximum waiting times with current implemenation \[solid line\] and with new tresholds (4:\[0,11\], 3:\[9,24\], 2:\[25,99\], 1:\[100,\[) \[dashed line\]
+
