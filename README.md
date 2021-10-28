@@ -1,14 +1,11 @@
-# Tic-tac-toe (5-in-row variant)
+# Tic-tac-toe (5-in-row variant) 
 
-
-
-Purpose of this project is to create variant of tic-tac-toe game with an AI to play against with. 
-
-Project is made for course [Data Structures lab](https://tiralabra.github.io/2021_p1/en/) of University of Helsinki. 
+ Purpose of this project is to create variant of tic-tac-toe game with an AI to play against with.  
+ Project is made for course [Data Structures lab](https://tiralabra.github.io/2021_p1/en/) of University of Helsinki. 
 
 :warning: **Note** that course ends on 31.10.2021 after which is it unlikely that project will be updated.
 
-:traffic_light: **Build status:** ![Gradle workflow](https://github.com/toniramo/tic-tac-toe/actions/workflows/gradle.yml/badge.svg)
+:traffic_light: ![Gradle workflow](https://github.com/toniramo/tic-tac-toe/actions/workflows/gradle.yml/badge.svg)
  [![codecov](https://codecov.io/gh/toniramo/tic-tac-toe/branch/main/graph/badge.svg?token=08l4tRIjI8)](https://codecov.io/gh/toniramo/tic-tac-toe)
 
 :tada: **Latest release:** **[v1.0.0](https://github.com/toniramo/tic-tac-toe/releases/tag/v1.0.0)**
@@ -22,7 +19,7 @@ Project is made for course [Data Structures lab](https://tiralabra.github.io/202
 - :crystal_ball: [Project specification](./documentation/project_specification.md)
 - :chart_with_upwards_trend: [Testing document](./documentation/testing_document.md)
 - :hammer: [Implementation document](./documentation/implementation_document.md)
-- :blush: [User guide](./documentation/user_guide.md)
+- :arrow_forward: [User guide](./documentation/user_guide.md)
 
 ### Weekly reports
 - [Week 1](./documentation/weekly_reports/week1.md)
