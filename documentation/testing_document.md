@@ -38,7 +38,7 @@ Summary of test coverage on 29.10.2021 13:00:
 
 Test coverage progress during the course:
 
-![Coverage chart](./images/p399x2py.svg)
+![Coverage chart](./images/8nr7ktv3.svg)
 
 ### Running unit tests
 
