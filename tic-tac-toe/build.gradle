@@ -36,10 +36,6 @@ jar {
     }
 }
 
-task javadocs(type: Javadoc) {
-    source = sourceSets.main.allJava
-}
-
 test {
     exclude '**/ai/AIPerformanceTest.class',\
             '**/ai/GameTreeNodePrunerTest.class',

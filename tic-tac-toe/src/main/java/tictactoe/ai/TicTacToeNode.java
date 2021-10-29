@@ -12,9 +12,9 @@ import tictactoe.annotations.ExcludeFromJacocoGeneratedReport;
 
 /**
  * Represents tic-tac-toe specific node of game tree that is used to find most
- * optimal move by AI. This is no more developed further due to performance reasons. 
- * AI keeps simpler data structure for node data and uses {@link GameTreeNodePruner} 
- * to get the optimal move
+ * optimal move by AI. This is no more developed further due to performance
+ * reasons. AI keeps simpler data structure for node data and uses
+ * {@link GameTreeNodePruner} to get the optimal move
  */
 @Deprecated
 @ExcludeFromJacocoGeneratedReport
@@ -95,7 +95,10 @@ public class TicTacToeNode implements GameTreeNode {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets heuristic value of node in question. Used if node is not end state
+     * but node value is needed.
+     * 
+     * @return heuristic value 
      */
     public int heuristicValue() {
         int value = 0;

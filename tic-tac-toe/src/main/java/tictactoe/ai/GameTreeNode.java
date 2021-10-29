@@ -23,7 +23,7 @@ public interface GameTreeNode {
     /**
      * Tells whether this node is end state. That is, is the game over.
      *
-     * @return
+     * @return true if this is end state, false otherwise
      */
     public boolean isEndState();
 
@@ -38,7 +38,7 @@ public interface GameTreeNode {
     /**
      * Gets nearest child nodes of this node in game tree.
      *
-     * @return
+     * @return child nodes of this node
      */
     public List<GameTreeNode> getChildNodes();
 }
