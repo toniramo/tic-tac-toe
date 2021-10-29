@@ -16,17 +16,17 @@ Additionally quality has been monitored with continuous CI with Gradle workflow 
 
 ### Unit test coverage status
 
-Summary of test coverage on 28.10.2021 14:30:
+Summary of test coverage on 29.10.2021 13:00:
 
 
 | Package/Class  | Complexity<sup>1</sup> | Coverage<sup>2</sup>  | | ☰ Tracked lines   |  🟢 Lines hit | 🟡 Lines partials  | 🔴 Lines missed  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
-| **tictactoe**     | **83%**  | **88%** | |**396** | **349** | **19** | **28** |
+| **tictactoe**     | **84%**  | **90%** | |**398** | **360** | **19** | **19** |
 | tictactoe/**ai**   | **92%**  | **96%** | |**195**	| **187** |	**6** |	**2** |
 | [AI.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/ai/AI.java)   | 95%  | 98% | | 52	| 51	| 1	| 0 |
 | [AlphaBetaMoveChooser.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/ai/AlphaBetaMoveChooser.java)   | 95%  | 98% | | 143 |	136 |	5 |	2 |
-| tictactoe/**logic**   | **71%**  | **81%** | | **185** |	**149**	| **13**	 | **23** |
-| [GameBoard.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/GameBoard.java)  | 57%  | 67% | |	33	| 22	| 2	| 9 |
+| tictactoe/**logic**   | **75%**  | **86%** | | **187** |	**160**	| **13**	 | **14** |
+| [GameBoard.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/GameBoard.java)  | 74%  | 94% | |	35	| 33	| 2	| 0 |
 | [GameService.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/GameService.java)  | 83%  | 96% | | 73	| 70	| 1	| 2 |
 | [Move.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/Move.java)  | 58%  | 63% | |	27	|  17	| 5	| 5 |
 | [Player.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/Player.java)  | 64%  | 77% | 	| 26	| 20	| 2	| 4 |
@@ -99,5 +99,5 @@ It is worth considering how strict requirements are placed on the maximum search
 
 ![chart](https://user-images.githubusercontent.com/47885648/139415241-46503d1a-7f21-462e-9037-ebacfc8b3640.png)
 
-**Figure 2**. Possible new, observation based thresholds for maximum search depths if maximum allowed evaluation time is set to 10 seconds (4:\[0,11\], 3:\[9,24\], 2:\[25,99\], 1:\[100,\[) \[dashed line\]
+**Figure 2**. Possible new, observation based thresholds for maximum search depths if maximum allowed evaluation time is set to 10 seconds (4:\[0,11\], 3:\[9,24\], 2:\[25,99\], 1:\[100,\[)
 
