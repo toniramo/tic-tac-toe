@@ -26,8 +26,10 @@ public class GameBoard {
      *
      * @param state predefined state based on which game board is generated
      */
-    public GameBoard(Player[][] state) {
+    public GameBoard(Player[][] state, int playedMoves, Move lastMove) {
         this.boardState = state;
+        this.playedMoves = playedMoves;
+        this.lastMove = lastMove;
     }
 
     /**
@@ -115,7 +117,7 @@ public class GameBoard {
                 board[x][y] = this.boardState[x][y];
             }
         }
-        return new GameBoard(board);
+        return new GameBoard(board, this.playedMoves, this.lastMove);
     }
 
 }
