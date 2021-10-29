@@ -3,19 +3,21 @@
 Project is implemented with Java together with Gradle build tool. Graphical user interface utilizes JavaFx platform, and unit testing Junit testing framework with Mockito mocking tools.
 
 ## Project structure
-Project consists of four main packages:
-- UI
-- Logic
-- Dao
-- AI
+Project consists of four main packages (1) `logic`, (2) `dao`, (3) `ai` and  (4)`ui`.
 
-Logic package holds (quite obviously) functionalities related to logic of the game. Its main class GameService handles and collects necessary information related to the game and passes it between main classes of the packages. Additionally RuleBook that contains essential rules related information, GameBoard, Player and Move classes that all are used to represent state of the game at given moment are part of logic.
+(1) `logic` package holds (quite obviously) functionalities related to logic of the game. Its main class `GameService` handles and collects necessary information related to the game and passes it between main classes of the packages. Additionally `RuleBook` that contains essential rules related information, `GameBoard`, `Player` and `Move` classes that all are used to represent state of the game at given moment are part of logic.
 
-Project has package, Dao, to hold data access objects (DAOs) to separate game data from the logic. Package contains so far only one class that implements Dao interface; InMemoryDao which holds the game data in memory. Such separate package for storing the game data may feel somewhat artificial at the moment but this could enable longer term storing of the data if desirable without interfering other packages. (Well, game is simple at the moment but perhaps this could allow introduction of more complex features in the future).
+(2) Project has package `dao` to hold data access objects (DAOs) to separate game data from the logic. Package contains so far only one class that implements `Dao` interface; `InMemoryDao` which holds the game data in memory. Such separate package for storing the game data may feel somewhat artificial at the moment but this could enable longer term storing of the data if desirable without interfering other packages. (Well, game is simple at the moment but perhaps this could allow introduction of more complex features in the future).
 
-AI (or artificial intelligence) package contains functions to generate AI player. In practice, so called intelligence is simulated by using minimax algorithm with alpha beta pruning and self-made heuristic method to evaluate possible moves and find potentially the most optimal one. 
+(3) `ai` (comes from artificial intelligence, AI) package contains functions to generate `AI` player. In practice, so called intelligence is simulated by using minimax algorithm with alpha beta pruning and self-made heuristic method to evaluate possible moves and find potentially the most optimal one. 
 
-UI package provides graphical user interface via which communication with human player takes place.
+(4) `ui` package provides graphical user interface via which communication with human player takes place.
+
+Relationships between classes are illustrated in class diagram below:
+
+![Class diagram](./images/class_diagram.svg)
+
+**Figure 1.** Simplefied class diagram of implementation to show relationships between classes. (It excludes deprecated classes and any class specific information about object variables and methods and depricated classes).
 
 ## Implemented time and space complexities
 
