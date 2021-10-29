@@ -9,9 +9,11 @@ Project consists of four main packages (1) `logic`, (2) `dao`, (3) `ai` and  (4)
 
 (2) Project has package `dao` to hold data access objects (DAOs) to separate game data from the logic. Package contains so far only one class that implements `Dao` interface; `InMemoryDao` which holds the game data in memory. Such separate package for storing the game data may feel somewhat artificial at the moment but this could enable longer term storing of the data if desirable without interfering other packages. (Well, game is simple at the moment but perhaps this could allow introduction of more complex features in the future).
 
-(3) `ai` (comes from artificial intelligence, AI) package contains functions to generate `AI` player. In practice, so called intelligence is simulated by using minimax algorithm with alpha beta pruning and self-made heuristic method to evaluate possible moves and find potentially the most optimal one. 
+(3) `ai` (comes from artificial intelligence, AI) package contains functions to generate `AI` player. In practice, so called intelligence is simulated by using minimax algorithm with alpha beta pruning and self-made heuristic methods to evaluate possible moves and find potentially the most optimal one. Actual evualuation is performed by `AlphaBetaMoveChooser`. 
+<sub>Notice that package contains deprecated classes `TicTacToeNode` and `GameTreeNodePruner` and interface `GameTreeNode` (which `TicTacToeNode` implements). These were designed to analyze the game tree at given state of the game but were deprecated due to performance concerns; Java is usually faster to perform operations with primitive data structures compared to structures consiting of custom made objects. Concequently, AI maintains the state of the game in primitive integer (`int`) array instead of using `GameTreeNode`s.</sub>
 
-(4) `ui` package provides graphical user interface via which communication with human player takes place.
+
+(4) `ui` package provides graphical user interface, `GUI`, via which user can choose game modes and play the game. `GUI` keeps track of `AI` players and requests `AI`(s) to choose move when the game requires, otherwise it propmts move from actual user.  
 
 Relationships between classes are illustrated in class diagram below:
 
