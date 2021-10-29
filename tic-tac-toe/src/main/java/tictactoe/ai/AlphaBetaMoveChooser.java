@@ -375,7 +375,7 @@ public class AlphaBetaMoveChooser {
      * @param marks counter array
      * @return updated counter array
      */
-    public static int[] reduceMarkCountersByOne(int[] marks) {
+    private static int[] reduceMarkCountersByOne(int[] marks) {
         int[] result = new int[marks.length];
         int j = 0;
         for (int i = 1; i < marks.length; i++) {
