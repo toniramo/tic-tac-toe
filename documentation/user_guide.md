@@ -43,6 +43,14 @@ Run AI performance test:
 ```
 - Notice that this may take up to 1.5 - 2h to finish. 
 - Output data will be printed in `./build/reports/tests/performanceTest/data/perfTest_<system time in milliseconds>.txt`
+
+### Javadoc
+To generate Javadoc for the project, run:
+```
+./gradlew javadoc
+```
+- Generated files will be located in `./build/docs/javadoc`. Start navigating the docs by opening `index.html` in this location.
+
 ### Cleaning outputs
 In order to delete contents of `build` directory, run
 ```
