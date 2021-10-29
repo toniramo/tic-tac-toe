@@ -95,10 +95,9 @@ Even though the focus is on performance, some additional validation can be done 
 
 ##### Discussion
 
-It is worth considering how strict requirements are placed on the maximum search time. That is, as is the case now, we have fairly decent AI with _mostly_ fast decision time. Is it fine if very ralely longer searching times are seen or should those be avoided entirely? If requirement should be strict, we could avoid the extremes for instance by lowering the threshold between search depths of 3 and 2 to 25 (and correspondingly threshold between 4 and 3 could be increased to 12 and that of between 2 and 1 to 100) as illustrated in figure 2 below. Personally, I am satisfied with the current implementation and have not seen such dramatic waiting times in actual game play.
+It is worth considering how strict requirements are placed on the maximum search time. That is, as is the case now, we have fairly decent AI with _mostly_ fast decision time. Is it fine if very ralely longer searching times are seen or should those be avoided entirely? If requirement should be strict, we could avoid the extremes for instance by lowering the threshold between search depths of 3 and 2 to 25 to achieve maximum 10 seconds waiting times (and correspondingly threshold between 4 and 3 could be increased to 12 and that of between 2 and 1 to 100) as illustrated in figure 2 below. Personally, I am satisfied with the current implementation and have not seen such dramatic waiting times that would significantly hinder the gaming experience in actual game play.
 
-![chart(1)](https://user-images.githubusercontent.com/47885648/139281566-e1c48d85-62e8-4923-a41f-f9e3091862fa.png)
+![chart](https://user-images.githubusercontent.com/47885648/139415241-46503d1a-7f21-462e-9037-ebacfc8b3640.png)
 
-
-**Figure 2**. Estimations based on test data: maximum waiting times with current implemenation \[solid line\] and with new tresholds (4:\[0,11\], 3:\[9,24\], 2:\[25,99\], 1:\[100,\[) \[dashed line\]
+**Figure 2**. Possible new, observation based thresholds for maximum search depths if maximum allowed evaluation time is set to 10 seconds (4:\[0,11\], 3:\[9,24\], 2:\[25,99\], 1:\[100,\[) \[dashed line\]
 
