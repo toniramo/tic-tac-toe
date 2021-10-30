@@ -32,7 +32,7 @@ By far the most complex part of the project in terms of time is the minimax algo
 
 When `AI` calls `getMoveWithOptimizedSearchDepth` of `AlphaBetaMoveChooser` following happens:
 
-Fisrt `optimizedMaxSearchDepth` is called.  It defines maximum search depth _d_<sub>max</sub>  as a function of number of free tiles on play area as follows:
+First `optimizedMaxSearchDepth` is called.  It defines maximum search depth _d_<sub>max</sub>  as a function of number of free tiles on play area as follows:
 ```java
 static int optimizedMaxSearchDepth(int[] area, int playedMoves) {
   int freeTiles = (area[3] - area[1] + 1) * (area[2] - area[0] + 1) - playedMoves;
@@ -63,7 +63,7 @@ if (!validMove(node, playArea, playedMoves, x, y)) {
   continue;
 }
 ```
-More precisely locations that are not on board and such tiles that are not free but also tiles that do not have any neighbouring tile reserved after first move are all skipped:
+More precisely, locations that are not on board and such tiles that are not free but also tiles that do not have any neighbouring tile reserved after first move are all skipped:
 ```java
 private static boolean validMove(int[][] node, int[] playArea, int playedMoves, int x, int y) {
   return coordinateOnBoard(node, x, y) //this may not in fact lead to any skips in fact as playArea should be already within the range
@@ -73,7 +73,7 @@ private static boolean validMove(int[][] node, int[] playArea, int playedMoves, 
 ```
 As a result, we can reduce the number of tiles that are not next to reserved ones _n_<sub>outliers</sub> and the  number of reserved tiles, _n_<sub>played</sub>, from _n_<sub>play area</sub>. Time complexity depends on input, _n_<sub>free tiles</sub> which is defined as follows: _n_<sub>free tiles</sub> = _n_<sub>play area</sub> - _n_<sub>outliers</sub> - _n_<sub>played</sub>.
 
-Next actual minimax related operations start. We assing new value in given coordinate x,y to `node`, call `value` method and revert state to previous after execution returns:
+Next actual minimax related operations start. We assing new value in given coordinate _x_,_y_ to `node`, call `value` method and revert state to previous after execution returns:
 ```java
 node[x][y] = turn;
 int alphaBetaValue = value(node, playArea, new int[]{x, y},
@@ -143,17 +143,17 @@ if (marksOnRange[p][k] > 0 && counters[p][k][marksOnRange[p][k]] == 0) {
   marksOnRange[p][k]--;
 }
 ```
-Only operation of which time complexity is affected by the input is `reduceMarkCountersByOne` since it iterates through values of array with lenght of _k_+1. Hence, its time complexity is O(_k_) resulting in time complexity of O((n<sub>board size</sub><sup>2</sup> * (n<sub>play area</sub> + k)) \* k) of `heuristicValueBasedOnPlayArea.
+Only operation of which time complexity is affected by the input is `reduceMarkCountersByOne` since it iterates through values of array with lenght of _k_+1. Hence, its time complexity is O(_k_) resulting in time complexity of O((n<sub>board size</sub><sup>2</sup> * (n<sub>play area</sub> + k)) \* k) of `heuristicValueBasedOnPlayArea`.
 
-After these, loop continues, value of `offset` is increased and eventually final heuristic value, calculated from difference of player specific values (`playerValues`) is returned. 
+After these, loop continues, value of `offset` is increased and eventually final heuristic value, calculated from difference of player specific values (`playerValues`) is returned.
 
 Finally we get back to `value` method. Likewise `getMove`, it iterates through given play area although this time tiles just outside the play area are checked. Yet again invalid moves are skipped according to `!validMove` check resulting in same method of calculating _n_<sub>free tiles</sub> as above. Though, this does not remain constant as play area can grow and on the other hand number of played moves depend on current search depth. We can simplify by denoting _n_'<sub>free tiles</sub> ≈ b, where _n_'<sub>free tiles</sub> is number of free tiles when `value` is called and _b_ is branching factor (discussed earlier in [project specification](./project_specification.md)).
 
-To avoid increasing time and space complexities due to copying of arrays, same `node` as given in parameters is used . Correspondingly, same `playArea` variable is also used. However, since we want to revert it back to original state after recursions, its updated state information is kept in additional `areaChanged` boolean array. It has always size of 4 but since `value` calls recursively itself, it lead to space complexity of O(4 \* _b_ \* _d_) where _b_ is branching factor (as mentioned above) and _d_ search depth (_d_ also discussed in [project specification](./project_specification.md).
+To avoid increasing time and space complexities due to copying of arrays, same `node` as given in parameters is used. Correspondingly, same `playArea` variable is also used. However, since we want to revert it back to original state after recursions, its updated state information is kept in additional `areaChanged` boolean array. It has always size of 4 but since `value` calls recursively itself, it lead to space complexity of O(4 \* _b_ \* _d_) where _b_ is branching factor (as mentioned above) and _d_ search depth (which also discussed in [project specification](./project_specification.md)). 
 
- As we use maximum search depth _d_<sub>max</sub>, we know that _d_ <= _d_<sub>max</sub>(_n_<sub>free tiles</sub>). So, in the worst case O(_b_ \* _d_<sub>max</sub>) (we can ignore constant 4).`increasePlayArea` or `decreasePlayArea` operatios to `areaChanged` instead do not have significant affect on either complexity.
+ As we use maximum search depth _d_<sub>max</sub>, we know that _d_ <= _d_<sub>max</sub>. Thereby, in the worst case space complexity becomes now O(_b_ \* _d_<sub>max</sub>) (we can ignore constant 4).`increasePlayArea` or `decreasePlayArea` operations to `areaChanged`, instead, do not have significant affect on either complexity.
 
-As mentioned above, `value` calls itself thus leading to worst case time complexity of O(_b_ <sup>_d_<sub>max</sub>(_n_<sub>free tiles</sub>)</sup>). However, since we are using alpha beta pruning
+As mentioned above, `value` calls itself thus leading to worst case time complexity of O(_b_ <sup>_d_<sub>max</sub></sup>). However, since we are using alpha beta pruning
 ```java
   if (turn == 0) {
     value = Math.max(value, alphaBetaValue);
@@ -196,11 +196,11 @@ After value is calculated (either with or without pruning), execution returns to
 }
 return move;
 ```
-As a result, `value` is called _n_<sub>free tiles</sub> - _n_<sub>pruned</sub>  times where _n_<sub>pruned</sub> is number of moves pruned and 0 <= _n_<sub>pruned</sub> <= _n_<sub>free tiles</sub>-1. Since `value` uses similar criteria based on which child nodes are chosen, we can similarly as with `value` denote _n_<sub>free tiles</sub> ≈ _b_. Thus, combined time complexities of `getMove` and `value` are O(_b_<sup>(d+1)/2</sup>), where d<= d<sub>max</sub> (best case) and O(_b_<sup>d<sub>max</sub>+1</sup>) (worst case). 
+As a result, `value` is called _n_<sub>free tiles</sub> - _n_<sub>pruned</sub>  times where _n_<sub>pruned</sub> is number of moves pruned and 0 <= _n_<sub>pruned</sub> <= _n_<sub>free tiles</sub>-1. Since `value` uses similar criteria to choose child nodes, we can similarly as with `value` denote _n_<sub>free tiles</sub> ≈ _b_. Thus, combined time complexities of `getMove` and `value` are O(_b_<sup>(d+1)/2</sup>), where d<= d<sub>max</sub> (best case) and O(_b_<sup>d<sub>max</sub>+1</sup>) (worst case). 
 
-We are almost there. We still need to take into account for space complexity that in addition to `node` array that is passed from `AI` to `AlphaBetaMoveChooser` (in addition to other parameters), program needs to maintain the actual state of the game. Space complexity depends in that case the game configuration: game board size, players, played moves, rules. Despite the progress of the game, space complexity is actually O(_n_<sub>board size</sub><sup>2</sup>). Notice that `GUI` will requires certain amount of memory but we will estimate it to be O(1).
+We are almost there. We still need to take into account for space complexity that in addition to `node` array that is passed from `AI` to `AlphaBetaMoveChooser` (together with other parameters), program needs to maintain the actual state of the game. Space complexity depends in that case the game configuration: game board size, players, played moves, rules. Despite the progress of the game, space complexity is actually O(_n_<sub>board size</sub><sup>2</sup>). Notice that `GUI` also requires certain amount of memory but we will estimate it to be O(1).
 
-Finally, combining derived complexities (other than O(1)) of all the methods we get:
+Finally, by combining derived complexities (other than O(1)) of all the methods we get:
 
 **Time complexity**
 
@@ -213,10 +213,11 @@ Best case
 By taking into account that we have defined n<sub>board size</sub>=20 and _k_=5 we can simplify both cases:
 
 Worst case
-> O( _b_ ) + O(b<sup>d<sub>max</sub>+1</sup>) = O(_b_ + _b_<sup>d<sub>max</sub>+1</sup>) = O(_b_<sup>d<sub>max</sub>+1</sup>)
+> O( _b_ ) + O(b<sup>d<sub>max</sub>+1</sup>) = O(_b_ + _b_<sup>d<sub>max</sub>+1</sup>) =  O(_b_<sup>d<sub>max</sub>+1</sup>)
 
 Best case
 >  O(b<sup>d<sub></sub>+1)/2</sup>)
+where _d_ <= d<sub>max</sub></sup>.
 
 **Space complexity**
 
@@ -233,9 +234,11 @@ Worst case:
 
 Best case:
 > O(_b_ \* _d_)
+where _d_ <= d<sub>max</sub></sup>.
 
 **Conclusion**
-Now it is worth noting that branching factor _b_ is specific for this application and due to measures to reduce the number of potential branches per node, is potentially smaller than branching factor in project specification, let use _b'_ for it this time. So _b_ <= _b'_ (but most likely _b_ << _b'_). Additionally search depth _d_ is limited to _d_<sub>max</sub> that in turn is maximum 4. Thereby we can confidently say that achieved complexities are within the expectations of project specification.
+
+It is worth noting that branching factor _b_ is specific for this application and due to measures to reduce the number of potential branches per node, is potentially smaller than branching factor in project specification, let use _b'_ for it this time. So _b_ <= _b'_ (but most likely _b_ << _b'_). Additionally search depth _d_ is limited to _d_<sub>max</sub> that in turn is maximum 4. Thereby we can confidently say that realized complexities are within the expectations  laid in project specification.
 
 ## Possible flaws and ideas for improvements
 - Improve alpha beta pruning algorithm further, e.g. by utilizing iterative deepening and/or changing the order of nodes to increase likelyhood of finding the most valuable node early on - for instance starting from moves closest to the latest moves.
