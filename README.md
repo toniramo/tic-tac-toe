@@ -8,7 +8,7 @@
 :traffic_light: ![Gradle workflow](https://github.com/toniramo/tic-tac-toe/actions/workflows/gradle.yml/badge.svg)
  [![codecov](https://codecov.io/gh/toniramo/tic-tac-toe/branch/main/graph/badge.svg?token=08l4tRIjI8)](https://codecov.io/gh/toniramo/tic-tac-toe)
 
-:tada: **Latest release:** **[v1.0.0](https://github.com/toniramo/tic-tac-toe/releases/tag/v1.0.0)**
+:tada: **Latest release:** **[v1.0.1](https://github.com/toniramo/tic-tac-toe/releases/tag/v1.0.1)**
 
 ![game](https://user-images.githubusercontent.com/47885648/139243668-16495ee3-b793-44f8-87d0-41e96fbed901.png)
 
