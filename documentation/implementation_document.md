@@ -28,11 +28,27 @@ Relationships between classes are illustrated in class diagram below:
 
 ## Implemented time and space complexities
 
-Most complex part of the project in terms of both time and space is the minimax algorithm that is realized by `AlphaBetaMoveChooser` and used to choose the move for AI player. Therefore it is justified to focus complexity analysis on that.
+By far the most complex part of the project in terms of time is the minimax algorithm that is realized by `AlphaBetaMoveChooser` and used to choose the move for AI player. Therefore it is justified to focus complexity analysis on that.
 
 When `AI` calls `getMoveWithOptimizedSearchDepth` of `AlphaBetaMoveChooser` following happens:
 
-`optimizedMaxSearchDepth` is called. Since it only compares the given parameters with predefined values time complexity is constant O(1).
+`optimizedMaxSearchDepth` is called.  It defines maximum search depth _d_<sub>max</sub>  as a function of number of free tiles on play area _n_<sub>free tiles</sub>, _d_<sub>max</sub>(_n_<sub>free tiles</sub>) as follows:
+```java
+static int optimizedMaxSearchDepth(int[] area, int playedMoves) {
+  int freeTiles = (area[3] - area[1] + 1) * (area[2] - area[0] + 1) - playedMoves;
+  if (freeTiles < 9) {
+    return 4;
+  }
+  if (freeTiles < 37) {
+    return 3;
+  }
+  if (freeTiles < 77) {
+    return 2;
+  }
+  return 1;
+}
+```
+Since it only compares the given parameters with predefined values time complexity is constant O(1).
 Next `getMove` with bunch of parameters is called. It has two nested for loops:
 ```java
 for (int x = playArea[0]; x <= playArea[2]; x++) {
@@ -176,7 +192,9 @@ After value is calculated (either with or without pruning), execution returns to
 }
 return move;
 ```
-As a result, `getMove` and `value` combined lead to time complexity of O(_b_ <sup>d<sub>max</sub>/2</sup>).
+As a result, `value` is called _n_<sub>play area</sub> - _n_<sub>outliers</sub> - _n_<sub>played</sub> - _n_<sub>pruned</sub> times.Since `value` uses similar criteria based on which child nodes are chosen, we simplify equation by denoting now  _n_<sub>play area</sub> - _n_<sub>outliers</sub> - _n_<sub>played</sub> - _n_<sub>pruned</sub> ≈ _b_. Thus, combined time complexities of `getMove` and `value` are O(_b_<sup>(d+1)/2</sup>), where d<= d<sub>max</sub>(n<sub>free tiles</sub>) (best case) and O(_b_<sup>d<sub>max</sub>(n<sub>free tiles</sub>)+1</sup>) (worst case). 
+
+
 
 _n_<sub>board size</sub>
 <details>
