@@ -32,7 +32,7 @@ By far the most complex part of the project in terms of time is the minimax algo
 
 When `AI` calls `getMoveWithOptimizedSearchDepth` of `AlphaBetaMoveChooser` following happens:
 
-Fisrt `optimizedMaxSearchDepth` is called.  It defines maximum search depth _d_<sub>max</sub>  as a function of number of free tiles on play area _n_<sub>free tiles</sub>, _d_<sub>max</sub>(_n_<sub>free tiles</sub>) as follows:
+Fisrt `optimizedMaxSearchDepth` is called.  It defines maximum search depth _d_<sub>max</sub>  as a function of number of free tiles on play area as follows:
 ```java
 static int optimizedMaxSearchDepth(int[] area, int playedMoves) {
   int freeTiles = (area[3] - area[1] + 1) * (area[2] - area[0] + 1) - playedMoves;
@@ -99,7 +99,7 @@ Running `lastMoveWinning` checks if there are _k_ marks in row (`rowLenght`) wit
 
 `gameBoardFull` compares number of tiles on board,_n_<sub>board size</sub><sup>2</sup>, with number of played moves _n_<sub>played</sub> so the complexities are not affected by its input. (Both O(1)).
 
-If maximum search depth _d_<sub>max</sub>(_n_<sub>free tiles</sub>) is reached without state being final, `heuristicBasedOnPlayArea` is called. This is significantly more complex method than the two previous ones;
+If maximum search depth _d_<sub>max</sub> is reached without state being final, `heuristicBasedOnPlayArea` is called. This is significantly more complex method than the two previous ones;
 it performs 4 nested for loops and assigns 7 temporary variables:
 ```java
 int n = node.length - 1;
@@ -143,7 +143,7 @@ if (marksOnRange[p][k] > 0 && counters[p][k][marksOnRange[p][k]] == 0) {
   marksOnRange[p][k]--;
 }
 ```
-Only operation of which time complexity is affected by the input is `reduceMarkCountersByOne` since it iterates through values of array with lenght of _k_+1. Hence, its time complexity is O(_k_).
+Only operation of which time complexity is affected by the input is `reduceMarkCountersByOne` since it iterates through values of array with lenght of _k_+1. Hence, its time complexity is O(_k_) resulting in time complexity of O((n<sub>board size</sub><sup>2</sup> * (n<sub>play area</sub> + k)) \* k) of `heuristicValueBasedOnPlayArea.
 
 After these, loop continues, value of `offset` is increased and eventually final heuristic value, calculated from difference of player specific values (`playerValues`) is returned. 
 
@@ -151,7 +151,7 @@ Finally we get back to `value` method. Likewise `getMove`, it iterates through g
 
 To avoid increasing time and space complexities due to copying of arrays, same `node` as given in parameters is used . Correspondingly, same `playArea` variable is also used. However, since we want to revert it back to original state after recursions, its updated state information is kept in additional `areaChanged` boolean array. It has always size of 4 but since `value` calls recursively itself, it lead to space complexity of O(4 \* _b_ \* _d_) where _b_ is branching factor (as mentioned above) and _d_ search depth (_d_ also discussed in [project specification](./project_specification.md).
 
- As we use maximum search depth _d_<sub>max</sub>(_n_<sub>free tiles</sub>) we know that _d_ <= _d_<sub>max</sub>(_n_<sub>free tiles</sub>). So, in the worst case O(_b_ \* _d_<sub>max</sub>(_n_<sub>free tiles</sub>)) (we can ignore constant 4).`increasePlayArea` or `decreasePlayArea` operatios to `areaChanged` instead do not have significant affect on either complexity.
+ As we use maximum search depth _d_<sub>max</sub>, we know that _d_ <= _d_<sub>max</sub>(_n_<sub>free tiles</sub>). So, in the worst case O(_b_ \* _d_<sub>max</sub>) (we can ignore constant 4).`increasePlayArea` or `decreasePlayArea` operatios to `areaChanged` instead do not have significant affect on either complexity.
 
 As mentioned above, `value` calls itself thus leading to worst case time complexity of O(_b_ <sup>_d_<sub>max</sub>(_n_<sub>free tiles</sub>)</sup>). However, since we are using alpha beta pruning
 ```java
@@ -169,7 +169,7 @@ if (alpha >= beta) {
   return value;
 }
 ```
-we may potentially achieve faster evaluation times if nodes are iterated in such order that pruning takes place. We know from [project specification](./project_specification.md) that in best case, this can lead to O(_b_ <sup>d/2</sup>) or O(_b_ <sup>d<sub>max</sub>/2</sup>) in this case. 
+we may potentially achieve faster evaluation times if nodes are iterated in such order that pruning takes place. We know from [project specification](./project_specification.md) that in best case, this can lead to O(_b_ <sup>d/2</sup>).
 
 After value is calculated (either with or without pruning), execution returns to `getMove`. This too has similar method of recognizing pruning potential, halt execution and return found move when further iterations are no longer needed:
 
@@ -196,36 +196,51 @@ After value is calculated (either with or without pruning), execution returns to
 }
 return move;
 ```
-As a result, `value` is called _n_<sub>free tiles</sub> - _n_<sub>pruned</sub>  times. Since `value` uses similar criteria based on which child nodes are chosen, we can similarly as with `value` denote _n_<sub>free tiles</sub> ≈ _b_. Thus, combined time complexities of `getMove` and `value` are O(_b_<sup>(d+1)/2</sup>), where d<= d<sub>max</sub>(n<sub>free tiles</sub>) (best case) and O(_b_<sup>d<sub>max</sub>(n<sub>free tiles</sub>)+1</sup>) (worst case). 
+As a result, `value` is called _n_<sub>free tiles</sub> - _n_<sub>pruned</sub>  times where _n_<sub>pruned</sub> is number of moves pruned and 0 <= _n_<sub>pruned</sub> <= _n_<sub>free tiles</sub>-1. Since `value` uses similar criteria based on which child nodes are chosen, we can similarly as with `value` denote _n_<sub>free tiles</sub> ≈ _b_. Thus, combined time complexities of `getMove` and `value` are O(_b_<sup>(d+1)/2</sup>), where d<= d<sub>max</sub> (best case) and O(_b_<sup>d<sub>max</sub>+1</sup>) (worst case). 
 
-Finally, combining complexities of all the methods we get:
-- Time complexity, best case:
-- Space complexity 
+We are almost there. We still need to take into account for space complexity that in addition to `node` array that is passed from `AI` to `AlphaBetaMoveChooser` (in addition to other parameters), program needs to maintain the actual state of the game. Space complexity depends in that case the game configuration: game board size, players, played moves, rules. Despite the progress of the game, space complexity is actually O(_n_<sub>board size</sub><sup>2</sup>). Notice that `GUI` will requires certain amount of memory but we will estimate it to be O(1).
 
+Finally, combining derived complexities (other than O(1)) of all the methods we get:
 
-_n_<sub>board size</sub>
-<details>
-  <summary> temporary</summary>
-Following parameters affect the complexities:
-- `int[] playArea`: area within which all marks are located on game board. In early game this is usually much smaller than actual game board limiting the number of free tiles (i.e. observed child nodes).
-- `int numberOfPlayedMoves`: Number of played moves, used to count the number of free tiles on play area (i.e. number of child nodes)
-- `int maximumSearchDepth`: Maximum search depth, if the depth of observed node is equal to this, no more searches from this node are done. Depth is determined by number of free tiles on play area, n 4: n < 9; 3: 9 <= n < 37, 2: 37 <= n < 77, 1: 77 <= n)
-- `int rowLenght`: Number of marks needed to form a winning row (in this case 5.
+**Time complexity**
 
-For each possible move within playArea:
-  Check that there is mark next to it wihtin radius of 1 tile. If not, skip.
-  Calculate its value based on childs within depth of maximumSearchDepth.
+Worst case
+> O((n<sub>board size</sub><sup>2</sup> * (n<sub>play area</sub> + k)) \* k \* _b_) \[`heuristicBasedOnPlayArea`, calculated in all final _b_<sub>max</sub> nodes\] + O(k \* b<sup>d<sub>max</sub>+1</sup>) \[`lastMoveWinning`, checked during every iteration\]
 
-Most exhaustive calculation taking place while algorithm is executed is heuristic value calculation. It analyses given play area in all 4 possible direction: horizontal, vertical and diagonals using moving windows with each lenght equal to marks needed to form winning row (5). There are n rows and n columns to go through and 2n-1 digonals per direction (bottom left to up right / and up left to bottom right \ ).
-In total, there are n+n+2*(2*n-1) slices of game board to analyze'(this including now the short diagonals with lenght of 1-4 in which window is out of bounds). Moving window is implemented so that it visits each tile four times coming from all available directions once. (Notice that it could be improved a bit to avoid diagonals where maximum lenght is between 1-4). 
+Best case
+>  O(k \* (b<sup>d<sub></sub>+1)/2</sup>) \[`lastMoveWinning`, checked during every iteration but all visited nodes are end states so `heuristicBasedOnPlayArea`is not executed\]
 
-As a result, 4\*n\*m (n: width of play area, m: height) tile visits are made heuristic calculation. Given that there are n\*m-p (p: played moves), and max search depth d_max is set, up to
-approximately 4\*n\*m\*(n\*m-p)^(d_max+1) visits are made during each turn in case any pruning does not take place (and exluding possible changes to play area and number of available moves). So for instance n=10, m=10, p=20 and d_max = 2 yields up to 3.2768e+13 visits. It is possible that some moves result to win so the number is likely smaller if p >= 8. Winning move in turn is checked around the latest move within range of 4 tiles from the one move was placed on. Again check is performed for all 4 directions resulting in 9\*4=36 tile visits in total per check. 
-</details>
+By taking into account that we have defined n<sub>board size</sub>=20 and _k_=5 we can simplify both cases:
+
+Worst case
+> O( _b_ ) + O(b<sup>d<sub>max</sub>+1</sup>) = O(_b_ + _b_<sup>d<sub>max</sub>+1</sup>) = O(_b_<sup>d<sub>max</sub>+1</sup>)
+
+Best case
+>  O(b<sup>d<sub></sub>+1)/2</sup>)
+
+**Space complexity**
+
+Worst case:
+> O(_k_ + _n_<sub>board size</sub>) \[temporary counters of`heuristicValueBasedOnPlayArea`, needed only while calling it\] + O(_b_ \* _d_<sub>max</sub>) \[`areaChanged` in `value`\] + O(_n_<sub>board size</sub>) \[ game state \]
+
+Best case
+> O(_b_ \* _d_) \[`areaChanged` in `value`\] + O(_n_<sub>board size</sub>)
+
+Again, by taking into account that we have defined n<sub>board size</sub>=20 and _k_=5 we can simplify both cases:
+
+Worst case:
+> O(_b_ \* _d_<sub>max</sub>)
+
+Best case:
+> O(_b_ \* _d_)
+
+**Conclusion**
+Now it is worth noting that branching factor _b_ is specific for this application and due to measures to reduce the number of potential branches per node, is potentially smaller than branching factor in project specification, let use _b'_ for it this time. So _b_ <= _b'_ (but most likely _b_ << _b'_). Additionally search depth _d_ is limited to _d_<sub>max</sub> that in turn is maximum 4. Thereby we can confidently say that achieved complexities are within the expectations of project specification.
 
 ## Possible flaws and ideas for improvements
 - Improve alpha beta pruning algorithm further, e.g. by utilizing iterative deepening and/or changing the order of nodes to increase likelyhood of finding the most valuable node early on - for instance starting from moves closest to the latest moves.
 - Take into account human element in game: it is possible that opponent does not notice already achieved victory (e.g. | |X|X|X|X| |). In such case AI may just ''give up'' i.e. choose last of the observed moves since all are equally bad based on algorithm.
+- UI may show transparent mark in AI vs. AI game even after first and only user made move is made.
 
 ## Sources
 - https://en.wikipedia.org/wiki/Minimax
