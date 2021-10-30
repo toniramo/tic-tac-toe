@@ -28,11 +28,11 @@ Relationships between classes are illustrated in class diagram below:
 
 ## Implemented time and space complexities
 
-By far the most complex part of the project in terms of time is the minimax algorithm that is realized by `AlphaBetaMoveChooser` and used to choose the move for AI player. Therefore it is justified to focus complexity analysis on that.
+By far the most complex part of the project in terms of time is the minimax algorithm that is realized by `AlphaBetaMoveChooser` and used to choose the move for AI player. Therefore, it is justified to focus complexity analysis on that.
 
 When `AI` calls `getMoveWithOptimizedSearchDepth` of `AlphaBetaMoveChooser` following happens:
 
-`optimizedMaxSearchDepth` is called.  It defines maximum search depth _d_<sub>max</sub>  as a function of number of free tiles on play area _n_<sub>free tiles</sub>, _d_<sub>max</sub>(_n_<sub>free tiles</sub>) as follows:
+Fisrt `optimizedMaxSearchDepth` is called.  It defines maximum search depth _d_<sub>max</sub>  as a function of number of free tiles on play area _n_<sub>free tiles</sub>, _d_<sub>max</sub>(_n_<sub>free tiles</sub>) as follows:
 ```java
 static int optimizedMaxSearchDepth(int[] area, int playedMoves) {
   int freeTiles = (area[3] - area[1] + 1) * (area[2] - area[0] + 1) - playedMoves;
@@ -54,8 +54,8 @@ Next `getMove` with bunch of parameters is called. It has two nested for loops:
 for (int x = playArea[0]; x <= playArea[2]; x++) {
   for (int y = playArea[1]; y <= playArea[3]; y++) {
 ```
-In practice, code iterates through x and y coordinates within given play area coordinates. Therefore, number of tiles on play area or coordinates to go through is
-d_x_\*d_y_ = _n_<sub>play area</sub>. 
+In practice, code iterates through _x_ and _y_ coordinates within given play area coordinates (`playArea`). Therefore, number of tiles on play area or coordinates to go through is
+d _x_\*d _y_ = _n_<sub>play area</sub>. 
 
 However, invalid locations are skipped before any further operations are performed:
 ```java
@@ -69,11 +69,11 @@ private static boolean validMove(int[][] node, int[] playArea, int playedMoves, 
   return coordinateOnBoard(node, x, y) //this may not in fact lead to any skips in fact as playArea should be already within the range
           && tileFree(node, x, y)
           && (atLeastOneNeighbourReserved(node, playArea, x, y) && playedMoves > 0);
-    }
+}
 ```
-As a result, we can reduce the number of tiles that are not next to reserved ones _n_<sub>outliers</sub> and the  number of reserved tiles, _n_<sub>played</sub>, from _n_<sub>play area</sub>. Hence time complexity depends on input as follows: _n_<sub>play area</sub> - _n_<sub>outliers</sub> - _n_<sub>played</sub>.
+As a result, we can reduce the number of tiles that are not next to reserved ones _n_<sub>outliers</sub> and the  number of reserved tiles, _n_<sub>played</sub>, from _n_<sub>play area</sub>. Time complexity depends on input, _n_<sub>free tiles</sub> which is defined as follows: _n_<sub>free tiles</sub> = _n_<sub>play area</sub> - _n_<sub>outliers</sub> - _n_<sub>played</sub>.
 
-Next actual minimax related operations start. We assing new value in given coordinate x,y to `node`, call `value` method and revert state to previous:
+Next actual minimax related operations start. We assing new value in given coordinate x,y to `node`, call `value` method and revert state to previous after execution returns:
 ```java
 node[x][y] = turn;
 int alphaBetaValue = value(node, playArea, new int[]{x, y},
@@ -82,7 +82,7 @@ node[x][y] = -1;
 ```
 Notice that this enables us to use single `node` array instead of copying it reducing the space complexity of the program. Space needed so far is thus dependent on total number of tiles on board, _n_<sub>board size</sub><sup>2</sup>, where _n_<sub>board size</sub> denotes number of tiles on game board. Furthermore, copying arrays is costly operation on time perspective as well so any additions to time complexity are also avoided.
 
-`value` method starts by checking if the observed state is end state:
+Now `value` method starts by checking if the observed state is end state:
 ```java
 int maxValue = (int) 1e9 - nodeDepth;
 if (lastMoveWinning(node, move, rowLenght)) {
@@ -95,12 +95,12 @@ if (nodeDepth >= maxSearchDepth) {
   return heuristicBasedOnPlayArea(node, playArea, (turn + 1 % 2), rowLenght);
 }
 ```
-Running `lastMoveWinning` checks if there are _k_ marks in row (`rowLenght`) within _k_-1 radius from the location of last move. Thus it only depends on the used _k_ during the game.
+Running `lastMoveWinning` checks if there are _k_ marks in row (`rowLenght`) within _k_-1 radius from the location of last move. Thus it only depends on the used _k_ during the game. Space complexity of particular method is constant (O(1)) and time complexity O(_k_).
 
-`gameBoardFull` compares number of tiles on board,_n_<sub>board size</sub><sup>2</sup>, with number of played moves _n_<sub>played</sub> so the complexity is not affected by its input.
+`gameBoardFull` compares number of tiles on board,_n_<sub>board size</sub><sup>2</sup>, with number of played moves _n_<sub>played</sub> so the complexities are not affected by its input. (Both O(1)).
 
-If maximum search depth _d_<sub>max</sub> is reached, `heuristicBasedOnPlayArea` is called. This is by far more complex method than two previous.
-It performs 4 nested for loops and assigns 7 temporary variables.
+If maximum search depth _d_<sub>max</sub>(_n_<sub>free tiles</sub>) is reached without state being final, `heuristicBasedOnPlayArea` is called. This is significantly more complex method than the two previous ones;
+it performs 4 nested for loops and assigns 7 temporary variables:
 ```java
 int n = node.length - 1;
 int[] playerValues = new int[2];
@@ -119,14 +119,14 @@ for (int i = 1; i <= n; i++) {
         }
         for (int p = 0; p < 2; p++) {
 ```
-First two loops depend on _n_<sub>board size</sub> so this yields to time complexity of O(_n_<sub>board size</sub><sup>2</sup>). Then we assign 6 different coordinates for both x and y. This is to go through whole game board horizontally, vertically and diagonally (two directions). Therfore each tile is used in operations four times. After this, we go through from each different starting location and for both players the coordinates. However, such locations that further than _k_-1 tiles from current play area or entirely outside board are skipped. Consequently, total number of tiles that are observed is 2\* (d _x_+ 2(_k_-1)) \* (d _y_ + 2( _k_-1)) = 2 d _x_ \* d _y_ + 4(k-1)d_x_ + 4(k-1)d _y_ + 2(2(k-1))<sup>2</sup>. = 2 _n_<sub>play area</sub> + 4(k-1)d _x_ + 4(k-1)d _y_ + 2(2k-2))<sup>2</sup>. This equals time complexity of O(_n_<sub>play area</sub> + _k_).
+First two loops depend on _n_<sub>board size</sub> together resulting in _n_<sub>board size</sub><sup>2</sup> iterations. Then, during each iteration of the first two loops, we assign 6 different coordinates for both _x_ and _y_. This is to go through whole game board horizontally, vertically and diagonally (two directions). Therfore each tile is used in operations four times. After this, we go through from each different starting location and for both players the coordinates. However, such locations that are further than _k_-1 tiles from current play area or entirely outside board are skipped. Consequently, total number of tiles that are observed is 2\* (d _x_+ 2(_k_-1)) \* (d _y_ + 2( _k_-1)) = 2 d _x_ \* d _y_ + 4(k-1)d_x_ + 4(k-1)d _y_ + 2(2(k-1))<sup>2</sup>. = 2 _n_<sub>play area</sub> + 4(k-1)d _x_ + 4(k-1)d _y_ + 2(2k-2))<sup>2</sup>. This equals time complexity of O(_n_<sub>play area</sub> + _k_). Combined with the time complexity resulting from the first two loops, we end up with complexity of O(_n_<sub>board size</sub><sup>2</sup> * (_n_<sub>play area</sub> + _k_))
 
-In terms of space complexity, assigned variables lead to following complexities
+In terms of space, assigned variables lead to following complexities
 - `n`, `playerValues`, `offset` : constants => O(1)
 - `counters`: 2 \* 6 \* (_k_+1) => O(_k_)
 - `marksOnRange`: 2 \* _n_<sub>board size</sub> => O( _n_<sub>board size</sub>)
 
-Next, during each iteration it is checked if currently observed player has placed mark on observed location, update counters correspondingly and heuristic value of player in question:
+Next, during each iteration algorithm checks if currently observed player has placed mark on observed location, update counters correspondingly and heuristic value of player in question:
 ```java
 if (node[x[k]][y[k]] == p) {
   if (marksOnRange[p][k] < rowLenght) {
@@ -143,13 +143,17 @@ if (marksOnRange[p][k] > 0 && counters[p][k][marksOnRange[p][k]] == 0) {
   marksOnRange[p][k]--;
 }
 ```
-Only operation of which time complexities is affected by the input is `reduceMarkCountersByOne` since it iterates through values of array with lenght of  _k_+1. Hence, its time complexity is O(_k_).
+Only operation of which time complexity is affected by the input is `reduceMarkCountersByOne` since it iterates through values of array with lenght of _k_+1. Hence, its time complexity is O(_k_).
 
 After these, loop continues, value of `offset` is increased and eventually final heuristic value, calculated from difference of player specific values (`playerValues`) is returned. 
 
-Finally we get back to `value` method. Likewise `getMove`, it iterates through given play area although this time tiles just outside the play area are checked. Yet again invalid moves are skipped according to `!validMove` check. Same `node` as given in parameters is used to avoid increasing time and space complexities due to copying of arrays. Correspondingly, same `playArea` variable is used. However, since we want to revert it back to original state after recursions, its updated state information is kept in additional `areaChanged` boolean array. It has always size of 4 but since `value` calls recursively itself, it lead to space complexity of O(4 \* _b_ \* _d_) where _b_ is branching factor and _d_ search depth (both discussed earlier in [project specification](./project_specification.md). As we use maximum search depth _d_<sub>max</sub> we can replace _d_ and ignore constant 4 which leads to O(_b_ \* _d_<sub>max</sub>). `increasePlayArea` or `decreasePlayArea` operatios to `areaChanged` instead do not have significant affect on either complexity.
+Finally we get back to `value` method. Likewise `getMove`, it iterates through given play area although this time tiles just outside the play area are checked. Yet again invalid moves are skipped according to `!validMove` check resulting in same method of calculating _n_<sub>free tiles</sub> as above. Though, this does not remain constant as play area can grow and on the other hand number of played moves depend on current search depth. We can simplify by denoting _n_'<sub>free tiles</sub> ≈ b, where _n_'<sub>free tiles</sub> is number of free tiles when `value` is called and _b_ is branching factor (discussed earlier in [project specification](./project_specification.md)).
 
-As mentioned above, `value` calls itself thus leading to time complexity of O(_b_ <sup> _d_<sub>max</sub> </sup>). However, since we are using alpha beta pruning
+To avoid increasing time and space complexities due to copying of arrays, same `node` as given in parameters is used . Correspondingly, same `playArea` variable is also used. However, since we want to revert it back to original state after recursions, its updated state information is kept in additional `areaChanged` boolean array. It has always size of 4 but since `value` calls recursively itself, it lead to space complexity of O(4 \* _b_ \* _d_) where _b_ is branching factor (as mentioned above) and _d_ search depth (_d_ also discussed in [project specification](./project_specification.md).
+
+ As we use maximum search depth _d_<sub>max</sub>(_n_<sub>free tiles</sub>) we know that _d_ <= _d_<sub>max</sub>(_n_<sub>free tiles</sub>). So, in the worst case O(_b_ \* _d_<sub>max</sub>(_n_<sub>free tiles</sub>)) (we can ignore constant 4).`increasePlayArea` or `decreasePlayArea` operatios to `areaChanged` instead do not have significant affect on either complexity.
+
+As mentioned above, `value` calls itself thus leading to worst case time complexity of O(_b_ <sup>_d_<sub>max</sub>(_n_<sub>free tiles</sub>)</sup>). However, since we are using alpha beta pruning
 ```java
   if (turn == 0) {
     value = Math.max(value, alphaBetaValue);
@@ -192,8 +196,11 @@ After value is calculated (either with or without pruning), execution returns to
 }
 return move;
 ```
-As a result, `value` is called _n_<sub>play area</sub> - _n_<sub>outliers</sub> - _n_<sub>played</sub> - _n_<sub>pruned</sub> times.Since `value` uses similar criteria based on which child nodes are chosen, we simplify equation by denoting now  _n_<sub>play area</sub> - _n_<sub>outliers</sub> - _n_<sub>played</sub> - _n_<sub>pruned</sub> ≈ _b_. Thus, combined time complexities of `getMove` and `value` are O(_b_<sup>(d+1)/2</sup>), where d<= d<sub>max</sub>(n<sub>free tiles</sub>) (best case) and O(_b_<sup>d<sub>max</sub>(n<sub>free tiles</sub>)+1</sup>) (worst case). 
+As a result, `value` is called _n_<sub>free tiles</sub> - _n_<sub>pruned</sub>  times. Since `value` uses similar criteria based on which child nodes are chosen, we can similarly as with `value` denote _n_<sub>free tiles</sub> ≈ _b_. Thus, combined time complexities of `getMove` and `value` are O(_b_<sup>(d+1)/2</sup>), where d<= d<sub>max</sub>(n<sub>free tiles</sub>) (best case) and O(_b_<sup>d<sub>max</sub>(n<sub>free tiles</sub>)+1</sup>) (worst case). 
 
+Finally, combining complexities of all the methods we get:
+- Time complexity, best case:
+- Space complexity 
 
 
 _n_<sub>board size</sub>
