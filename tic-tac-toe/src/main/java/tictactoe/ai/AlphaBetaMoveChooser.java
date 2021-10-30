@@ -37,36 +37,71 @@ public class AlphaBetaMoveChooser {
         int value = turn == 0 ? -(int) 1e9 : (int) 1e9;
         for (int x = playArea[0]; x <= playArea[2]; x++) {
             for (int y = playArea[1]; y <= playArea[3]; y++) {
-                if (x > 0 && x < node.length && y > 0 && y < node[0].length && node[x][y] < 0) {
-                    if (noNeighbours(node, playArea, x, y) && playedMoves > 0) {
-                        continue;
+                if (!validMove(node, playArea, playedMoves, x, y)) {
+                    continue;
+                }
+                node[x][y] = turn;
+                int alphaBetaValue = value(node, playArea, new int[]{x, y},
+                        playedMoves + 1, (turn + 1) % 2, rowLenght, alpha, beta, 0, maxSearchDepth);
+                node[x][y] = -1;
+                if (turn == 0) {
+                    if (value <= alphaBetaValue) {
+                        value = alphaBetaValue;
+                        move[0] = x;
+                        move[1] = y;
                     }
-                    node[x][y] = turn;
-                    int alphaBetaValue = value(node, playArea, new int[]{x, y},
-                            playedMoves + 1, (turn + 1) % 2, rowLenght, alpha, beta, 0, maxSearchDepth);
-                    node[x][y] = -1;
-                    if (turn == 0) {
-                        if (value <= alphaBetaValue) {
-                            value = alphaBetaValue;
-                            move[0] = x;
-                            move[1] = y;
-                        }
-                        alpha = Math.max(alpha, value);
-                    } else {
-                        if (value >= alphaBetaValue) {
-                            value = alphaBetaValue;
-                            move[0] = x;
-                            move[1] = y;
-                        }
-                        beta = Math.min(beta, value);
+                    alpha = Math.max(alpha, value);
+                } else {
+                    if (value >= alphaBetaValue) {
+                        value = alphaBetaValue;
+                        move[0] = x;
+                        move[1] = y;
                     }
-                    if (alpha >= beta) {
-                        return move;
-                    }
+                    beta = Math.min(beta, value);
+                }
+                if (alpha >= beta) {
+                    return move;
                 }
             }
         }
         return move;
+    }
+
+    /**
+     * Checks if given location x,y is valid to place mark. Parameters are the
+     * same as in
+     * {@link #getMove(int[][], int[], int, int, int, int, int, int)}.
+     *
+     * @return true if move is valid, otherwise false
+     */
+    private static boolean validMove(int[][] node, int[] playArea, int playedMoves, int x, int y) {
+        return coordinateOnBoard(node, x, y)
+                && tileFree(node, x, y)
+                && (atLeastOneNeighbourReserved(node, playArea, x, y) && playedMoves > 0);
+    }
+
+    /**
+     * Checks if tile in coordinate x,y is free
+     *
+     * @param node state of game board
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @return true if tile is free, false otherwise
+     */
+    private static boolean tileFree(int[][] node, int x, int y) {
+        return node[x][y] < 0;
+    }
+
+    /**
+     * Checks whether given location is on board.
+     *
+     * @param node state of game board
+     * @param x x-coordinate of location
+     * @param y y-coordinate of location
+     * @return true if coordinate is on board, false otherwise
+     */
+    private static boolean coordinateOnBoard(int[][] node, int x, int y) {
+        return x >= 1 && x < node.length && y >= 1 && y < node[0].length;
     }
 
     /**
@@ -105,7 +140,7 @@ public class AlphaBetaMoveChooser {
      * @param y y-coordinate of observed tile
      * @return true if tile has no neighbour, otherwise false
      */
-    private static boolean noNeighbours(int[][] node, int[] area, int x, int y) {
+    private static boolean atLeastOneNeighbourReserved(int[][] node, int[] area, int x, int y) {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 if ((dx == 0 && dy == 0)
@@ -114,11 +149,11 @@ public class AlphaBetaMoveChooser {
                     continue;
                 }
                 if (node[x + dx][y + dy] >= 0) {
-                    return false;
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -180,25 +215,24 @@ public class AlphaBetaMoveChooser {
         int value = (turn == 0) ? -maxValue : maxValue;
         for (int x = playArea[0] - 1; x <= playArea[2] + 1; x++) {
             for (int y = playArea[1] - 1; y <= playArea[3] + 1; y++) {
-                if (x > 0 && x < node.length && y > 0 && y < node[0].length && node[x][y] < 0) {
-                    if (noNeighbours(node, playArea, x, y)) {
-                        continue;
-                    }
-                    node[x][y] = turn;
-                    boolean[] areaChanged = increasePlayArea(playArea, x, y);
-                    int alphaBetaValue = value(node, playArea, new int[]{x, y},
-                            playedMoves + 1, (turn + 1) % 2, rowLenght, alpha, beta,
-                            nodeDepth + 1, maxSearchDepth);
-                    if (turn == 0) {
-                        value = Math.max(value, alphaBetaValue);
-                        alpha = Math.max(alpha, value);
-                    } else {
-                        value = Math.min(value, alphaBetaValue);
-                        beta = Math.min(beta, value);
-                    }
-                    node[x][y] = -1;
-                    decreasePlayArea(playArea, areaChanged);
+                if (!validMove(node, playArea, playedMoves, x, y)) {
+                    continue;
                 }
+                node[x][y] = turn;
+                boolean[] areaChanged = increasePlayArea(playArea, x, y);
+                int alphaBetaValue = value(node, playArea, new int[]{x, y},
+                        playedMoves + 1, (turn + 1) % 2, rowLenght, alpha, beta,
+                        nodeDepth + 1, maxSearchDepth);
+                if (turn == 0) {
+                    value = Math.max(value, alphaBetaValue);
+                    alpha = Math.max(alpha, value);
+                } else {
+                    value = Math.min(value, alphaBetaValue);
+                    beta = Math.min(beta, value);
+                }
+                node[x][y] = -1;
+                decreasePlayArea(playArea, areaChanged);
+
             }
             if (alpha >= beta) {
                 return value;
