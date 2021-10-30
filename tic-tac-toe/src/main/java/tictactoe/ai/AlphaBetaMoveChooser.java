@@ -365,7 +365,6 @@ public class AlphaBetaMoveChooser {
             int[][] node, int[] playArea, int turn, int rowLenght) {
         int n = node.length - 1;
         int[] playerValues = new int[2];
-        outerloop:
         for (int i = 1; i <= n; i++) {
             int[][][] counters = new int[2][6][rowLenght + 1];
             int offset = 0;
@@ -375,8 +374,8 @@ public class AlphaBetaMoveChooser {
                 int[] y = new int[]{j, i, j, j, i - offset, i - offset + n};
                 for (int k = 0; k < x.length; k++) {
                     if (x[k] < 1 || x[k] > n || y[k] < 1 || y[k] > n
-                            || x[k] < playArea[0] - 4 || x[k] > playArea[2] + 4
-                            || y[k] < playArea[1] - 4 || y[k] > playArea[3] + 4) {
+                            || x[k] < playArea[0] - rowLenght - 1 || x[k] > playArea[2] + rowLenght - 1
+                            || y[k] < playArea[1] - rowLenght - 1 || y[k] > playArea[3] + rowLenght - 1) {
                         continue;
                     }
                     for (int p = 0; p < 2; p++) {
