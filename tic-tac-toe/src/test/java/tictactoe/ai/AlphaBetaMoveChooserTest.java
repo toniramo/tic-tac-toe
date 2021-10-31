@@ -10,6 +10,16 @@ import static org.junit.Assert.*;
  */
 public class AlphaBetaMoveChooserTest {
 
+    /*
+     * Since AlphaBetaMoveChooser has only static methods,
+     * report considers that class declaration line is not covered without this.
+     */
+    @Test
+    public void testClassDeclaration() {
+        AlphaBetaMoveChooser chooser = new AlphaBetaMoveChooser();
+        assertEquals(chooser.getClass(), AlphaBetaMoveChooser.class);
+    }
+
     @Test
     public void winningHorizontalMoveIsChosenV1() {
         int[][] node = initializeNode(20);
@@ -251,6 +261,23 @@ public class AlphaBetaMoveChooserTest {
         int[][] node = initializeNode(3);
         Assert.assertArrayEquals(AlphaBetaMoveChooser.getMove(
                 node, new int[]{1, 1, 3, 3}, 4, 0, 3, (int) -1e9, (int) 1e9, 3), new int[]{0, 0});
+    }
+
+    @Test
+    public void moveLeadsToDraw() {
+        int[][] node = initializeNode(2);
+        node[1][1] = 0;
+        node[1][2] = 0;
+        node[2][1] = 1;
+        Assert.assertArrayEquals(AlphaBetaMoveChooser.getMove(
+                node, new int[]{1, 1, 3, 3}, 3, 1, 3, (int) -1e9, (int) 1e9, 3), new int[]{2, 2});
+    }
+
+    @Test
+    public void chooserChoosesFirstMove() {
+        int[][] node = initializeNode(3);
+        Assert.assertArrayEquals(AlphaBetaMoveChooser.getMove(
+                node, new int[]{2, 2, 2, 2}, 0, 0, 3, (int) -1e9, (int) 1e9, 9), new int[]{2, 2});
     }
 
     private int[][] initializeNode(int n) {
