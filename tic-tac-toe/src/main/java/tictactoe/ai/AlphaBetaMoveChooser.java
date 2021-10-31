@@ -77,7 +77,7 @@ public class AlphaBetaMoveChooser {
     private static boolean validMove(int[][] node, int[] playArea, int playedMoves, int x, int y) {
         return coordinateOnBoard(node, x, y)
                 && tileFree(node, x, y)
-                && (atLeastOneNeighbourReserved(node, playArea, x, y) && playedMoves > 0);
+                && (atLeastOneNeighbourReserved(node, playArea, x, y) || playedMoves  == 0);
     }
 
     /**
@@ -368,7 +368,7 @@ public class AlphaBetaMoveChooser {
         for (int i = 1; i <= n; i++) {
             int[][][] counters = new int[2][6][rowLenght + 1];
             int offset = 0;
-            int[][] marksOnRange = new int[2][n];
+            int[][] marksOnRange = new int[2][6];
             for (int j = 1; j <= n; j++) {
                 int[] x = new int[]{i, j, (i + offset), (i + offset - n), j, j};
                 int[] y = new int[]{j, i, j, j, i - offset, i - offset + n};
