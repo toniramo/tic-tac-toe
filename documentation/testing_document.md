@@ -21,10 +21,10 @@ Summary of test coverage on 29.10.2021 13:00:
 
 | Package/Class  | Complexity<sup>1</sup> | Coverage<sup>2</sup>  | | ☰ Tracked lines   |  🟢 Lines hit | 🟡 Lines partials  | 🔴 Lines missed  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
-| **tictactoe**     | **84%**  | **90%** | |**398** | **360** | **19** | **19** |
-| tictactoe/**ai**   | **92%**  | **96%** | |**195**	| **187** |	**6** |	**2** |
+| **tictactoe**     | **88%**  | **92%** | |**401** | **369** | **15** | **17** |
+| tictactoe/**ai**   | **98%**  | **99%** | |**198**	| **196** |	**2** |	**0** |
 | [AI.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/ai/AI.java)   | 95%  | 98% | | 52	| 51	| 1	| 0 |
-| [AlphaBetaMoveChooser.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/ai/AlphaBetaMoveChooser.java)   | 95%  | 98% | | 143 |	136 |	5 |	2 |
+| [AlphaBetaMoveChooser.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/ai/AlphaBetaMoveChooser.java)   | 99%  | 99% | | 146 |	145 |	1 |	0 |
 | tictactoe/**logic**   | **75%**  | **86%** | | **187** |	**160**	| **13**	 | **14** |
 | [GameBoard.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/GameBoard.java)  | 74%  | 94% | |	35	| 33	| 2	| 0 |
 | [GameService.java](https://app.codecov.io/gh/toniramo/tic-tac-toe/blob/main/tic-tac-toe/src/main/java/tictactoe/logic/GameService.java)  | 83%  | 96% | | 73	| 70	| 1	| 2 |
@@ -38,7 +38,7 @@ Summary of test coverage on 29.10.2021 13:00:
 
 Test coverage progress during the course:
 
-![Coverage chart](./images/8nr7ktv3.svg)
+![Coverage chart](./images/av7ov96w.svg)
 
 ### Running unit tests
 
