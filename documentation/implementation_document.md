@@ -243,6 +243,7 @@ It is worth noting that branching factor _b_ is specific for this application an
 ## Possible flaws and ideas for improvements
 - It is worth considering further optimization of maximum search depths based on observations done in [performance testing](https://github.com/toniramo/tic-tac-toe/blob/main/documentation/testing_document.md#results).
 - There is potential to improve move choosing algorithm further, e.g. by utilizing iterative deepening and/or changing the order of nodes to increase likelyhood of finding the most valuable node early on - for instance starting from moves closest to the latest moves.
+- Used heuristics may simplify the game, at least 'like iterate through only those tiles that are adjacent ot reserved tiles'. This could be revised and changed to something more complex since it is possible that sometimes the most optimal move is found elsewhere. Of course, abandoning this rule as it is now may require increasing the the performance of the algortihm in some other means to compensate the change.
 - Take into account human element in game: it is possible that opponent does not notice already achieved victory (e.g. | |X|X|X|X| |). In such case AI may just ''give up'' i.e. choose last of the observed moves since all are equally bad based on algorithm.
 - UI may show transparent mark in AI vs. AI game even after first and only user made move is made.
 
