@@ -241,8 +241,8 @@ where _d_ <= d<sub>max</sub></sup>.
 It is worth noting that branching factor _b_ is specific for this application and due to measures to reduce the number of potential branches per node, is potentially smaller than branching factor in project specification, let use _b'_ for it this time. So _b_ <= _b'_ (but most likely _b_ << _b'_). Additionally search depth _d_ is limited to _d_<sub>max</sub> that in turn is maximum 4. Thereby we can confidently say that realized complexities are within the expectations  laid in project specification.
 
 ## Possible flaws and ideas for improvements
-- Changing of maximum search depths based on observations done in [performance testing](https://github.com/toniramo/tic-tac-toe/blob/main/documentation/testing_document.md#results).
-- Improve alpha beta pruning algorithm further, e.g. by utilizing iterative deepening and/or changing the order of nodes to increase likelyhood of finding the most valuable node early on - for instance starting from moves closest to the latest moves.
+- It is worth considering further optimization of maximum search depths based on observations done in [performance testing](https://github.com/toniramo/tic-tac-toe/blob/main/documentation/testing_document.md#results).
+- There is potential to improve move choosing algorithm further, e.g. by utilizing iterative deepening and/or changing the order of nodes to increase likelyhood of finding the most valuable node early on - for instance starting from moves closest to the latest moves.
 - Take into account human element in game: it is possible that opponent does not notice already achieved victory (e.g. | |X|X|X|X| |). In such case AI may just ''give up'' i.e. choose last of the observed moves since all are equally bad based on algorithm.
 - UI may show transparent mark in AI vs. AI game even after first and only user made move is made.
 
