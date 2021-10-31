@@ -24,6 +24,12 @@ Alternatively you can run project with Gradle as follows:
 ```
 ./gradlew run
 ```
+
+You can also download `tictactoe.jar` directly from the [latest release](https://github.com/toniramo/tic-tac-toe/releases/latest) without need to build it yourself and start the program using following command from the same folder you have located the file:
+```
+java -jar tictactoe.jar
+```
+
 ### Checks, tests and reports
 Run both checkstyle and unit tests and generate reports:
 ```
