@@ -16,7 +16,7 @@ Additionally quality has been monitored with continuous CI with Gradle workflow 
 
 ### Unit test coverage status
 
-Summary of test coverage on 29.10.2021 13:00:
+Summary of test coverage on 31.10.2021 12:45:
 
 
 | Package/Class  | Complexity<sup>1</sup> | Coverage<sup>2</sup>  | | ☰ Tracked lines   |  🟢 Lines hit | 🟡 Lines partials  | 🔴 Lines missed  |
